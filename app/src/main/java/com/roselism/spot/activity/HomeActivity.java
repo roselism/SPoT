@@ -70,12 +70,6 @@ public class HomeActivity extends AppCompatActivity
     private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
-    public final static int SELECT_MOD = 99; // 选择模式
-    public final static int NORMAL_MOD = 97; // 正常模式，点击进入详情
-    public final static int ENTER_MOD = 96; // 为照片选择父文件夹模式
-
-    public final static String FILE_LOAD_KEY = "loadKey";
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -106,14 +100,14 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
-        mCurUser = User.getCurrentUser(this, User.class);
+        mCurUser = User.getCurrentUser(this, User.class); // 当前用户
 
         if (mCurUser == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
-        if (mDataThread == null) {
+        if (mDataThread == null) { // 数据加载进程
             mDataThread = new Thread(new DataLoader());
             mDataThread.start();
         }
@@ -218,9 +212,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     *
      * 初始化listview的item点击事件的监听器
-     *
      */
     public void initListItemListener() {
 //        Log.i(TAG, "initListItemListener: " + model);
@@ -308,22 +300,8 @@ public class HomeActivity extends AppCompatActivity
     public void onInputFinished(String name) {
         FolderOperater folderOperater = new FolderOperater(this, new Folder(name, mCurUser));
         folderOperater.createFolder();//创建该文件夹
-//        folderOperater.createFolder();
-
-//        createFolder(name); // 创建文件夹
     }
 
-//    @Override
-//    public void onFirstItemClick(View view) {
-//        Log.i(TAG, "------------ onFirstItemClick: ------------");
-//        initListItemListener(SELECT_MOD);
-//    }
-//
-//    @Override
-//    public void onNoItemSelected() {
-//        Log.i(TAG, "------------ onNoItemSelected: ------------");
-//        initListItemListener(NORMAL_MOD);
-//    }
 
     void initClickListener() {
     }

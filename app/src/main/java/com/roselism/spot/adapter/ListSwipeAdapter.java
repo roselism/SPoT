@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.flyco.dialog.listener.OnBtnClickL;
+import com.flyco.dialog.widget.NormalDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -135,17 +137,28 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        photo.delete(mContext, new DeleteListener() {
+                        NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_TWO);
+                        normalDialog.setOnBtnClickL(new OnBtnClickL() {
                             @Override
-                            public void onSuccess() {
-                                mData.remove(position); // 从本地移除该数据
-                                notifyDataSetChanged();
-                                viewHolder.swipeLayout.close(true);
+                            public void onBtnClick() { // 取消 按钮
+
                             }
-
+                        }, new OnBtnClickL() {
                             @Override
-                            public void onFailure(int i, String s) {
+                            public void onBtnClick() { // 确定 按钮
+                                photo.delete(mContext, new DeleteListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        mData.remove(position); // 从本地移除该数据
+                                        notifyDataSetChanged();
+                                        viewHolder.swipeLayout.close(true);
+                                    }
 
+                                    @Override
+                                    public void onFailure(int i, String s) {
+
+                                    }
+                                });
                             }
                         });
                     }
@@ -167,23 +180,36 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                 final Folder folder = new Folder(currentFile);
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        folder.delete(mContext, new DeleteListener() {
-                            @Override
-                            public void onSuccess() {
-                                mData.remove(position);
-                                notifyDataSetChanged();
-                                viewHolder.swipeLayout.close(true);
-                            }
+                    public void onClick(View v) { // 删除键的监听事件
+                        final NormalDialog normalDialog = new NormalDialog(mContext);
+                        normalDialog
+                                .style(NormalDialog.STYLE_TWO)
+                                .setOnBtnClickL(new OnBtnClickL() {
+                                    @Override
+                                    public void onBtnClick() { // 左边，取消
+                                        normalDialog.dismiss();
+                                    }
+                                }, new OnBtnClickL() { // 右边，确定
+                                    @Override
+                                    public void onBtnClick() {
+                                        folder.delete(mContext, new DeleteListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                mData.remove(position);
+                                                notifyDataSetChanged();
+                                                viewHolder.swipeLayout.close(true);
+                                            }
 
-                            @Override
-                            public void onFailure(int i, String s) {
+                                            @Override
+                                            public void onFailure(int i, String s) {
 
-                            }
-                        });
+                                            }
+                                        });
+                                    }
+                                });
                     }
                 });
-                viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
+                viewHolder.editButton.setOnClickListener(new View.OnClickListener() { // 关机键的监听事件
                     @Override
                     public void onClick(View v) {
 
@@ -193,26 +219,8 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                 break;
         }
 
-//        viewHolder.deleteButton.setOnClickListener(this);
-//        viewHolder.editButton.setOnClickListener(this);
         viewHolder.editButton.setOnTouchListener(this);
         viewHolder.deleteButton.setOnTouchListener(this);
-
-//        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                switch (v.getId()) {
-//                    case R.id.delete_button:
-//                        currentFile
-//                        break;
-//
-//                    case R.id.edit_button:
-//
-//                        break;
-//                }
-//            }
-//        });
-
     }
 
     @Override

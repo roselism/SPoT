@@ -34,7 +34,6 @@ public class Photo extends BmobObject {
         setPhoto(file.getBoundFile());
     }
 
-
     public String getName() {
         return name;
     }

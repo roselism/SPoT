@@ -230,6 +230,7 @@ public class FolderActivity extends AppCompatActivity
                 break;
 
             case R.id.download_layout:
+
                 break;
 
             case R.id.share_layout:
