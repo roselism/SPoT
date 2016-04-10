@@ -28,18 +28,16 @@ import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.dao.Operater;
-import com.roselism.spot.library.app.dialog.DetailProgressDialog;
-import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.library.app.dialog.DetailProgressDialog;
+import com.roselism.spot.library.app.dialog.FolderNameDialog;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
