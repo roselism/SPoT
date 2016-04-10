@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.daimajia.swipe.SwipeLayout
+    android:id="@+id/swipeLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <!--底部视图-->
+    <LinearLayout
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <RelativeLayout
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_bottom_edit_button">
+
+            <ImageView
+                android:id="@+id/edit_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_pen"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/delete_button"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_bottom_delete_button"
+            android:scaleType="centerInside"
+            android:text="@string/btn_list_delete">
+
+            <ImageView
+                android:id="@+id/delete_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_trash3"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--顶部视图-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <ImageView
+            android:id="@+id/bg_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_default_pic"/>
+
+        <RelativeLayout
+            android:id="@+id/picture_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="11dp"
+            android:layout_toEndOf="@id/thumbnail"
+            android:layout_toRightOf="@id/thumbnail">
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="60dp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="xxx.jpg"
+                android:textSize="13sp"/>
+
+            <!--拍摄时间-->
+            <TextView
+                android:id="@+id/create_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_text"
+                android:layout_marginTop="2dp"
+                android:text="some day"
+                android:textSize="11sp"/>
+
+            <!--图片的大小-->
+            <TextView
+                android:id="@+id/subtitle_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_text"
+                android:layout_marginLeft="9dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@id/create_time_text"
+                android:layout_toRightOf="@id/create_time_text"
+                android:text="some size"
+                android:textSize="11sp"/>
+
+            <TextView
+                android:id="@+id/upload_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/create_time_text"
+                android:layout_marginTop="2dp"
+                android:text="someone"
+                android:textSize="13sp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</com.daimajia.swipe.SwipeLayout>
+

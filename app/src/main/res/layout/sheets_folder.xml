@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Your FAB implementation -->
+    <com.roselism.spot.library.widget.MenuActionButton
+        android:id="@+id/floatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_action_content"
+        fab:fab_colorNormal="@color/peter_river"
+        fab:fab_colorPressed="@color/belize_hole"
+        fab:fab_colorRipple="@color/silver"/>
+
+    <!-- Overlay that dims the screen -->
+    <com.gordonwong.materialsheetfab.DimOverlayFrameLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Circular reveal container for the sheet -->
+    <io.codetail.widget.RevealLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end|bottom"
+        android:orientation="vertical">
+
+        <!-- Sheet that contains your items -->
+        <android.support.v7.widget.CardView
+            android:id="@+id/fab_sheet"
+            android:layout_width="250dp"
+            android:layout_height="300dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="4">
+
+                <!--邀请项-->
+                <RelativeLayout
+                    android:id="@+id/add_friends_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_sheet_button"
+                    android:clickable="true">
+
+                    <ImageView
+                        android:id="@+id/add_friends_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:src="@mipmap/ic_link"/>
+
+                    <TextView
+                        android:id="@+id/add_friends_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/add_friends_icon"
+                        android:paddingLeft="16dp"
+                        android:text="邀请好友"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <!--上传项-->
+                <RelativeLayout
+                    android:id="@+id/upload_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_sheet_button">
+
+                    <ImageView
+                        android:id="@+id/uplaod_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:src="@mipmap/ic_upload3"/>
+
+                    <TextView
+                        android:id="@+id/upload_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/uplaod_icon"
+                        android:paddingLeft="16dp"
+                        android:text="上传图片"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+
+                </RelativeLayout>
+
+                <!--下载项-->
+                <RelativeLayout
+                    android:id="@+id/download_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_sheet_button">
+
+                    <ImageView
+                        android:id="@+id/download_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:src="@mipmap/ic_download"/>
+
+                    <TextView
+                        android:id="@+id/download_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/download_icon"
+                        android:paddingLeft="16dp"
+                        android:text="下载相册"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+
+                </RelativeLayout>
+
+                <!--分享项-->
+                <RelativeLayout
+                    android:id="@+id/share_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_sheet_button_blue">
+
+                    <ImageView
+                        android:id="@+id/share_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:src="@mipmap/ic_facebook"/>
+
+                    <TextView
+                        android:id="@+id/share_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/share_icon"
+                        android:paddingLeft="16dp"
+                        android:text="分享"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </io.codetail.widget.RevealLinearLayout>
+
+</RelativeLayout>

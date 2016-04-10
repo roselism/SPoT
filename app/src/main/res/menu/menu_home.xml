@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/item_upload"
+        android:icon="@mipmap/ic_upload2"
+        android:orderInCategory="90"
+        android:title="upload"
+        android:visible="true"
+        app:showAsAction="always"></item>
+
+    <item
+        android:id="@+id/item_add"
+        android:icon="@mipmap/ic_circle_plus"
+        android:orderInCategory="60"
+        android:title="upload"
+        android:visible="true"
+        app:showAsAction="always"></item>
+
+    <!--排序-->
+    <item
+        android:id="@+id/item_order"
+        android:icon="@mipmap/ic_spider_net"
+        android:title="@string/menu_item_order"></item>
+
+    <!--展示当前上传进度-->
+    <item
+        android:id="@+id/item_progress"
+        android:title="@string/menu_item_progress"></item>
+
+    <!--展示文件的类型-->
+    <item
+        android:id="@+id/item_show"
+        android:icon="@mipmap/ic_filter"
+        android:title="@string/menu_item_show"></item>
+
+    <item
+        android:id="@+id/item_exist"
+        android:showAsAction="collapseActionView"
+        android:title="@string/menu_item_logout"
+        tools:ignore="AppCompatResource"></item>
+</menu>

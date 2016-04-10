@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/ic_add_white_24dp" android:state_pressed="false">
+        <shape>
+            <size android:width="24dp" android:height="24dp"></size>
+        </shape>
+    </item>
+</selector>

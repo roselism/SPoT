@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:paddingTop="6dp">
+
+    <TextView
+        android:id="@+id/secondary_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="66%"
+        android:textSize="15sp"/>
+
+    <ProgressBar
+        android:id="@+id/secondary_progress"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/secondary_progress_text"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+    <ProgressBar
+        android:id="@+id/main_progress"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/secondary_progress"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+    <TextView
+        android:id="@+id/main_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/main_progress"
+        android:layout_marginRight="16dp"
+        android:text="6/16"
+        android:textSize="16sp"/>
+
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_progress_text"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/divider_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="3dp"
+        android:divider="@drawable/divider_vertical"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/absolute_alpha"
+            android:text="确定"
+            android:textColor="@color/emerland"/>
+
+        <Button
+            android:id="@+id/cancle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selector_dialog_btn"
+            android:text="取消"
+            android:textColor="@color/sun_flower"/>
+    </LinearLayout>
+</RelativeLayout>

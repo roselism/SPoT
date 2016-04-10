@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/peter_river</item>
+        <item name="colorPrimaryDark">@color/belize_hole</item>
+        <item name="colorAccent">@color/alizarin</item>
+    </style>
+
+    <style name="AppTheme.base" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
+    <style name="anim_popup_dir">
+        <item name="android:windowEnterAnimation">@anim/slide_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_out</item>
+    </style>
+
+</resources>
