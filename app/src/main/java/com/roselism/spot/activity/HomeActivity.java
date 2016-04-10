@@ -215,7 +215,6 @@ public class HomeActivity extends AppCompatActivity
      * 初始化listview的item点击事件的监听器
      */
     public void initListItemListener() {
-//        Log.i(TAG, "initListItemListener: " + model);
 
         // 为每个list item设置监听器
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
@@ -236,64 +235,6 @@ public class HomeActivity extends AppCompatActivity
         };
 
         mListView.setOnItemClickListener(itemClickListener);
-
-//        switch (model) {
-//            case HomeActivity.NORMAL_MOD: // 正常模式，单击进入详情
-//                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        File curFile = mData.get(position);
-//
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-//                        bundle.putString("fileId", curFile.getId());
-//                        bundle.putString("fileName", curFile.getTitle());
-//
-//                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
-//                    }
-//                };
-//                break;
-
-//            case HomeActivity.SELECT_MOD: // 选择模式, 点击list item时也会触发ImageButton的onClick方法 drop
-//                itemClickListener = new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    }
-//                };
-//                break;
-
-//            case ENTER_MOD: // drop
-//                itemClickListener = new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        File parentFolder = mData.get(position);
-//                        Message m = new Message();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("folderId", parentFolder.getId());
-//                        m.setData(bundle);
-//                        mHandler.sendMessage(m);
-//                    }
-//                };
-//                break;
-//            default: //默认为正常状态 drop
-//                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        File curFile = mData.get(position);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-//                        bundle.putString("fileId", curFile.getId());
-//                        bundle.putString("fileName", curFile.getTitle());
-//                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
-//                    }
-//                };
-//                break;
-//        }
-
     }
 
     @Override
@@ -316,36 +257,32 @@ public class HomeActivity extends AppCompatActivity
         // 创建一个对话框，提醒是否移动到该文件夹
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("移动到当前文件夹");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+        builder.setPositiveButton("确定", (dialog, which) -> {
 
-                // 更新数据
-                Photo pic;
-                for (File f : PictureListAdapter.mSelectedItem) {
-                    pic = new Photo(f);
-                    pic.setParent(new Folder(folderId));
-                    pic.update(HomeActivity.this, new UpdateListener() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
-                            PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                            reader.run(); // 刷新一遍数据
-                            mDataThread.start();
-                        }
+            dialog.dismiss();
+            // 更新数据
+            Photo pic;
+            for (File f : PictureListAdapter.mSelectedItem) {
+                pic = new Photo(f);
+                pic.setParent(new Folder(folderId));
+                pic.update(HomeActivity.this, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
+                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
+                        mDataThread.start();
+                    }
 
-                        @Override
-                        public void onFailure(int i, String s) {
-                            Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
-                            PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                            reader.run(); // 刷新一遍列表
-                            mDataThread.start();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
+                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
+                        mDataThread.start();
+                    }
+                });
             }
         });
+
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -414,6 +351,7 @@ public class HomeActivity extends AppCompatActivity
             BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
             mainQuery.or(queryList);
             mainQuery.include("creater"); // 查询文件夹的创建人
+
             mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
                 @Override
                 public void onSuccess(List<Folder> list) {

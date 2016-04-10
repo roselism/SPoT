@@ -49,40 +49,23 @@ public class ContactsActivity extends AppCompatActivity
 
     public static final String TAG = "ContactsActivity";
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.recylerview)
-    RecyclerView mRecylerview;
-    @Bind(R.id.floatingButton)
-    MenuActionButton mFloatingButton;
-    @Bind(R.id.overlay)
-    DimOverlayFrameLayout overlay;
-    @Bind(R.id.add_friends_icon)
-    ImageView addFriendsIcon;
-    @Bind(R.id.add_friends_text)
-    TextView addFriendsText;
-    @Bind(R.id.add_friends_layout)
-    RelativeLayout addFriendsLayout;
-    @Bind(R.id.uplaod_icon)
-    ImageView uplaodIcon;
-    @Bind(R.id.upload_text)
-    TextView uploadText;
-    @Bind(R.id.upload_layout)
-    RelativeLayout uploadLayout;
-    @Bind(R.id.download_icon)
-    ImageView downloadIcon;
-    @Bind(R.id.download_text)
-    TextView downloadText;
-    @Bind(R.id.download_layout)
-    RelativeLayout downloadLayout;
-    @Bind(R.id.share_icon)
-    ImageView shareIcon;
-    @Bind(R.id.share_text)
-    TextView shareText;
-    @Bind(R.id.share_layout)
-    RelativeLayout shareLayout;
-    @Bind(R.id.fab_sheet)
-    CardView fabSheet;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.recylerview) RecyclerView mRecylerview;
+    @Bind(R.id.floatingButton) MenuActionButton mFloatingButton;
+    @Bind(R.id.overlay) DimOverlayFrameLayout overlay;
+    @Bind(R.id.add_friends_icon) ImageView addFriendsIcon;
+    @Bind(R.id.add_friends_text) TextView addFriendsText;
+    @Bind(R.id.add_friends_layout) RelativeLayout addFriendsLayout;
+    @Bind(R.id.uplaod_icon) ImageView uplaodIcon;
+    @Bind(R.id.upload_text) TextView uploadText;
+    @Bind(R.id.upload_layout) RelativeLayout uploadLayout;
+    @Bind(R.id.download_icon) ImageView downloadIcon;
+    @Bind(R.id.download_text) TextView downloadText;
+    @Bind(R.id.download_layout) RelativeLayout downloadLayout;
+    @Bind(R.id.share_icon) ImageView shareIcon;
+    @Bind(R.id.share_text) TextView shareText;
+    @Bind(R.id.share_layout) RelativeLayout shareLayout;
+    @Bind(R.id.fab_sheet) CardView fabSheet;
 
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
     private Thread dataThread; // 数据线程
@@ -154,15 +137,10 @@ public class ContactsActivity extends AppCompatActivity
         materialSheetFab.showFab();
     }
 
-    //    void initRecylerview() {
-    //        mRecylerview.setAdapter(build());
-    //    }
-
     public void buildAdapter() {
-        Log.i(TAG, "buildAdapter: ------");
+//        Log.i(TAG, "buildAdapter: ------");
         ContactsAdapter adapter = new ContactsAdapter(mData, this);
         mRecylerview.setAdapter(adapter);
-//        return adapter;
     }
 
     @Override
@@ -171,7 +149,6 @@ public class ContactsActivity extends AppCompatActivity
             case R.id.add_friends_layout:
                 InviteFriendDialog dialog = new InviteFriendDialog();
                 dialog.show(this.getFragmentManager(), "dialog");
-//                dialog.show();
 
                 break;
         }
@@ -179,18 +156,15 @@ public class ContactsActivity extends AppCompatActivity
 
     @Override
     public void onInputFinished(View view) {
-//        Log.i(TAG, "onInputFinished: -->");
 
         EditText editText = (EditText) view;
         String friendsEdmail = editText.getText().toString();
-//        Log.i(TAG, "onInputFinished: email --> " + friendsEdmail);
 
         BmobQuery<User> query = new BmobQuery<>(); // 查询
         query.addWhereEqualTo("email", friendsEdmail);
         query.findObjects(this, new FindListener<User>() {
             @Override
             public void onSuccess(List<User> list) {
-//                Log.i(TAG, "onSuccess: 查询成功");
 
                 User friends = list.get(0);
                 User currentUser = BmobUser.getCurrentUser(ContactsActivity.this, User.class);

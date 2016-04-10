@@ -156,8 +156,8 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                                 }
                             });
                         });
+                        normalDialog.show();
                     }
-
 
                 });
                 viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -276,7 +276,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_button:
-//                ArrayList list = new ArrayList();
 
                 break;
 

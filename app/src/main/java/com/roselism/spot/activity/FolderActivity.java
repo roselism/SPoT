@@ -256,7 +256,7 @@ public class FolderActivity extends AppCompatActivity
         switch (view.getId()) {
 
             case R.id.friendEmail_editText:
-                Log.i(TAG, "onInputFinished: ");
+//                Log.i(TAG, "onInputFinished: ");
                 EditText editText = (EditText) view;
                 String email = editText.getText().toString(); // 获取输入的邮箱
                 BmobQuery<User> query = new BmobQuery();
@@ -294,15 +294,15 @@ public class FolderActivity extends AppCompatActivity
      */
     public class FolderLoader extends DataLoader {
         private String mFolderId;
-//        public static final int LOAD_FINISHED = 0x16;
 
-        public FolderLoader(String folderId) {
-            super(null);
-            this.mFolderId = folderId;
-        }
+//        public FolderLoader(String folderId) {
+//            super(null);
+//            this.mFolderId = folderId;
+//        }
 
         public FolderLoader(String mFolderId, Context context) {
             super(context);
+            this.mFolderId = mFolderId;
         }
 
         @Override
