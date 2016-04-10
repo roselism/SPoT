@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
@@ -26,6 +27,7 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -112,7 +114,7 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
 
                             @Override
                             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                                Toast.makeText(mContext, "图片加载失败", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -138,30 +140,25 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                     @Override
                     public void onClick(View v) {
                         NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_TWO);
-                        normalDialog.setOnBtnClickL(new OnBtnClickL() {
-                            @Override
-                            public void onBtnClick() { // 取消 按钮
+                        normalDialog.setOnBtnClickL(() -> { // 取消按钮
+                        }, () -> { // 确认按钮
+                            photo.delete(mContext, new DeleteListener() {
+                                @Override
+                                public void onSuccess() {
+                                    mData.remove(position); // 从本地移除该数据
+                                    notifyDataSetChanged();
+                                    viewHolder.swipeLayout.close(true);
+                                }
 
-                            }
-                        }, new OnBtnClickL() {
-                            @Override
-                            public void onBtnClick() { // 确定 按钮
-                                photo.delete(mContext, new DeleteListener() {
-                                    @Override
-                                    public void onSuccess() {
-                                        mData.remove(position); // 从本地移除该数据
-                                        notifyDataSetChanged();
-                                        viewHolder.swipeLayout.close(true);
-                                    }
+                                @Override
+                                public void onFailure(int i, String s) {
 
-                                    @Override
-                                    public void onFailure(int i, String s) {
-
-                                    }
-                                });
-                            }
+                                }
+                            });
                         });
                     }
+
+
                 });
                 viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -258,7 +255,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
             case R.id.edit_button:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.setBackgroundColor(mContext.getResources().getColor(R.color.carrot));
-//                    v.setBackgroundResource(R.mipmap.bg_empty_folder);
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setBackgroundColor(mContext.getResources().getColor(R.color.sun_flower));
@@ -280,6 +276,7 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_button:
+//                ArrayList list = new ArrayList();
 
                 break;
 
