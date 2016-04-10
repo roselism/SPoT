@@ -34,6 +34,11 @@ import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +59,6 @@ import static com.roselism.spot.domain.File.GALLARY_TYPE;
  */
 public class HomeActivity extends AppCompatActivity
         implements FolderNameDialog.FolderNameInputListener,
-        PictureListAdapter.OnItemClickListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "HomeActivity";
@@ -98,13 +102,44 @@ public class HomeActivity extends AppCompatActivity
         }
     };
 
+    /**
+     * 获取当前项目的bmob密钥
+     *
+     * @return
+     */
+    public String getAppCode() {
+        java.io.File file = new java.io.File("SPoT\\bmob.txt");
+        Reader reader = null;
+        String apiCode = "";
+        try {
+            reader = new FileReader(file);
+            char[] chars = new char[64];
+            while (reader.read(chars) != -1) {
+                apiCode += chars.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                reader = null;
+            }
+        }
+        Log.i(TAG, "getAppCode: -->" + apiCode);
+        return apiCode;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
+        Bmob.initialize(this, getAppCode());
+
         mCurUser = User.getCurrentUser(this, User.class);
 
         if (mCurUser == null) {
@@ -141,6 +176,7 @@ public class HomeActivity extends AppCompatActivity
         ImageView profile = (ImageView) headerView.findViewById(R.id.profile);
         TextView name = (TextView) headerView.findViewById(R.id.name);
         TextView emailAddress = (TextView) headerView.findViewById(R.id.email_address);
+
         mCurUser.setNickName("王镇");
         name.setText(mCurUser.getNickName());
         emailAddress.setText(mCurUser.getEmail());
@@ -292,18 +328,17 @@ public class HomeActivity extends AppCompatActivity
 //        createFolder(name); // 创建文件夹
     }
 
-    @Override
-    public void onFirstItemClick(View view) {
-        Log.i(TAG, "------------ onFirstItemClick: ------------");
-        switchListListener(SELECT_MOD);
-//        mOperateLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onNoItemSelected() {
-        Log.i(TAG, "------------ onNoItemSelected: ------------");
-        switchListListener(NORMAL_MOD);
-    }
+//    @Override
+//    public void onFirstItemClick(View view) {
+//        Log.i(TAG, "------------ onFirstItemClick: ------------");
+//        switchListListener(SELECT_MOD);
+//    }
+//
+//    @Override
+//    public void onNoItemSelected() {
+//        Log.i(TAG, "------------ onNoItemSelected: ------------");
+//        switchListListener(NORMAL_MOD);
+//    }
 
     void initClickListener() {
     }

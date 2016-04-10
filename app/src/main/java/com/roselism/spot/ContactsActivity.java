@@ -83,6 +83,12 @@ public class ContactsActivity extends AppCompatActivity
     };
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler = null; // 防止内存泄露
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);

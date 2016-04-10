@@ -79,6 +79,7 @@ public class ImagePickerActivity extends AppCompatActivity
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -367,6 +368,12 @@ public class ImagePickerActivity extends AppCompatActivity
                 getWindow().setAttributes(lp);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler = null;
     }
 
     /**
