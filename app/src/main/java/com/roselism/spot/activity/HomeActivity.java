@@ -34,7 +34,6 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
-import com.roselism.spot.util.BmobUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +85,6 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-            //            Log.i(TAG, "handleMessage: handle message");
-
             switch (msg.what) {
                 case DataLoader.LOAD_FINISHED:
                     if (mData.size() == 0)
@@ -106,15 +103,13 @@ public class HomeActivity extends AppCompatActivity
         }
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        Bmob.initialize(this, BmobUtil.getApplicationId());
+        Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
         mCurUser = User.getCurrentUser(this, User.class);
 
