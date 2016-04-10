@@ -59,21 +59,16 @@ public class HomeActivity extends AppCompatActivity
         NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "HomeActivity";
 
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-    @Bind(R.id.listview)
-    ListView mListView;
-    @Bind(R.id.bg_image)
-    ImageView mBgImage;
-    @Bind(R.id.nav_view)
-    NavigationView mNavView;
-    @Bind(R.id.drawer)
-    DrawerLayout mDrawer;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.listview) ListView mListView;
+    @Bind(R.id.bg_image) ImageView mBgImage;
+    @Bind(R.id.nav_view) NavigationView mNavView;
+    @Bind(R.id.drawer) DrawerLayout mDrawer;
 
-    private List<File> mData;
-    Thread mDataThread;
-    DetailProgressDialog detailProgressDialog;
-    User mCurUser;
+    private User mCurUser; // 当前用户
+    private List<File> mData; // 数据
+    private Thread mDataThread; // 加载数据线程
+    private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
     public final static int SELECT_MOD = 99; // 选择模式
     public final static int NORMAL_MOD = 97; // 正常模式，点击进入详情
@@ -219,75 +214,94 @@ public class HomeActivity extends AppCompatActivity
         Log.i(TAG, "buildAdapter: running");
         ListSwipeAdapter listSwipeAdapter = new ListSwipeAdapter(mData, this);
         mListView.setAdapter(listSwipeAdapter);
-        switchListListener(NORMAL_MOD);
+        initListItemListener();
     }
 
     /**
-     * 切换listview的item监听器
      *
-     * @param model
+     * 初始化listview的item点击事件的监听器
+     *
      */
-    public void switchListListener(final int model) {
-        Log.i(TAG, "switchListListener: " + model);
+    public void initListItemListener() {
+//        Log.i(TAG, "initListItemListener: " + model);
 
-        AdapterView.OnItemClickListener itemClickListener;
-        switch (model) {
-            case HomeActivity.NORMAL_MOD: // 正常模式，单击进入详情
-                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File curFile = mData.get(position);
+        // 为每个list item设置监听器
+        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                File curFile = mData.get(position);
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-                        bundle.putString("fileId", curFile.getId());
-                        bundle.putString("fileName", curFile.getTitle());
+                // 将当前文件夹的数据发送给FolderActivity
+                Bundle bundle = new Bundle();
+                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
+                bundle.putString("fileId", curFile.getId());
+                bundle.putString("fileName", curFile.getTitle());
 
-                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                };
-                break;
+                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        };
 
-            case HomeActivity.SELECT_MOD: // 选择模式, 点击list item时也会触发ImageButton的onClick方法 drop
-                itemClickListener = new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    }
-                };
-                break;
-
-            case ENTER_MOD: // drop
-                itemClickListener = new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File parentFolder = mData.get(position);
-                        Message m = new Message();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("folderId", parentFolder.getId());
-                        m.setData(bundle);
-                        mHandler.sendMessage(m);
-                    }
-                };
-                break;
-            default: //默认为正常状态 drop
-                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File curFile = mData.get(position);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-                        bundle.putString("fileId", curFile.getId());
-                        bundle.putString("fileName", curFile.getTitle());
-                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                };
-                break;
-        }
         mListView.setOnItemClickListener(itemClickListener);
+
+//        switch (model) {
+//            case HomeActivity.NORMAL_MOD: // 正常模式，单击进入详情
+//                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        File curFile = mData.get(position);
+//
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
+//                        bundle.putString("fileId", curFile.getId());
+//                        bundle.putString("fileName", curFile.getTitle());
+//
+//                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
+//                        intent.putExtras(bundle);
+//                        startActivity(intent);
+//                    }
+//                };
+//                break;
+
+//            case HomeActivity.SELECT_MOD: // 选择模式, 点击list item时也会触发ImageButton的onClick方法 drop
+//                itemClickListener = new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    }
+//                };
+//                break;
+
+//            case ENTER_MOD: // drop
+//                itemClickListener = new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        File parentFolder = mData.get(position);
+//                        Message m = new Message();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("folderId", parentFolder.getId());
+//                        m.setData(bundle);
+//                        mHandler.sendMessage(m);
+//                    }
+//                };
+//                break;
+//            default: //默认为正常状态 drop
+//                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        File curFile = mData.get(position);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
+//                        bundle.putString("fileId", curFile.getId());
+//                        bundle.putString("fileName", curFile.getTitle());
+//                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
+//                        intent.putExtras(bundle);
+//                        startActivity(intent);
+//                    }
+//                };
+//                break;
+//        }
+
     }
 
     @Override
@@ -302,13 +316,13 @@ public class HomeActivity extends AppCompatActivity
 //    @Override
 //    public void onFirstItemClick(View view) {
 //        Log.i(TAG, "------------ onFirstItemClick: ------------");
-//        switchListListener(SELECT_MOD);
+//        initListItemListener(SELECT_MOD);
 //    }
 //
 //    @Override
 //    public void onNoItemSelected() {
 //        Log.i(TAG, "------------ onNoItemSelected: ------------");
-//        switchListListener(NORMAL_MOD);
+//        initListItemListener(NORMAL_MOD);
 //    }
 
     void initClickListener() {
