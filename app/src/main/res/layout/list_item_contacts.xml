@@ -9,7 +9,7 @@
         android:layout_width="@dimen/list_item_contacts_height"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:src="@mipmap/ic_launcher"/>
 
     <ImageView
@@ -38,15 +38,25 @@
                 android:layout_height="wrap_content"
                 android:text="simon wang"
                 android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="19sp"/>
 
             <TextView
                 android:id="@+id/signature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="微笑向暖 岸芷若骛"/>
+                android:text="the warm smile if the quility"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="6dp"
+            android:text="6:00pm"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
 </RelativeLayout>
