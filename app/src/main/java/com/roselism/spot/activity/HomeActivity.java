@@ -34,12 +34,8 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.util.BmobUtil;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,24 +61,24 @@ public class HomeActivity extends AppCompatActivity
     private static final String TAG = "HomeActivity";
 
     @Bind(R.id.toolbar)
-    Toolbar        mToolbar;
+    Toolbar mToolbar;
     @Bind(R.id.listview)
-    ListView       mListView;
+    ListView mListView;
     @Bind(R.id.bg_image)
-    ImageView      mBgImage;
+    ImageView mBgImage;
     @Bind(R.id.nav_view)
     NavigationView mNavView;
     @Bind(R.id.drawer)
-    DrawerLayout   mDrawer;
+    DrawerLayout mDrawer;
 
     private List<File> mData;
-    Thread               mDataThread;
+    Thread mDataThread;
     DetailProgressDialog detailProgressDialog;
-    User                 mCurUser;
+    User mCurUser;
 
     public final static int SELECT_MOD = 99; // 选择模式
     public final static int NORMAL_MOD = 97; // 正常模式，点击进入详情
-    public final static int ENTER_MOD  = 96; // 为照片选择父文件夹模式
+    public final static int ENTER_MOD = 96; // 为照片选择父文件夹模式
 
     public final static String FILE_LOAD_KEY = "loadKey";
 
@@ -110,35 +106,7 @@ public class HomeActivity extends AppCompatActivity
         }
     };
 
-    /**
-     * 获取当前项目的bmob密钥
-     *
-     * @return
-     */
-    public String getAppCode() {
-        java.io.File file = new java.io.File("SPoT\\bmob.txt");
-        Reader reader = null;
-        String apiCode = "";
-        try {
-            reader = new FileReader(file);
-            char[] chars = new char[64];
-            while (reader.read(chars) != -1) {
-                apiCode += chars.toString();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                reader = null;
-            }
-        }
-        Log.i(TAG, "getAppCode: -->" + apiCode);
-        return apiCode;
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +114,7 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        Bmob.initialize(this, getAppCode());
+        Bmob.initialize(this, BmobUtil.getApplicationId());
 
         mCurUser = User.getCurrentUser(this, User.class);
 

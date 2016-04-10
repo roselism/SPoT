@@ -56,15 +56,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     private static final int REQUEST_READ_CONTACTS = 0;
 
     @Bind(R.id.login_progress)
-    ProgressBar          mProgressView;
+    ProgressBar mProgressView;
     @Bind(R.id.email)
     AutoCompleteTextView mEmailView;
     @Bind(R.id.password)
-    EditText             mPasswordView;
+    EditText mPasswordView;
     @Bind(R.id.email_sign_in_button)
-    Button               mEmailSignInButton;
+    Button mEmailSignInButton;
     @Bind(R.id.login_form)
-    ScrollView           mLoginFormView;
+    ScrollView mLoginFormView;
 
     //    private UserLoginTask mAuthTask = null; //Keep track of the login task to ensure we can cancel it if requested./Keep track of the login task to ensure we can cancel it if requested.
 

@@ -50,43 +50,43 @@ public class ContactsActivity extends AppCompatActivity
     public static final String TAG = "ContactsActivity";
 
     @Bind(R.id.toolbar)
-    Toolbar               toolbar;
+    Toolbar toolbar;
     @Bind(R.id.recylerview)
-    RecyclerView          mRecylerview;
+    RecyclerView mRecylerview;
     @Bind(R.id.floatingButton)
-    MenuActionButton      mFloatingButton;
+    MenuActionButton mFloatingButton;
     @Bind(R.id.overlay)
     DimOverlayFrameLayout overlay;
     @Bind(R.id.add_friends_icon)
-    ImageView             addFriendsIcon;
+    ImageView addFriendsIcon;
     @Bind(R.id.add_friends_text)
-    TextView              addFriendsText;
+    TextView addFriendsText;
     @Bind(R.id.add_friends_layout)
-    RelativeLayout        addFriendsLayout;
+    RelativeLayout addFriendsLayout;
     @Bind(R.id.uplaod_icon)
-    ImageView             uplaodIcon;
+    ImageView uplaodIcon;
     @Bind(R.id.upload_text)
-    TextView              uploadText;
+    TextView uploadText;
     @Bind(R.id.upload_layout)
-    RelativeLayout        uploadLayout;
+    RelativeLayout uploadLayout;
     @Bind(R.id.download_icon)
-    ImageView             downloadIcon;
+    ImageView downloadIcon;
     @Bind(R.id.download_text)
-    TextView              downloadText;
+    TextView downloadText;
     @Bind(R.id.download_layout)
-    RelativeLayout        downloadLayout;
+    RelativeLayout downloadLayout;
     @Bind(R.id.share_icon)
-    ImageView             shareIcon;
+    ImageView shareIcon;
     @Bind(R.id.share_text)
-    TextView              shareText;
+    TextView shareText;
     @Bind(R.id.share_layout)
-    RelativeLayout        shareLayout;
+    RelativeLayout shareLayout;
     @Bind(R.id.fab_sheet)
-    CardView              fabSheet;
+    CardView fabSheet;
 
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-    private Thread           dataThread; // 数据线程
-    private List<User>       mData;
+    private Thread dataThread; // 数据线程
+    private List<User> mData;
 
     private Handler mHandler = new Handler() {
         @Override

@@ -81,12 +81,6 @@ public class PictureGridAdapter extends BaseAdapter {
                 viewHolder.mInfoLayout.setVisibility(
                         viewHolder.mInfoLayout.getVisibility() == View.VISIBLE ?
                                 View.GONE : View.VISIBLE);
-/*
-                viewHolder.takenDate.setVisibility(
-                        viewHolder.takenDate.getVisibility() == View.VISIBLE ?
-                                View.GONE : View.VISIBLE); // 设置为显示
-
-*/
             }
         });
         return convertView;
@@ -111,7 +105,6 @@ public class PictureGridAdapter extends BaseAdapter {
 
     private DisplayImageOptions buildOptions() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-//                .showImageOnLoading(R.mipmap.ic_default_pic)
                 .delayBeforeLoading(100)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
