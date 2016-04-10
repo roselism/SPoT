@@ -1,4 +1,4 @@
-package com.roselism.spot;
+package com.roselism.spot.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.roselism.spot.R;
 import com.roselism.spot.domain.User;
 import com.roselism.spot.library.content.DataLoader;
 
@@ -54,13 +55,18 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    @Bind(R.id.login_progress) ProgressBar mProgressView;
-    @Bind(R.id.email) AutoCompleteTextView mEmailView;
-    @Bind(R.id.password) EditText mPasswordView;
-    @Bind(R.id.email_sign_in_button) Button mEmailSignInButton;
-    @Bind(R.id.login_form) ScrollView mLoginFormView;
+    @Bind(R.id.login_progress)
+    ProgressBar          mProgressView;
+    @Bind(R.id.email)
+    AutoCompleteTextView mEmailView;
+    @Bind(R.id.password)
+    EditText             mPasswordView;
+    @Bind(R.id.email_sign_in_button)
+    Button               mEmailSignInButton;
+    @Bind(R.id.login_form)
+    ScrollView           mLoginFormView;
 
-//    private UserLoginTask mAuthTask = null; //Keep track of the login task to ensure we can cancel it if requested./Keep track of the login task to ensure we can cancel it if requested.
+    //    private UserLoginTask mAuthTask = null; //Keep track of the login task to ensure we can cancel it if requested./Keep track of the login task to ensure we can cancel it if requested.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +74,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-//        if (User.getCurrentUser(this, User.class) != null) //如果没登陆，跳转到LoginActivity进行登陆
-//            startActivity(new Intent(this, HomeActivity.class));
+        //        if (User.getCurrentUser(this, User.class) != null) //如果没登陆，跳转到LoginActivity进行登陆
+        //            startActivity(new Intent(this, HomeActivity.class));
 
         populateAutoComplete();
 
@@ -108,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             return;
         }
 
-//        getLoaderManager().initLoader(0, null, this);
+        //        getLoaderManager().initLoader(0, null, this);
     }
 
     private boolean mayRequestContacts() {

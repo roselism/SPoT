@@ -1,4 +1,4 @@
-package com.roselism.spot;
+package com.roselism.spot.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.dao.FolderOperater;
@@ -63,20 +64,25 @@ public class HomeActivity extends AppCompatActivity
         NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "HomeActivity";
 
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.listview) ListView mListView;
-    @Bind(R.id.bg_image) ImageView mBgImage;
-    @Bind(R.id.nav_view) NavigationView mNavView;
-    @Bind(R.id.drawer) DrawerLayout mDrawer;
+    @Bind(R.id.toolbar)
+    Toolbar        mToolbar;
+    @Bind(R.id.listview)
+    ListView       mListView;
+    @Bind(R.id.bg_image)
+    ImageView      mBgImage;
+    @Bind(R.id.nav_view)
+    NavigationView mNavView;
+    @Bind(R.id.drawer)
+    DrawerLayout   mDrawer;
 
     private List<File> mData;
-    Thread mDataThread;
+    Thread               mDataThread;
     DetailProgressDialog detailProgressDialog;
-    User mCurUser;
+    User                 mCurUser;
 
     public final static int SELECT_MOD = 99; // 选择模式
     public final static int NORMAL_MOD = 97; // 正常模式，点击进入详情
-    public final static int ENTER_MOD = 96; // 为照片选择父文件夹模式
+    public final static int ENTER_MOD  = 96; // 为照片选择父文件夹模式
 
     public final static String FILE_LOAD_KEY = "loadKey";
 
@@ -84,12 +90,14 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-//            Log.i(TAG, "handleMessage: handle message");
+            //            Log.i(TAG, "handleMessage: handle message");
 
             switch (msg.what) {
                 case DataLoader.LOAD_FINISHED:
-                    if (mData.size() == 0) showBackGround(true);
-                    else showBackGround(false);
+                    if (mData.size() == 0)
+                        showBackGround(true);
+                    else
+                        showBackGround(false);
 
                     buildAdapter();
                     break;

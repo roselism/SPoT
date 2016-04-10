@@ -23,22 +23,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".ImagePickerActivity">
+        <activity android:name=".activity.ImagePickerActivity">
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activity.LoginActivity">
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.HomeActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".FolderActivity">
+        <activity android:name=".activity.FolderActivity">
         </activity>
         <activity
-            android:name=".ContactsActivity"
+            android:name=".activity.ContactsActivity"
             android:theme="@style/AppTheme">
         </activity>
 

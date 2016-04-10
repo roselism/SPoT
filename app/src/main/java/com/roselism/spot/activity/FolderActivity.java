@@ -1,4 +1,4 @@
-package com.roselism.spot;
+package com.roselism.spot.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
+import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureGridAdapter;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
@@ -55,29 +56,47 @@ public class FolderActivity extends AppCompatActivity
 
     private static final String TAG = "FolderActivity";
 
-    private List<File> mData; // 数据
-    private String curFolderId; // 当前folder的id
+    private List<File>       mData; // 数据
+    private String           curFolderId; // 当前folder的id
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
     Thread dataThread;
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.picture_grid) GridView mGridView;
-    @Bind(R.id.bg_image) ImageView mBgImage;
-    @Bind(R.id.floatingButton) FloatingActionButton mFloatingButton;
-    @Bind(R.id.overlay) DimOverlayFrameLayout overlay;
-    @Bind(R.id.fab_sheet) CardView fabSheet;
-    @Bind(R.id.add_friends_icon) ImageView mLinkIcon;
-    @Bind(R.id.add_friends_text) TextView mLinkText;
-    @Bind(R.id.add_friends_layout) RelativeLayout inviteLayout;
-    @Bind(R.id.uplaod_icon) ImageView mUplaodIcon;
-    @Bind(R.id.upload_text) TextView mUploadText;
-    @Bind(R.id.upload_layout) RelativeLayout mUploadLayout;
-    @Bind(R.id.download_icon) ImageView mDownloadIcon;
-    @Bind(R.id.download_text) TextView mDownloadText;
-    @Bind(R.id.download_layout) RelativeLayout mDownloadLayout;
-    @Bind(R.id.share_icon) ImageView mShareIcon;
-    @Bind(R.id.share_text) TextView mShareText;
-    @Bind(R.id.share_layout) RelativeLayout mShareLayout;
+    @Bind(R.id.toolbar)
+    Toolbar               toolbar;
+    @Bind(R.id.picture_grid)
+    GridView              mGridView;
+    @Bind(R.id.bg_image)
+    ImageView             mBgImage;
+    @Bind(R.id.floatingButton)
+    FloatingActionButton  mFloatingButton;
+    @Bind(R.id.overlay)
+    DimOverlayFrameLayout overlay;
+    @Bind(R.id.fab_sheet)
+    CardView              fabSheet;
+    @Bind(R.id.add_friends_icon)
+    ImageView             mLinkIcon;
+    @Bind(R.id.add_friends_text)
+    TextView              mLinkText;
+    @Bind(R.id.add_friends_layout)
+    RelativeLayout        inviteLayout;
+    @Bind(R.id.uplaod_icon)
+    ImageView             mUplaodIcon;
+    @Bind(R.id.upload_text)
+    TextView              mUploadText;
+    @Bind(R.id.upload_layout)
+    RelativeLayout        mUploadLayout;
+    @Bind(R.id.download_icon)
+    ImageView             mDownloadIcon;
+    @Bind(R.id.download_text)
+    TextView              mDownloadText;
+    @Bind(R.id.download_layout)
+    RelativeLayout        mDownloadLayout;
+    @Bind(R.id.share_icon)
+    ImageView             mShareIcon;
+    @Bind(R.id.share_text)
+    TextView              mShareText;
+    @Bind(R.id.share_layout)
+    RelativeLayout        mShareLayout;
 
     private Handler mHandler = new Handler() {
         @Override
