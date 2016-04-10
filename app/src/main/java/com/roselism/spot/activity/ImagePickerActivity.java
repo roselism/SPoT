@@ -1,4 +1,4 @@
-package com.roselism.spot;
+package com.roselism.spot.activity;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureSelectAdapter;
 import com.roselism.spot.domain.ImageFolder;
 import com.roselism.spot.domain.Photo;
@@ -50,26 +51,31 @@ public class ImagePickerActivity extends AppCompatActivity
 
     private static final String TAG = "ImagePickerActivity";
 
-    @Bind(R.id.gridview) GridView mGridView;
-    @Bind(R.id.gallary_name_text) TextView mFolderName;
-    @Bind(R.id.image_count_text) TextView mImageCount;
-    @Bind(R.id.bottom_layout) RelativeLayout mBottomLayout;
-    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.gridview)
+    GridView       mGridView;
+    @Bind(R.id.gallary_name_text)
+    TextView       mFolderName;
+    @Bind(R.id.image_count_text)
+    TextView       mImageCount;
+    @Bind(R.id.bottom_layout)
+    RelativeLayout mBottomLayout;
+    @Bind(R.id.toolbar)
+    Toolbar        toolbar;
 
-    private int mPicsSize; // 存储文件夹中的图片数量
-    private File mDefaultImgDir; // 图片数量最多的文件夹
+    private int          mPicsSize; // 存储文件夹中的图片数量
+    private File         mDefaultImgDir; // 图片数量最多的文件夹
     private List<String> mAllImgList; // 所有的图片
 
     private PictureSelectAdapter mAdapter; // 适配器
-    public static final List<Photo> uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
-    private HashSet<String> mDirPaths = new HashSet<>(); // 临时的辅助类，用于防止同一个文件夹的多次扫描
-    private List<ImageFolder> mImgFloderList = new ArrayList<>(); // 扫描拿到所有的图片文件夹
+    public static final List<Photo>       uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
+    private             HashSet<String>   mDirPaths      = new HashSet<>(); // 临时的辅助类，用于防止同一个文件夹的多次扫描
+    private             List<ImageFolder> mImgFloderList = new ArrayList<>(); // 扫描拿到所有的图片文件夹
 
     int totalCount = 0;
-    private int mScreenHeight;
-    private ProgressDialog mProgressDialog;
+    private int                     mScreenHeight;
+    private ProgressDialog          mProgressDialog;
     private ListImageDirPopupWindow mListImageDirPopupWindow; // 展示图片文件夹的popupWindow
-//    private ProgressDialog progressDialog; // 进度条
+    //    private ProgressDialog progressDialog; // 进度条
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -123,7 +129,7 @@ public class ImagePickerActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_check: // 上传
-//                uploadSelectedImage();
+                //                uploadSelectedImage();
                 String folderId = ImagePickerActivity.this.getIntent().getStringExtra("folderId") == null ?
                         null : ImagePickerActivity.this.getIntent().getStringExtra("folderId"); // 获取folderId
 
