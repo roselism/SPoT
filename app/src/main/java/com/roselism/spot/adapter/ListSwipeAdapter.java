@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +28,12 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.listener.DeleteListener;
 
 /**
@@ -47,6 +48,12 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
     public final static List<File> mSelectedItem = new LinkedList<>(); // 选中的item
     private ImageLoader imageLoader; // imageLoader 对象
     private DisplayImageOptions options; // 选项
+//    private OnBtnClickL confirmButtonListener = new OnBtnClickL() {
+//        @Override
+//        public void onBtnClick() {
+//
+//        }
+//    };
 
     public ListSwipeAdapter(List<File> mData, Context mContext) {
         this.mData = mData;
@@ -134,37 +141,16 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                             }
                         });
 
-                // 设置点击监听事件
-                final Photo photo = new Photo(currentFile);
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_TWO);
-                        normalDialog.setOnBtnClickL(() -> { // 取消按钮
-                        }, () -> { // 确认按钮
-                            photo.delete(mContext, new DeleteListener() {
-                                @Override
-                                public void onSuccess() {
-                                    mData.remove(position); // 从本地移除该数据
-                                    notifyDataSetChanged();
-                                    viewHolder.swipeLayout.close(true);
-                                }
 
-                                @Override
-                                public void onFailure(int i, String s) {
+                final Photo photo = new Photo(currentFile); // 要被删除的photo对象
 
-                                }
-                            });
-                        });
-                        normalDialog.show();
-                    }
-
+                viewHolder.deleteButton.setOnClickListener(view -> { // 删除按钮的点击事件
+                    NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_TWO); // 设置属性
+                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(), new ListenerBuilder().confimButtonListener(photo, position, viewHolder)); // 设置点击事件
+                    normalDialog.show(); // 显示对话框
                 });
-                viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                    }
+                viewHolder.editButton.setOnClickListener((view) -> { // editbutton 的点击事件
                 });
 
                 break;
@@ -173,44 +159,15 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                 Log.i(TAG, "data2View:  gallary type");
                 viewHolder.thumbnail.setImageResource(R.mipmap.ic_folder_user_2);
 
-                // 设置点击监听事件
-                final Folder folder = new Folder(currentFile);
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { // 删除键的监听事件
-                        final NormalDialog normalDialog = new NormalDialog(mContext);
-                        normalDialog
-                                .style(NormalDialog.STYLE_TWO)
-                                .setOnBtnClickL(new OnBtnClickL() {
-                                    @Override
-                                    public void onBtnClick() { // 左边，取消
-                                        normalDialog.dismiss();
-                                    }
-                                }, new OnBtnClickL() { // 右边，确定
-                                    @Override
-                                    public void onBtnClick() {
-                                        folder.delete(mContext, new DeleteListener() {
-                                            @Override
-                                            public void onSuccess() {
-                                                mData.remove(position);
-                                                notifyDataSetChanged();
-                                                viewHolder.swipeLayout.close(true);
-                                            }
-
-                                            @Override
-                                            public void onFailure(int i, String s) {
-
-                                            }
-                                        });
-                                    }
-                                });
-                    }
+                final Folder folder = new Folder(currentFile); // 要被删除的folder对象
+                viewHolder.deleteButton.setOnClickListener((view) -> { // 删除键的监听事件
+                    NormalDialog normalDialog = new NormalDialog(mContext);
+                    normalDialog.style(NormalDialog.STYLE_TWO);
+                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(), new ListenerBuilder().confimButtonListener(folder, position, viewHolder));
+                    normalDialog.show(); // 展示对话框
                 });
-                viewHolder.editButton.setOnClickListener(new View.OnClickListener() { // 关机键的监听事件
-                    @Override
-                    public void onClick(View v) {
 
-                    }
+                viewHolder.editButton.setOnClickListener((view) -> { // editButton 的单击事件
                 });
 
                 break;
@@ -305,6 +262,43 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
+        }
+    }
+
+    /**
+     * 提供dialog 按钮的监听器
+     */
+    private class ListenerBuilder {
+
+        /**
+         * 确定按钮的监听事件
+         *
+         * @param data       要被删除的对象
+         * @param position   对象的所在位置
+         * @param viewHolder viewhoder
+         * @return
+         */
+        public OnBtnClickL confimButtonListener(BmobObject data, int position, ViewHolder viewHolder) {
+            return () -> { // 确认按钮
+                data.delete(mContext, new DeleteListener() {
+                    @Override
+                    public void onSuccess() {
+                        mData.remove(position); // 从本地移除该数据
+                        notifyDataSetChanged();
+                        viewHolder.swipeLayout.close(true);
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.i(TAG, "onFailure: ");
+                    }
+                });
+            };
+        }
+
+        public OnBtnClickL cancleButtonListener() {
+            return () -> {
+            };
         }
     }
 }
