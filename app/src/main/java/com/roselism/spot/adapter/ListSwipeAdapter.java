@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,12 +47,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
     public final static List<File> mSelectedItem = new LinkedList<>(); // 选中的item
     private ImageLoader imageLoader; // imageLoader 对象
     private DisplayImageOptions options; // 选项
-//    private OnBtnClickL confirmButtonListener = new OnBtnClickL() {
-//        @Override
-//        public void onBtnClick() {
-//
-//        }
-//    };
 
     public ListSwipeAdapter(List<File> mData, Context mContext) {
         this.mData = mData;
@@ -192,9 +185,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
         return position;
     }
 
-    public void in() {
-
-    }
 
     private DisplayImageOptions buildOptions() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -265,10 +255,11 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
         }
     }
 
+
     /**
      * 提供dialog 按钮的监听器
      */
-    private class ListenerBuilder {
+    public class ListenerBuilder {
 
         /**
          * 确定按钮的监听事件
@@ -296,6 +287,11 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
             };
         }
 
+        /**
+         * 取消button的监听器
+         *
+         * @return
+         */
         public OnBtnClickL cancleButtonListener() {
             return () -> {
             };
