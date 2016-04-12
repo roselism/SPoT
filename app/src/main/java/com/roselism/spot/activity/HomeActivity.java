@@ -1,5 +1,6 @@
 package com.roselism.spot.activity;
 
+import android.content.AsyncTaskLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.roselism.spot.MyApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
@@ -34,6 +36,7 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,27 +73,27 @@ public class HomeActivity extends AppCompatActivity
     private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case DataLoader.LOAD_FINISHED:
-                    if (mData.size() == 0)
-                        showBackGround(true);
-                    else
-                        showBackGround(false);
-
-                    buildAdapter();
-                    break;
-            }
-
-            Bundle bundle = msg.getData();
-            if (bundle.getString("folderId") != null) {
-                buildConfirmDialog(bundle.getString("folderId"));
-            }
-        }
-    };
+//    private Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//            switch (msg.what) {
+//                case DataLoader.LOAD_FINISHED:
+//                    if (mData.size() == 0)
+//                        showBackGround(true);
+//                    else
+//                        showBackGround(false);
+//
+//                    buildAdapter();
+//                    break;
+//            }
+//
+//            Bundle bundle = msg.getData();
+//            if (bundle.getString("folderId") != null) {
+//                buildConfirmDialog(bundle.getString("folderId"));
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,8 +397,21 @@ public class HomeActivity extends AppCompatActivity
             });
         }
 
+        /**
+         * 数据加载完毕
+         */
         public void finished() {
-            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
+//            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
+
+            ThreadUtils.runInUIThread(() -> {
+                if (mData.size() == 0)
+                    showBackGround(true);
+                else
+                    showBackGround(false);
+
+                buildAdapter();
+            });
+//            MyApplication.getMainHandler().post();
         }
     }
 }

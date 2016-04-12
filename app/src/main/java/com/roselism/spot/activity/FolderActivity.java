@@ -34,6 +34,7 @@ import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +61,8 @@ public class FolderActivity extends AppCompatActivity
     private String curFolderId; // 当前folder的id
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
     Thread dataThread;
+//    Loader
+//    AsyncTaskLoader
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.picture_grid) GridView mGridView;
@@ -80,16 +83,16 @@ public class FolderActivity extends AppCompatActivity
     @Bind(R.id.share_text) TextView mShareText;
     @Bind(R.id.share_layout) RelativeLayout mShareLayout;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case FolderLoader.LOAD_FINISHED:
-                    buildAdapter();
-                    break;
-            }
-        }
-    };
+//    private Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case FolderLoader.LOAD_FINISHED:
+//                    buildAdapter();
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,10 +298,6 @@ public class FolderActivity extends AppCompatActivity
     public class FolderLoader extends DataLoader {
         private String mFolderId;
 
-//        public FolderLoader(String folderId) {
-//            super(null);
-//            this.mFolderId = folderId;
-//        }
 
         public FolderLoader(String mFolderId, Context context) {
             super(context);
@@ -341,7 +340,9 @@ public class FolderActivity extends AppCompatActivity
 
         @Override
         public void onLoadFinished() {
-            mHandler.sendEmptyMessage(LOAD_FINISHED);
+//            mHandler.sendEmptyMessage(LOAD_FINISHED);
+
+            ThreadUtils.runInUIThread(() -> buildAdapter());
         }
     }
 }
