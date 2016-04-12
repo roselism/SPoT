@@ -28,6 +28,7 @@ import com.roselism.spot.domain.RelationLink;
 import com.roselism.spot.domain.User;
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,23 +71,23 @@ public class ContactsActivity extends AppCompatActivity
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
     private Thread dataThread; // 数据线程
     private List<User> mData;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case DataLoader.LOAD_FINISHED:
-                    buildAdapter();
-                    break;
-            }
-        }
-    };
+//
+//    private Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//            switch (msg.what) {
+//                case DataLoader.LOAD_FINISHED:
+//                    buildAdapter();
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler = null; // 防止内存泄露
+//        mHandler = null; // 防止内存泄露
     }
 
     @Override
@@ -193,7 +194,6 @@ public class ContactsActivity extends AppCompatActivity
         }
     }
 
-
     /**
      * 数据加载器
      */
@@ -250,20 +250,27 @@ public class ContactsActivity extends AppCompatActivity
                     onLoadFinished();
                 }
 
-                /**
-                 * 当加载完毕
-                 */
-                public void onLoadFinished() {
-//                    Log.i(TAG, "onLoadFinished: 数据加载完毕");
-//                    Log.i(TAG, "onLoadFinished: mData size = " + mData.size());
-                    mHandler.sendEmptyMessage(LOAD_FINISHED); // 通知handler数据加载完毕了
-                }
+//                /**
+//                 * 当加载完毕
+//                 */
+//                public void onLoadFinished() {
+////                    Log.i(TAG, "onLoadFinished: 数据加载完毕");
+////                    Log.i(TAG, "onLoadFinished: mData size = " + mData.size());
+//                    ThreadUtils.runInUIThread(() -> buildAdapter());
+//
+////                    mHandler.sendEmptyMessage(LOAD_FINISHED); // 通知handler数据加载完毕了
+//                }
             });
         }
 
         @Override
         public void onLoadFinished() {
-            mHandler.sendEmptyMessage(LOAD_FINISHED);
+            ThreadUtils.runInUIThread(() -> buildAdapter());
         }
+
+//        @Override
+//        public void onLoadFinished() {
+//            mHandler.sendEmptyMessage(LOAD_FINISHED);
+//        }
     }
 }

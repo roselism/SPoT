@@ -63,7 +63,7 @@ public class ImagePickerActivity extends AppCompatActivity
     private List<String> mAllImgList; // 所有的图片
 
     private PictureSelectAdapter mAdapter; // 适配器
-    public static final List<Photo> uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
+    //    public static final List<Photo> uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
     private HashSet<String> mDirPaths = new HashSet<>(); // 临时的辅助类，用于防止同一个文件夹的多次扫描
     private List<ImageFolder> mImgFloderList = new ArrayList<>(); // 扫描拿到所有的图片文件夹
 
@@ -71,15 +71,7 @@ public class ImagePickerActivity extends AppCompatActivity
     private int mScreenHeight;
     private ProgressDialog mProgressDialog;
     private ListImageDirPopupWindow mListImageDirPopupWindow; // 展示图片文件夹的popupWindow
-    //    private ProgressDialog progressDialog; // 进度条
 
-//    private Handler mHandler = new Handler() {
-//        public void handleMessage(Message msg) {
-//            mProgressDialog.dismiss(); // 取消dialog
-//            data2View();  //  为View绑定数据
-//            initListDirPopupWindw();  // 初始化展示文件夹的popupWindw
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

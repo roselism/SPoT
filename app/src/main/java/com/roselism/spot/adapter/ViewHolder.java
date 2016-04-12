@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.roselism.spot.util.ImageLoader;
+import com.roselism.spot.library.content.ImageLoader;
 
 /**
  * PictureSelectAdapter 的 viewholder

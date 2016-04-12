@@ -1,4 +1,4 @@
-package com.roselism.spot.util;
+package com.roselism.spot.library.content;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

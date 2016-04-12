@@ -70,30 +70,8 @@ public class HomeActivity extends AppCompatActivity
 
     private User mCurUser; // 当前用户
     private List<File> mData; // 数据
-    private Thread mDataThread; // 加载数据线程
+    //    private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
-
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//
-//            switch (msg.what) {
-//                case DataLoader.LOAD_FINISHED:
-//                    if (mData.size() == 0)
-//                        showBackGround(true);
-//                    else
-//                        showBackGround(false);
-//
-//                    buildAdapter();
-//                    break;
-//            }
-//
-//            Bundle bundle = msg.getData();
-//            if (bundle.getString("folderId") != null) {
-//                buildConfirmDialog(bundle.getString("folderId"));
-//            }
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +88,10 @@ public class HomeActivity extends AppCompatActivity
             finish();
         }
 
-        if (mDataThread == null) { // 数据加载进程
-            mDataThread = new Thread(new DataLoader());
-            mDataThread.start();
-        }
+//        if (mDataThread == null) { // 数据加载进程
+//            mDataThread = new Thread(new DataLoader());
+//            mDataThread.start();
+//        }
 
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
@@ -123,6 +101,13 @@ public class HomeActivity extends AppCompatActivity
         detailProgressDialog = new DetailProgressDialog();
 
         initDrawer();
+    }
+
+    /**
+     * 刷新界面数据
+     */
+    public void refreshData() {
+        ThreadUtils.runInUIThread(new DataLoader());
     }
 
     /**
@@ -194,7 +179,8 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onSuccess() {
                 Toast.makeText(HomeActivity.this, "文件夹创建成功", Toast.LENGTH_SHORT).show();
-                mDataThread.start(); //创建成功之后需要重新刷新数据
+//                mDataThread.start(); //创建成功之后需要重新刷新数据
+                refreshData();
             }
 
             @Override
@@ -246,7 +232,6 @@ public class HomeActivity extends AppCompatActivity
         folderOperater.createFolder();//创建该文件夹
     }
 
-
     void initClickListener() {
     }
 
@@ -273,14 +258,20 @@ public class HomeActivity extends AppCompatActivity
                     public void onSuccess() {
                         Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-                        mDataThread.start();
+//                        mDataThread.start();
+//                        ThreadUtils.runInUIThread(new DataLoader());
+                        refreshData();
+
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
                         Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-                        mDataThread.start();
+//                        mDataThread.start();
+//                        ThreadUtils.runInUIThread(new DataLoader());
+                        refreshData();
+
                     }
                 });
             }
@@ -312,7 +303,9 @@ public class HomeActivity extends AppCompatActivity
     public void onOperateCreate(Folder folder, User creater, int state) {
         if (state == Operater.CREATE_SUCCESS) {
 //            reader.run(); // 如果创建成功 则重新装载数据
-            mDataThread.start();
+//            mDataThread.start();
+//            ThreadUtils.runInUIThread(new DataLoader());
+            refreshData();
         }
     }
 
@@ -396,6 +389,7 @@ public class HomeActivity extends AppCompatActivity
                 }
             });
         }
+
 
         /**
          * 数据加载完毕

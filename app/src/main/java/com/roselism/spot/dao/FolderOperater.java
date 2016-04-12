@@ -13,8 +13,8 @@ import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by hero2 on 2016/2/20.
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * 增
  * 闪
  * 改
@@ -94,10 +94,6 @@ public class FolderOperater extends Operater {
 //                reader.run(); // 在回掉函数中执行
                 listener.onOperateCreate(mFolder, creater, CREATE_SUCCESS);
             }
-
-
-
-
 
             @Override
             public void onFailure(int i, String s) {

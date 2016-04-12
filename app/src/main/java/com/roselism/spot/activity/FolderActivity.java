@@ -60,9 +60,7 @@ public class FolderActivity extends AppCompatActivity
     private List<File> mData; // 数据
     private String curFolderId; // 当前folder的id
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-    Thread dataThread;
-//    Loader
-//    AsyncTaskLoader
+//    Thread dataThread;
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.picture_grid) GridView mGridView;
@@ -83,16 +81,6 @@ public class FolderActivity extends AppCompatActivity
     @Bind(R.id.share_text) TextView mShareText;
     @Bind(R.id.share_layout) RelativeLayout mShareLayout;
 
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case FolderLoader.LOAD_FINISHED:
-//                    buildAdapter();
-//                    break;
-//            }
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +96,10 @@ public class FolderActivity extends AppCompatActivity
         toolbar.setTitle(folderName); // 设置toolbar的Title为当前文件夹
         setSupportActionBar(toolbar); // 设置支持toolbar
 
-        if (dataThread == null) { // 如果为null，则重新开启线程启动
-            dataThread = new Thread(new FolderLoader(curFolderId, this));
-            dataThread.start();
-        }
+//        if (dataThread == null) { // 如果为null，则重新开启线程启动
+//            dataThread = new Thread(new FolderLoader(curFolderId, this));
+//            dataThread.start();
+//        }
 
         initClickListener(); // 初始化点击监听器
 
@@ -259,7 +247,6 @@ public class FolderActivity extends AppCompatActivity
         switch (view.getId()) {
 
             case R.id.friendEmail_editText:
-//                Log.i(TAG, "onInputFinished: ");
                 EditText editText = (EditText) view;
                 String email = editText.getText().toString(); // 获取输入的邮箱
                 BmobQuery<User> query = new BmobQuery();
@@ -269,6 +256,7 @@ public class FolderActivity extends AppCompatActivity
                     public void onSuccess(List<User> list) {
                         FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
                         operater.addWorker(list.get(0));
+
                         Log.i(TAG, "onSuccess: 添加成功");
                     }
 
@@ -280,6 +268,10 @@ public class FolderActivity extends AppCompatActivity
 
                 break;
         }
+    }
+
+    public void refreshData(){
+//        ThreadUtils.runInUIThread();
     }
 
     @Override
@@ -297,7 +289,6 @@ public class FolderActivity extends AppCompatActivity
      */
     public class FolderLoader extends DataLoader {
         private String mFolderId;
-
 
         public FolderLoader(String mFolderId, Context context) {
             super(context);
@@ -340,8 +331,6 @@ public class FolderActivity extends AppCompatActivity
 
         @Override
         public void onLoadFinished() {
-//            mHandler.sendEmptyMessage(LOAD_FINISHED);
-
             ThreadUtils.runInUIThread(() -> buildAdapter());
         }
     }
