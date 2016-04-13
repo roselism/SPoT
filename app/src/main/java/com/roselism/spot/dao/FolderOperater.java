@@ -4,10 +4,15 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.roselism.spot.activity.FolderActivity;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.User;
 
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -22,11 +27,6 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 public class FolderOperater extends Operater {
     private Folder mFolder;
-//    private Context mContenxt;
-
-//    public FolderOperater(Folder mFolder) {
-//        this.mFolder = mFolder;
-//    }
 
     /**
      * 操作某个文件夹
@@ -40,7 +40,7 @@ public class FolderOperater extends Operater {
     }
 
     /**
-     * 查找被该用户创建的文件夹
+     * 查找某个用户创建的所有文件夹
      *
      * @param user
      */
@@ -48,33 +48,49 @@ public class FolderOperater extends Operater {
 
     }
 
-    public void findFolderAssoiateWith(User user) {
+    /**
+     * 查找与某个文件夹所有相关联的user（比如当前用户被邀请加入文件夹）
+     *
+     * @param user
+     */
+    public static void findFolderAssoiateWith(User user) {
 
     }
 
     /**
-     * 添加workers
+     * 给某个文件夹下添加参与者（只有读和上传权限，以及删除自己上传的照片的权限）
      *
-     * @param user 要被添加的用户
+     * @param email 参与者的email
      * @return
      */
-    public boolean addWorker(User user) {
-        BmobRelation relation = new BmobRelation();
-        relation.add(user);
-        mFolder.setWorkers(relation);
-        mFolder.update(mContenxt, new UpdateListener() {
+    public void addWorker(String email) {
+
+        BmobQuery<User> query = new BmobQuery<>();
+        query.addWhereEqualTo("email", email);
+        query.findObjects(mContenxt, new FindListener<User>() {
             @Override
-            public void onSuccess() {
-                Log.i("TAG", "onSuccess: ");
+            public void onSuccess(List<User> list) {
+                BmobRelation relation = new BmobRelation();
+                relation.add(list.get(0));
+                mFolder.setWorkers(relation);
+                mFolder.update(mContenxt, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i("TAG", "onSuccess: ");
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.i("TAG", "onFailure: " + i + " " + s);
+                    }
+                });
             }
 
             @Override
-            public void onFailure(int i, String s) {
-                Log.i("TAG", "onFailure: " + i + " " + s);
+            public void onError(int i, String s) {
+
             }
         });
-
-        return true;
     }
 
     /**

@@ -55,7 +55,9 @@ public class FolderActivity extends AppCompatActivity
     private static final String TAG = "FolderActivity";
 
     private List<File> mData; // 数据
-    private String curFolderId; // 当前folder的id
+//    private String curFolderId; // 当前folder的id
+
+    private Folder curFolder; // 目前所在的文件夹
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
 
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -85,7 +87,8 @@ public class FolderActivity extends AppCompatActivity
 
         // 获取当前文件夹的名字
         Bundle bundle = this.getIntent().getExtras();
-        curFolderId = bundle.getString("fileId");
+        String curFolderId = bundle.getString("fileId");
+        curFolder = new Folder(curFolderId);
         String folderName = bundle.getString("fileName");
 
         toolbar.setTitle(folderName); // 设置toolbar的Title为当前文件夹
@@ -213,7 +216,7 @@ public class FolderActivity extends AppCompatActivity
 
             case R.id.upload_layout:
                 Intent intent = new Intent(this, ImagePickerActivity.class);
-                intent.putExtra("folderId", curFolderId);
+                intent.putExtra("folderId", curFolder.getObjectId());
                 startActivity(intent);
                 break;
 
@@ -246,22 +249,24 @@ public class FolderActivity extends AppCompatActivity
             case R.id.friendEmail_editText:
                 EditText editText = (EditText) view;
                 String email = editText.getText().toString(); // 获取输入的邮箱
-                BmobQuery<User> query = new BmobQuery<User>();
-                query.addWhereEqualTo("email", email);
-                query.findObjects(this, new FindListener<User>() {
-                    @Override
-                    public void onSuccess(List<User> list) {
-                        FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
-                        operater.addWorker(list.get(0));
+                FolderOperater operater = new FolderOperater(this, curFolder);
+                operater.addWorker(email); // 给当前文件夹添加参与者
 
-                        Log.i(TAG, "onSuccess: 添加成功");
-                    }
 
-                    @Override
-                    public void onError(int i, String s) {
-
-                    }
-                });
+//                BmobQuery<User> query = new BmobQuery<>();
+//                query.addWhereEqualTo("email", email);
+//                query.findObjects(this, new FindListener<User>() {
+//                    @Override
+//                    public void onSuccess(List<User> list) {
+//                        FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
+//                        operater.addWorker(list.get(0));
+//                    }
+//
+//                    @Override
+//                    public void onError(int i, String s) {
+//
+//                    }
+//                });
 
                 break;
         }
