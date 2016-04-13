@@ -256,10 +256,8 @@ public class ContactsActivity extends AppRoseActivity
 //            });
 
         }
-
         public void onLoadFinished() {
             ThreadUtils.runInUIThread(() -> buildAdapter());
         }
-
     }
 }

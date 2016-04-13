@@ -388,7 +388,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             super(outerClass);
         }
 
-        @Override
         public void onLoadFinished() {
 
         }
