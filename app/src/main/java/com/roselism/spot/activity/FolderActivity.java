@@ -54,12 +54,6 @@ public class FolderActivity extends AppCompatActivity
 
     private static final String TAG = "FolderActivity";
 
-    private List<File> mData; // 数据
-//    private String curFolderId; // 当前folder的id
-
-    private Folder curFolder; // 目前所在的文件夹
-    private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.picture_grid) GridView mGridView;
     @Bind(R.id.bg_image) ImageView mBgImage;
@@ -79,6 +73,10 @@ public class FolderActivity extends AppCompatActivity
     @Bind(R.id.share_text) TextView mShareText;
     @Bind(R.id.share_layout) RelativeLayout mShareLayout;
 
+    private List<File> mData; // 用于创建适配器的数据
+    private Folder curFolder; // 目前所在的文件夹
+    private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,20 +84,15 @@ public class FolderActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         // 获取当前文件夹的名字
-        Bundle bundle = this.getIntent().getExtras();
-        String curFolderId = bundle.getString("fileId");
-        curFolder = new Folder(curFolderId);
-        String folderName = bundle.getString("fileName");
+//        Bundle bundle = this.getIntent().getExtras();
+//        String curFolderId = bundle.getString("fileId");
+        curFolder = new Folder(this.getIntent().getStringExtra("fileId"));
+        String folderName = this.getIntent().getStringExtra("fileName");
 
         toolbar.setTitle(folderName); // 设置toolbar的Title为当前文件夹
         setSupportActionBar(toolbar); // 设置支持toolbar
 
-//        if (dataThread == null) { // 如果为null，则重新开启线程启动
-//            dataThread = new Thread(new FolderLoader(curFolderId, this));
-//            dataThread.start();
-//        }
-
-        ThreadUtils.runInUIThread(new FolderLoader(curFolderId, this)); // 开启一条线程，加载数据
+        ThreadUtils.runInUIThread(new FolderLoader(curFolder, this)); // 开启一条线程，加载数据
 
         initClickListener(); // 初始化点击监听器
 
@@ -278,9 +271,9 @@ public class FolderActivity extends AppCompatActivity
     public class FolderLoader extends DataLoader {
         private String mFolderId;
 
-        public FolderLoader(String mFolderId, Context context) {
+        public FolderLoader(Folder folder, Context context) {
             super(context);
-            this.mFolderId = mFolderId;
+            this.mFolderId = folder.getObjectId();
         }
 
         @Override

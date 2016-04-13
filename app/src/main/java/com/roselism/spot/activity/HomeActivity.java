@@ -204,17 +204,29 @@ public class HomeActivity extends AppCompatActivity
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                File curFile = mData.get(position);
+                File curFile = mData.get(position); // 被电击的file
+
+                // 制醋要id
+                if (curFile.getType() == File.GALLARY_TYPE) // 相册类型
+                    startActivity(new Intent(HomeActivity.this, FolderActivity.class)
+                            .putExtra("fileId", curFile.getId())
+                            .putExtra("fileName", curFile.getTitle()));
+
+                if (curFile.getType() == File.PICTURE_TYPE) { // 图片类型
+                    // TODO: 2016/4/13 跳转进浏览picture专用的Activity中，而不是Folder中，这里还需要更改
+                    startActivity(new Intent(HomeActivity.this, FolderActivity.class).putExtra("fileId", curFile.getId()).putExtra("fileName", curFile.getTitle()));
+                }
 
                 // 将当前文件夹的数据发送给FolderActivity
-                Bundle bundle = new Bundle();
-                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-                bundle.putString("fileId", curFile.getId());
-                bundle.putString("fileName", curFile.getTitle());
-
-                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
+//                bundle.putString("fileId", curFile.getId());
+//                bundle.putString("fileName", curFile.getTitle());
+//
+//
+//                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
             }
         };
 
