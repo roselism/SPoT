@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -26,6 +23,7 @@ import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureGridAdapter;
+import com.roselism.spot.dao.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
 import com.roselism.spot.domain.File;
@@ -34,6 +32,7 @@ import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +40,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -52,14 +50,9 @@ public class FolderActivity extends AppCompatActivity
         implements View.OnTouchListener,
         View.OnClickListener,
         View.OnFocusChangeListener,
-        SimpleInputDialog.OnInputFinishedListener, AbsListView.OnScrollListener {
+        SimpleInputDialog.OnInputFinishedListener {
 
     private static final String TAG = "FolderActivity";
-
-    private List<File> mData; // 数据
-    private String curFolderId; // 当前folder的id
-    private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-    Thread dataThread;
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.picture_grid) GridView mGridView;
@@ -80,16 +73,9 @@ public class FolderActivity extends AppCompatActivity
     @Bind(R.id.share_text) TextView mShareText;
     @Bind(R.id.share_layout) RelativeLayout mShareLayout;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case FolderLoader.LOAD_FINISHED:
-                    buildAdapter();
-                    break;
-            }
-        }
-    };
+    private List<File> mData; // 用于创建适配器的数据
+    private Folder curFolder; // 目前所在的文件夹
+    private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +84,15 @@ public class FolderActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         // 获取当前文件夹的名字
-        Bundle bundle = this.getIntent().getExtras();
-        curFolderId = bundle.getString("fileId");
-        String folderName = bundle.getString("fileName");
+//        Bundle bundle = this.getIntent().getExtras();
+//        String curFolderId = bundle.getString("fileId");
+        curFolder = new Folder(this.getIntent().getStringExtra("fileId"));
+        String folderName = this.getIntent().getStringExtra("fileName");
 
         toolbar.setTitle(folderName); // 设置toolbar的Title为当前文件夹
         setSupportActionBar(toolbar); // 设置支持toolbar
 
-        if (dataThread == null) { // 如果为null，则重新开启线程启动
-            dataThread = new Thread(new FolderLoader(curFolderId, this));
-            dataThread.start();
-        }
+        ThreadUtils.runInUIThread(new FolderLoader(curFolder, this)); // 开启一条线程，加载数据
 
         initClickListener(); // 初始化点击监听器
 
@@ -225,11 +209,12 @@ public class FolderActivity extends AppCompatActivity
 
             case R.id.upload_layout:
                 Intent intent = new Intent(this, ImagePickerActivity.class);
-                intent.putExtra("folderId", curFolderId);
+                intent.putExtra("folderId", curFolder.getObjectId());
                 startActivity(intent);
                 break;
 
             case R.id.download_layout:
+
                 break;
 
             case R.id.share_layout:
@@ -255,37 +240,29 @@ public class FolderActivity extends AppCompatActivity
         switch (view.getId()) {
 
             case R.id.friendEmail_editText:
-                Log.i(TAG, "onInputFinished: ");
                 EditText editText = (EditText) view;
                 String email = editText.getText().toString(); // 获取输入的邮箱
-                BmobQuery<User> query = new BmobQuery();
-                query.addWhereEqualTo("email", email);
-                query.findObjects(this, new FindListener<User>() {
-                    @Override
-                    public void onSuccess(List<User> list) {
-                        FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
-                        operater.addWorker(list.get(0));
-                        Log.i(TAG, "onSuccess: 添加成功");
-                    }
+                FolderOperater operater = new FolderOperater(this, curFolder);
+                operater.addWorker(email); // 给当前文件夹添加参与者
 
-                    @Override
-                    public void onError(int i, String s) {
 
-                    }
-                });
+//                BmobQuery<User> query = new BmobQuery<>();
+//                query.addWhereEqualTo("email", email);
+//                query.findObjects(this, new FindListener<User>() {
+//                    @Override
+//                    public void onSuccess(List<User> list) {
+//                        FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
+//                        operater.addWorker(list.get(0));
+//                    }
+//
+//                    @Override
+//                    public void onError(int i, String s) {
+//
+//                    }
+//                });
 
                 break;
         }
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
     }
 
     /**
@@ -293,15 +270,10 @@ public class FolderActivity extends AppCompatActivity
      */
     public class FolderLoader extends DataLoader {
         private String mFolderId;
-//        public static final int LOAD_FINISHED = 0x16;
 
-        public FolderLoader(String folderId) {
-            super(null);
-            this.mFolderId = folderId;
-        }
-
-        public FolderLoader(String mFolderId, Context context) {
+        public FolderLoader(Folder folder, Context context) {
             super(context);
+            this.mFolderId = folder.getObjectId();
         }
 
         @Override
@@ -311,36 +283,14 @@ public class FolderActivity extends AppCompatActivity
             else
                 mData = new LinkedList<>();
 
-            // 查找在当前文件夹下的Photo对象
-            BmobQuery<Photo> query = new BmobQuery<>();
-            Folder folder = new Folder(mFolderId);
-            query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
-            query.include("uploader");
-            query.findObjects(outerClass, new FindListener<Photo>() {
-                @Override
-                public void onSuccess(List<Photo> list) {
-
-                    for (Photo p : list) { // 循环遍历picture
-                        mData.add(new File(p)); // 将picture对象转换成file对象
-                    }
-                    Log.i(TAG, "onSuccess: picture 的数量是" + list.size());
-
-//                    finished();
-                    onLoadFinished();
+            PhotoOperater photoOperater = new PhotoOperater(outerClass);
+            photoOperater.allPhotosFrom(mFolderId, (list) -> {
+                for (Photo p : (List<Photo>) list) {
+                    mData.add(new File(p));
                 }
 
-                @Override
-                public void onError(int i, String s) {
-                    Log.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
-//                    finished();
-                    onLoadFinished();
-                }
+                ThreadUtils.runInUIThread(() -> buildAdapter());
             });
-        }
-
-        @Override
-        public void onLoadFinished() {
-            mHandler.sendEmptyMessage(LOAD_FINISHED);
         }
     }
 }

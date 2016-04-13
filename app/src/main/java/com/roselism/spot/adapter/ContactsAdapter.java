@@ -52,7 +52,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Viewho
 
     @Override
     public void onBindViewHolder(Viewholder holder, int position) {
-        User user =  mData.get(position);
+        User user = (User) mData.get(position);
 
         holder.friendName.setText(user.getNickName());
         holder.signature.setText("闭月羞花 沉鱼落雁 上得了厅堂 下得了厨房");

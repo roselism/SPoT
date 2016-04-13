@@ -2,11 +2,11 @@ package com.roselism.spot.dao;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,8 +15,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadBatchListener;
 
@@ -34,8 +38,81 @@ public class PhotoOperater extends Operater {
 
 
     /**
+     * 获取相应文件夹下的所有的照片
+     *
+     * @param folderId photo所在的文件夹的id
+     * @param listener 加载完毕监听器（如果失败则会返回null）
+     */
+    public void allPhotosFrom(String folderId, LoadFinishedListener listener) {
+        BmobQuery<Photo> query = new BmobQuery<>();
+        Folder folder = new Folder(folderId);
+        query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
+        query.include("uploader");
+        query.findObjects(mContenxt, new FindListener<Photo>() {
+            @Override
+            public void onSuccess(List<Photo> list) {
+                listener.onLoadFinished(list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
+                listener.onLoadFinished(null);
+            }
+        });
+    }
+
+    /**
+     * 主界面的所有照片
+     */
+    public void allPhotoInHome(BmobUser user, LoadFinishedListener listener) {
+
+        // 查询picture
+        BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+        pictureQuery.addWhereEqualTo("uploader", user);
+        pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+        pictureQuery.include("uploader");
+        pictureQuery.findObjects(mContenxt, new FindListener<Photo>() {
+            @Override
+            public void onSuccess(List<Photo> list) {
+
+                listener.onLoadFinished(list);
+
+//
+//                for (Photo p : list)
+//                    fileList.add(new com.roselism.spot.domain.File(p));
+//
+//                mData.addAll(fileList);
+//                fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
+//                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
+
+//                    finished();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+//                    finished();
+//                Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+                listener.onLoadFinished(null);
+            }
+        });
+
+
+    }
+
+
+    /**
+     * 获取相应文件夹下的所有的照片
+     *
+     * @param folder 文件夹对象
+     */
+    public void allPhotosFrom(Folder folder, LoadFinishedListener listener) {
+        allPhotosFrom(folder.getObjectId(), listener);
+    }
+
+    /**
      * 上传所选中的照片
-     * <p/>
+     * <p>
      * 完整的过程：选中图片-> 上传图片并返回图片的url地址，储存Photo对象，并将返回的url对象赋值给Photo对象的相应属性
      *
      * @param parentFolderId 照片所在文件夹的Id，如果为根文件夹则应该传入 null
@@ -157,7 +234,7 @@ public class PhotoOperater extends Operater {
      * @param photos 要储存的Photo集
      */
     private void savePhoto(List<Photo> photos) {
-        
+
         // 存储Picture对象
         for (Photo p : photos) {
             p.save(mContenxt, new SaveListener() {
@@ -192,4 +269,6 @@ public class PhotoOperater extends Operater {
             }
         });
     }
+
+
 }

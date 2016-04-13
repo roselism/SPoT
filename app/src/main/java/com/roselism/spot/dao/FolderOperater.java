@@ -6,15 +6,22 @@ import android.widget.Toast;
 
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by hero2 on 2016/2/20.
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * 增
  * 闪
  * 改
@@ -22,11 +29,6 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 public class FolderOperater extends Operater {
     private Folder mFolder;
-//    private Context mContenxt;
-
-//    public FolderOperater(Folder mFolder) {
-//        this.mFolder = mFolder;
-//    }
 
     /**
      * 操作某个文件夹
@@ -40,41 +42,90 @@ public class FolderOperater extends Operater {
     }
 
     /**
-     * 查找被该用户创建的文件夹
+     * 查找某个用户创建的所有文件夹
      *
      * @param user
      */
-    public void findFolderCreateBy(User user) {
+    public void findFolderCreateBy(BmobUser user, LoadFinishedListener listener) {
+        BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
+        query1.addWhereEqualTo("creater", new BmobPointer(user));
+        query1.include("creater"); // 查询文件夹的创建人
+        query1.findObjects(mContenxt, new FindListener<Folder>() {
+            @Override
+            public void onSuccess(List<Folder> list) {
+                listener.onLoadFinished(list);
+            }
 
+            @Override
+            public void onError(int i, String s) {
+                listener.onLoadFinished(null);
+            }
+        });
     }
 
-    public void findFolderAssoiateWith(User user) {
+//    public void
 
+    /**
+     * 查找某用户被邀请参与的文件夹
+     *
+     * @param user 目标用户
+     */
+    public void findFolderAssoiateWith(BmobUser user, LoadFinishedListener listener) {
+        BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
+        query2.addWhereContains("workers", user.getObjectId());
+        query2.findObjects(mContenxt, new FindListener<Folder>() {
+            @Override
+            public void onSuccess(List<Folder> list) {
+                listener.onLoadFinished(list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                listener.onLoadFinished(null);
+            }
+        });
     }
 
     /**
-     * 添加workers
+     * 查找与某个文件夹所有相关联的user（比如当前用户被邀请加入文件夹）
+     * // TODO: 2016/4/13  l
+     */
+
+
+    /**
+     * 给某个文件夹下添加参与者（只有读和上传权限，以及删除自己上传的照片的权限）
      *
-     * @param user 要被添加的用户
+     * @param email 参与者的email
      * @return
      */
-    public boolean addWorker(User user) {
-        BmobRelation relation = new BmobRelation();
-        relation.add(user);
-        mFolder.setWorkers(relation);
-        mFolder.update(mContenxt, new UpdateListener() {
+    public void addWorker(String email) {
+
+        BmobQuery<User> query = new BmobQuery<>();
+        query.addWhereEqualTo("email", email);
+        query.findObjects(mContenxt, new FindListener<User>() {
             @Override
-            public void onSuccess() {
-                Log.i("TAG", "onSuccess: ");
+            public void onSuccess(List<User> list) {
+                BmobRelation relation = new BmobRelation();
+                relation.add(list.get(0));
+                mFolder.setWorkers(relation);
+                mFolder.update(mContenxt, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i("TAG", "onSuccess: ");
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.i("TAG", "onFailure: " + i + " " + s);
+                    }
+                });
             }
 
             @Override
-            public void onFailure(int i, String s) {
-                Log.i("TAG", "onFailure: " + i + " " + s);
+            public void onError(int i, String s) {
+
             }
         });
-
-        return true;
     }
 
     /**

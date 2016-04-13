@@ -3,13 +3,10 @@ package com.roselism.spot.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -28,12 +25,16 @@ import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.dao.Operater;
+import com.roselism.spot.dao.PhotoOperater;
+import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,67 +42,29 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
-
-import static com.roselism.spot.domain.File.GALLARY_TYPE;
 
 /**
  * 主界面
  */
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends AppRoseActivity
         implements FolderNameDialog.FolderNameInputListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "HomeActivity";
 
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-    @Bind(R.id.listview)
-    ListView mListView;
-    @Bind(R.id.bg_image)
-    ImageView mBgImage;
-    @Bind(R.id.nav_view)
-    NavigationView mNavView;
-    @Bind(R.id.drawer)
-    DrawerLayout mDrawer;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.listview) ListView mListView;
+    @Bind(R.id.bg_image) ImageView mBgImage;
+    @Bind(R.id.nav_view) NavigationView mNavView;
+    @Bind(R.id.drawer) DrawerLayout mDrawer;
 
-    private List<File> mData;
-    Thread mDataThread;
-    DetailProgressDialog detailProgressDialog;
-    User mCurUser;
-
-    public final static int SELECT_MOD = 99; // 选择模式
-    public final static int NORMAL_MOD = 97; // 正常模式，点击进入详情
-    public final static int ENTER_MOD = 96; // 为照片选择父文件夹模式
-
-    public final static String FILE_LOAD_KEY = "loadKey";
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case DataLoader.LOAD_FINISHED:
-                    if (mData.size() == 0)
-                        showBackGround(true);
-                    else
-                        showBackGround(false);
-
-                    buildAdapter();
-                    break;
-            }
-
-            Bundle bundle = msg.getData();
-            if (bundle.getString("folderId") != null) {
-                buildConfirmDialog(bundle.getString("folderId"));
-            }
-        }
-    };
+    private User mCurUser; // 当前用户
+    private List<File> mData; // 数据
+    //    private Thread mDataThread; // 加载数据线程
+    private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,16 +74,11 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
-        mCurUser = User.getCurrentUser(this, User.class);
+        mCurUser = User.getCurrentUser(this, User.class); // 当前用户
 
-        if (mCurUser == null) {
+        if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-        }
-
-        if (mDataThread == null) {
-            mDataThread = new Thread(new DataLoader());
-            mDataThread.start();
         }
 
         // 初始化ImageLoader
@@ -131,6 +89,13 @@ public class HomeActivity extends AppCompatActivity
         detailProgressDialog = new DetailProgressDialog();
 
         initDrawer();
+    }
+
+    /**
+     * 刷新界面数据
+     */
+    public void refreshData() {
+        ThreadUtils.runInUIThread(new DataLoader());
     }
 
     /**
@@ -202,7 +167,8 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onSuccess() {
                 Toast.makeText(HomeActivity.this, "文件夹创建成功", Toast.LENGTH_SHORT).show();
-                mDataThread.start(); //创建成功之后需要重新刷新数据
+//                mDataThread.start(); //创建成功之后需要重新刷新数据
+                refreshData();
             }
 
             @Override
@@ -216,77 +182,47 @@ public class HomeActivity extends AppCompatActivity
      * 为数据建造适配器
      */
     public void buildAdapter() {
-        Log.i(TAG, "buildAdapter: running");
+//        Log.i(TAG, "buildAdapter: running");
         ListSwipeAdapter listSwipeAdapter = new ListSwipeAdapter(mData, this);
         mListView.setAdapter(listSwipeAdapter);
-        switchListListener(NORMAL_MOD);
+        initListItemListener();
     }
 
     /**
-     * 切换listview的item监听器
-     *
-     * @param model
+     * 初始化listview的item点击事件的监听器
      */
-    public void switchListListener(final int model) {
-        Log.i(TAG, "switchListListener: " + model);
+    public void initListItemListener() {
 
-        AdapterView.OnItemClickListener itemClickListener;
-        switch (model) {
-            case HomeActivity.NORMAL_MOD: // 正常模式，单击进入详情
-                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File curFile = mData.get(position);
+        // 为每个list item设置监听器
+        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                File curFile = mData.get(position); // 被电击的file
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-                        bundle.putString("fileId", curFile.getId());
-                        bundle.putString("fileName", curFile.getTitle());
+                // 制醋要id
+                if (curFile.getType() == File.GALLARY_TYPE) // 相册类型
+                    startActivity(new Intent(HomeActivity.this, FolderActivity.class)
+                            .putExtra("fileId", curFile.getId())
+                            .putExtra("fileName", curFile.getTitle()));
 
-                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                };
-                break;
+                if (curFile.getType() == File.PICTURE_TYPE) { // 图片类型
+                    // TODO: 2016/4/13 跳转进浏览picture专用的Activity中，而不是Folder中，这里还需要更改
+                    startActivity(new Intent(HomeActivity.this, FolderActivity.class).putExtra("fileId", curFile.getId()).putExtra("fileName", curFile.getTitle()));
+                }
 
-            case HomeActivity.SELECT_MOD: // 选择模式, 点击list item时也会触发ImageButton的onClick方法 drop
-                itemClickListener = new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    }
-                };
-                break;
+                // 将当前文件夹的数据发送给FolderActivity
+//                Bundle bundle = new Bundle();
+//                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
+//                bundle.putString("fileId", curFile.getId());
+//                bundle.putString("fileName", curFile.getTitle());
+//
+//
+//                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+            }
+        };
 
-            case ENTER_MOD: // drop
-                itemClickListener = new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File parentFolder = mData.get(position);
-                        Message m = new Message();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("folderId", parentFolder.getId());
-                        m.setData(bundle);
-                        mHandler.sendMessage(m);
-                    }
-                };
-                break;
-            default: //默认为正常状态 drop
-                itemClickListener = new AdapterView.OnItemClickListener() { // 为每个list item设置监听器
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        File curFile = mData.get(position);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-                        bundle.putString("fileId", curFile.getId());
-                        bundle.putString("fileName", curFile.getTitle());
-                        Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                };
-                break;
-        }
         mListView.setOnItemClickListener(itemClickListener);
     }
 
@@ -294,22 +230,7 @@ public class HomeActivity extends AppCompatActivity
     public void onInputFinished(String name) {
         FolderOperater folderOperater = new FolderOperater(this, new Folder(name, mCurUser));
         folderOperater.createFolder();//创建该文件夹
-//        folderOperater.createFolder();
-
-//        createFolder(name); // 创建文件夹
     }
-
-//    @Override
-//    public void onFirstItemClick(View view) {
-//        Log.i(TAG, "------------ onFirstItemClick: ------------");
-//        switchListListener(SELECT_MOD);
-//    }
-//
-//    @Override
-//    public void onNoItemSelected() {
-//        Log.i(TAG, "------------ onNoItemSelected: ------------");
-//        switchListListener(NORMAL_MOD);
-//    }
 
     void initClickListener() {
     }
@@ -324,36 +245,38 @@ public class HomeActivity extends AppCompatActivity
         // 创建一个对话框，提醒是否移动到该文件夹
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("移动到当前文件夹");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+        builder.setPositiveButton("确定", (dialog, which) -> {
 
-                // 更新数据
-                Photo pic;
-                for (File f : PictureListAdapter.mSelectedItem) {
-                    pic = new Photo(f);
-                    pic.setParent(new Folder(folderId));
-                    pic.update(HomeActivity.this, new UpdateListener() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
-                            PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                            reader.run(); // 刷新一遍数据
-                            mDataThread.start();
-                        }
+            dialog.dismiss();
+            // 更新数据
+            Photo pic;
+            for (File f : PictureListAdapter.mSelectedItem) {
+                pic = new Photo(f);
+                pic.setParent(new Folder(folderId));
+                pic.update(HomeActivity.this, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
+                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
+//                        mDataThread.start();
+//                        ThreadUtils.runInUIThread(new DataLoader());
+                        refreshData();
 
-                        @Override
-                        public void onFailure(int i, String s) {
-                            Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
-                            PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                            reader.run(); // 刷新一遍列表
-                            mDataThread.start();
-                        }
-                    });
-                }
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
+                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
+//                        mDataThread.start();
+//                        ThreadUtils.runInUIThread(new DataLoader());
+                        refreshData();
+
+                    }
+                });
             }
         });
+
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -380,7 +303,9 @@ public class HomeActivity extends AppCompatActivity
     public void onOperateCreate(Folder folder, User creater, int state) {
         if (state == Operater.CREATE_SUCCESS) {
 //            reader.run(); // 如果创建成功 则重新装载数据
-            mDataThread.start();
+//            mDataThread.start();
+//            ThreadUtils.runInUIThread(new DataLoader());
+            refreshData();
         }
     }
 
@@ -395,77 +320,149 @@ public class HomeActivity extends AppCompatActivity
         return false;
     }
 
+    @Override
+    protected <T extends BmobUser> T getUser() {
+        return (T) User.getCurrentUser(this);
+    }
+
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable {
+    private class DataLoader implements Runnable, LoadFinishedListener<File> {
 
-        public static final int LOAD_FINISHED = 0x16;
+        //        public static final int LOAD_FINISHED = 0x16;
+        boolean flag1 = false;
+        boolean flag2 = false;
+        boolean flag3 = false;
 
         @Override
         public void run() {
-            mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
+            if (mData == null) {
+                mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
+            } else
+                mData.clear();
 
-            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
-            BmobUser curUser = User.getCurrentUser(HomeActivity.this);
+//            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
+            BmobUser curUser = getUser();
 
+            // 查询主页要显示的内容：用户创建的文件夹，被邀请参与的文件夹，上传到主页的照片
             // 查询floder
-            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
-            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
-            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
-            query2.addWhereContains("workers", curUser.getObjectId());
+//            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
+//            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
+//            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
+//            query2.addWhereContains("workers", curUser.getObjectId());
+//
+//            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
+//            queryList.add(query1);
+//            queryList.add(query2);
+//
+//            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
+//            mainQuery.or(queryList);
+//            mainQuery.include("creater"); // 查询文件夹的创建人
+//            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
+//                @Override
+//                public void onSuccess(List<Folder> list) {
+//                    for (Folder f : list)
+//                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
+//                    mData.addAll(fileList);
+//                    fileList.clear(); // 清空fileList
+//                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+//                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+//                }
+//            });
 
-            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
-            queryList.add(query1);
-            queryList.add(query2);
-
-            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
-            mainQuery.or(queryList);
-            mainQuery.include("creater"); // 查询文件夹的创建人
-            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
-                @Override
-                public void onSuccess(List<Folder> list) {
-                    for (Folder f : list)
-                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
-                    mData.addAll(fileList);
-                    fileList.clear(); // 清空fileList
-                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
+            FolderOperater operater = new FolderOperater(getOutterClass(), null);
+            operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
+                for (Folder f : (List<Folder>) data) {
+                    mData.add(new File(f, 1));
                 }
-
-                @Override
-                public void onError(int i, String s) {
-                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-                }
+                flag1 = true;
+                onLoadFinished(null);
             });
 
-            // 查询picture
-            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
-            pictureQuery.addWhereEqualTo("uploader", curUser);
-            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
-            pictureQuery.include("uploader");
-            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
-                @Override
-                public void onSuccess(List<Photo> list) {
-                    for (Photo p : list)
-                        fileList.add(new File(p));
-
-                    mData.addAll(fileList);
-                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
-//                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
-
-                    finished();
+            operater.findFolderCreateBy(curUser, (data) -> {
+                for (Folder f : (List<Folder>) data) {
+                    mData.add(new File(f, 0));
                 }
-
-                @Override
-                public void onError(int i, String s) {
-                    finished();
-                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-                }
+                flag2 = true;
+                onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
             });
+
+            PhotoOperater photoOperater = new PhotoOperater(getOutterClass());
+            photoOperater.allPhotoInHome(getUser(), (data) -> {
+                for (Photo p : (List<Photo>) data) {
+                    mData.add(new File(p));
+                }
+                flag3 = true;
+                onLoadFinished(null);
+            });
+
+//            // 查询picture
+//            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+//            pictureQuery.addWhereEqualTo("uploader", curUser);
+//            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+//            pictureQuery.include("uploader");
+//            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
+//                @Override
+//                public void onSuccess(List<Photo> list) {
+//                    for (Photo p : list)
+//                        fileList.add(new File(p));
+//
+//                    mData.addAll(fileList);
+//                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
+////                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
+//
+////                    finished();
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+////                    finished();
+//                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+//                }
+//            });
+
+
         }
 
-        public void finished() {
-            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
+        /**
+         * 数据加载完毕
+         */
+//        public void finished() {
+//            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
+
+//            ThreadUtils.runInUIThread(() -> {
+//                if (mData.size() == 0)
+//                    showBackGround(true);
+//                else
+//                    showBackGround(false);
+//
+//                buildAdapter();
+//            });
+//            MyApplication.getMainHandler().post();
+//        }
+
+        /**
+         * 所有数据加载完毕时调用
+         *
+         * @param data
+         */
+        @Override
+        public void onLoadFinished(List<File> data) {
+            if (flag1 && flag2 && flag3) { // 如果两个都加载完毕，则执行加载数据
+                ThreadUtils.runInUIThread(() -> {
+                    if (mData.size() == 0)
+                        showBackGround(true);
+                    else
+                        showBackGround(false);
+
+                    buildAdapter();
+                });
+            }
         }
     }
 }

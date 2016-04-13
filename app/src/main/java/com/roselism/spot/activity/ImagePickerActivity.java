@@ -31,6 +31,7 @@ import com.roselism.spot.domain.ImageFolder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.service.UploadService;
 import com.roselism.spot.library.app.ListImageDirPopupWindow;
+import com.roselism.spot.util.ThreadUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -51,23 +52,18 @@ public class ImagePickerActivity extends AppCompatActivity
 
     private static final String TAG = "ImagePickerActivity";
 
-    @Bind(R.id.gridview)
-    GridView mGridView;
-    @Bind(R.id.gallary_name_text)
-    TextView mFolderName;
-    @Bind(R.id.image_count_text)
-    TextView mImageCount;
-    @Bind(R.id.bottom_layout)
-    RelativeLayout mBottomLayout;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    @Bind(R.id.gridview) GridView mGridView;
+    @Bind(R.id.gallary_name_text) TextView mFolderName;
+    @Bind(R.id.image_count_text) TextView mImageCount;
+    @Bind(R.id.bottom_layout) RelativeLayout mBottomLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
 
     private int mPicsSize; // 存储文件夹中的图片数量
     private File mDefaultImgDir; // 图片数量最多的文件夹
     private List<String> mAllImgList; // 所有的图片
 
     private PictureSelectAdapter mAdapter; // 适配器
-    public static final List<Photo> uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
+    //    public static final List<Photo> uploadingPhoto = new LinkedList<>(); // 暂时存储没有被赋值pic属性的Picture对象
     private HashSet<String> mDirPaths = new HashSet<>(); // 临时的辅助类，用于防止同一个文件夹的多次扫描
     private List<ImageFolder> mImgFloderList = new ArrayList<>(); // 扫描拿到所有的图片文件夹
 
@@ -75,15 +71,6 @@ public class ImagePickerActivity extends AppCompatActivity
     private int mScreenHeight;
     private ProgressDialog mProgressDialog;
     private ListImageDirPopupWindow mListImageDirPopupWindow; // 展示图片文件夹的popupWindow
-    //    private ProgressDialog progressDialog; // 进度条
-
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            mProgressDialog.dismiss(); // 取消dialog
-            data2View();  //  为View绑定数据
-            initListDirPopupWindw();  // 初始化展示文件夹的popupWindw
-        }
-    };
 
 
     @Override
@@ -355,7 +342,13 @@ public class ImagePickerActivity extends AppCompatActivity
                 }
                 mCursor.close();
                 mDirPaths = null;// 扫描完成，辅助的HashSet也就可以释放内存了
-                mHandler.sendEmptyMessage(0x110); // 通知Handler扫描图片完成
+
+                ThreadUtils.runInUIThread(() -> {
+                    mProgressDialog.dismiss(); // 取消dialog
+                    data2View();  //  为View绑定数据
+                    initListDirPopupWindw();  // 初始化展示文件夹的popupWindw
+                });
+//                mHandler.sendEmptyMessage(0x110); // 通知Handler扫描图片完成
 
             }
         }).start();
@@ -379,7 +372,7 @@ public class ImagePickerActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler = null;
+//        mHandler = null;
     }
 
     /**
