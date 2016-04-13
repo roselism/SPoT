@@ -30,13 +30,15 @@ public class User extends BmobUser {
         this.nickName = nickName;
     }
 
+    public void setProfile(Image profile) {
+        this.profile = profile;
+    }
+
     public Image getProfile() {
         return profile;
     }
 
-    public void setProfile(Image profile) {
-        this.profile = profile;
-    }
+
 
     /**
      * 当前用户退出某个相册组

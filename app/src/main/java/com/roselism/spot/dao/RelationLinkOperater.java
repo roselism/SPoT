@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.roselism.spot.dao.listener.BuildFinishedListener;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 import com.roselism.spot.domain.RelationLink;
 import com.roselism.spot.domain.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -30,7 +34,7 @@ public class RelationLinkOperater extends Operater {
         this.mContext = mContext;
     }
 
-    public void addFriends(User user, User friend) {
+    public void addFriend(User user, User friend) {
         String id = friend.getObjectId();
         List<String> idList = new LinkedList<>();
         idList.addAll(Arrays.asList(id));
@@ -97,4 +101,114 @@ public class RelationLinkOperater extends Operater {
             }
         });
     }
+
+    /**
+     * 查询某个用户的所有的关系链
+     *
+     * @param user     需要查询的用户
+     * @param listener 加载监听器
+     */
+    public void allRelationLinkOf(User user, LoadFinishedListener<RelationLink> listener) {
+        BmobQuery<RelationLink> query = new BmobQuery<>();
+        query.addWhereEqualTo("user", new BmobPointer(user)); // 查询当前用户的关系链
+        query.findObjects(mContenxt, new FindListener<RelationLink>() {
+            @Override
+            public void onSuccess(List<RelationLink> list) {
+                listener.onLoadFinished(list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                listener.onLoadFinished(null);
+            }
+
+        });
+    }
+
+    /**
+     * 查询某个用户的所有的好友
+     *
+     * @param user     目标用户
+     * @param listener 数据加载监听器
+     */
+    public void friendsListOf(User user, LoadFinishedListener listener) {
+
+        List<User> friends = new ArrayList<>();
+
+        allRelationLinkOf(user, (relationLinks) -> {
+            if (relationLinks != null && relationLinks.size() >= 1) {
+                final RelationLink link = relationLinks.get(0);
+                for (String id : link.getFriendsId()) {
+
+                    BmobQuery<User> query1 = new BmobQuery<>();
+                    query1.getObject(mContenxt, id, new GetListener<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            friends.add(user);
+                            if (link.getFriendsId().size() == friends.size())
+                                listener.onLoadFinished(friends);
+//                                Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
+//                                mData.add(user);
+
+//                                if (link.getFriendsId().size() == mData.size())
+//                                    onLoadFinished();
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Log.i(TAG, "查询用户失败: " + " 错误码:" + i + " 错误信息:" + s);
+//                                onLoadFinished();
+                            listener.onLoadFinished(null);
+                        }
+                    });
+                }
+            }
+        });
+
+
+//        BmobQuery<RelationLink> query = new BmobQuery<>();
+//        query.addWhereEqualTo("user", new BmobPointer(user));
+//        query.findObjects(mContenxt, new FindListener<RelationLink>() { // 查询当前用户的关系链
+//            @Override
+//            public void onSuccess(List<RelationLink> list) {
+////                Log.i(TAG, "onSuccess: 查询link成功");
+////                Log.i(TAG, "onSuccess: linkList size = " + list.size());
+//
+//
+//                if (list.size() >= 1) {
+//                    final RelationLink link = list.get(0);
+//                    for (String id : link.getFriendsId()) {
+//
+//
+//                        BmobQuery<User> query1 = new BmobQuery<>();
+//                        query1.getObject(mContenxt, id, new GetListener<User>() {
+//                            @Override
+//                            public void onSuccess(User user) {
+////                                Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
+////                                mData.add(user);
+//
+////                                if (link.getFriendsId().size() == mData.size())
+////                                    onLoadFinished();
+//                            }
+//
+//                            @Override
+//                            public void onFailure(int i, String s) {
+//                                Log.i(TAG, "查询用户成功: " + " 错误码:" + i + " 错误信息:" + s);
+////                                onLoadFinished();
+//                                listener.onLoadFinished(null);
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
+//                onLoadFinished();
+//            }
+//        });
+    }
+
+
 }

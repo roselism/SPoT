@@ -1,16 +1,12 @@
 package com.roselism.spot.activity;
 
-import android.content.AsyncTaskLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,7 +20,6 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.roselism.spot.MyApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
@@ -38,7 +33,7 @@ import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
-import com.roselism.spot.library.content.LoadFinishedListener;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -47,14 +42,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
-
-import static com.roselism.spot.domain.File.GALLARY_TYPE;
 
 /**
  * 主界面
@@ -347,9 +337,12 @@ public class HomeActivity extends AppRoseActivity
 
         @Override
         public void run() {
-            mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
+            if (mData == null) {
+                mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
+            } else
+                mData.clear();
 
-            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
+//            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
             BmobUser curUser = getUser();
 
             // 查询主页要显示的内容：用户创建的文件夹，被邀请参与的文件夹，上传到主页的照片

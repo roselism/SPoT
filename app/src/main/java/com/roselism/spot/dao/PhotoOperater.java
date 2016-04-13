@@ -2,12 +2,11 @@ package com.roselism.spot.dao;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
-import com.roselism.spot.library.content.LoadFinishedListener;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 
 import java.io.File;
 import java.util.ArrayList;

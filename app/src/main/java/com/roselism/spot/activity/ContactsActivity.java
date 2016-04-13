@@ -2,8 +2,6 @@ package com.roselism.spot.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,12 +13,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.dao.RelationLinkOperater;
+import com.roselism.spot.dao.UserOperater;
+import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
@@ -44,7 +45,7 @@ import cn.bmob.v3.listener.GetListener;
 /**
  * 联系人Activity，用于显示当前用户的所有好友
  */
-public class ContactsActivity extends AppCompatActivity
+public class ContactsActivity extends AppRoseActivity
         implements View.OnClickListener, SimpleInputDialog.OnInputFinishedListener,
         View.OnFocusChangeListener {
 
@@ -71,24 +72,7 @@ public class ContactsActivity extends AppCompatActivity
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
     private Thread dataThread; // 数据线程
     private List<User> mData;
-//
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//
-//            switch (msg.what) {
-//                case DataLoader.LOAD_FINISHED:
-//                    buildAdapter();
-//                    break;
-//            }
-//        }
-//    };
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        mHandler = null; // 防止内存泄露
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +123,6 @@ public class ContactsActivity extends AppCompatActivity
     }
 
     public void buildAdapter() {
-//        Log.i(TAG, "buildAdapter: ------");
         ContactsAdapter adapter = new ContactsAdapter(mData, this);
         mRecylerview.setAdapter(adapter);
     }
@@ -161,6 +144,15 @@ public class ContactsActivity extends AppCompatActivity
         EditText editText = (EditText) view;
         String friendsEdmail = editText.getText().toString();
 
+        // 创建对象
+//        UserOperater.adder.setContext(this).newUser()
+//                .setNickName("wangzhen").build((user) -> {
+//            if (user == null)
+//                Toast.makeText(this, "创建失败", Toast.LENGTH_SHORT).show();
+//            else
+//                Toast.makeText(this, "创建成功", Toast.LENGTH_SHORT).show()
+//        });
+
         BmobQuery<User> query = new BmobQuery<>(); // 查询
         query.addWhereEqualTo("email", friendsEdmail);
         query.findObjects(this, new FindListener<User>() {
@@ -171,7 +163,7 @@ public class ContactsActivity extends AppCompatActivity
                 User currentUser = BmobUser.getCurrentUser(ContactsActivity.this, User.class);
 
                 RelationLinkOperater operater = new RelationLinkOperater(ContactsActivity.this);
-                operater.addFriends(currentUser, friends); // 添加好友
+                operater.addFriend(currentUser, friends); // 添加好友
             }
 
             @Override
@@ -194,6 +186,11 @@ public class ContactsActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected <T extends BmobUser> T getUser() {
+        return (T) User.getCurrentUser(this);
+    }
+
     /**
      * 数据加载器
      */
@@ -212,47 +209,54 @@ public class ContactsActivity extends AppCompatActivity
             else
                 mData = new ArrayList<>();
 
-            BmobQuery<RelationLink> query = new BmobQuery<>();
-            query.addWhereEqualTo("user", new BmobPointer(user));
-            query.findObjects(outerClass, new FindListener<RelationLink>() {
-                @Override
-                public void onSuccess(List<RelationLink> list) {
-                    Log.i(TAG, "onSuccess: 查询link成功");
-                    Log.i(TAG, "onSuccess: linkList size = " + list.size());
-
-                    if (list.size() >= 1) {
-                        final RelationLink link = list.get(0);
-                        for (String id : link.getFriendsId()) {
-                            BmobQuery<User> query1 = new BmobQuery<>();
-                            query1.getObject(outerClass, id, new GetListener<User>() {
-                                @Override
-                                public void onSuccess(User user) {
-                                    Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
-                                    mData.add(user);
-
-                                    if (link.getFriendsId().size() == mData.size())
-                                        onLoadFinished();
-                                }
-
-                                @Override
-                                public void onFailure(int i, String s) {
-                                    Log.i(TAG, "查询用户成功: " + " 错误码:" + i + " 错误信息:" + s);
-                                    onLoadFinished();
-                                }
-                            });
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
-                    onLoadFinished();
-                }
+            RelationLinkOperater operater = new RelationLinkOperater(ContactsActivity.this);
+            operater.friendsListOf(getUser(), (friends) -> {
+                for (User user : (List<User>) friends)
+                    mData.add(user);
+                onLoadFinished();
             });
+
+//            BmobQuery<RelationLink> query = new BmobQuery<>();
+//            query.addWhereEqualTo("user", new BmobPointer(user));
+//            query.findObjects(outerClass, new FindListener<RelationLink>() {
+//                @Override
+//                public void onSuccess(List<RelationLink> list) {
+//                    Log.i(TAG, "onSuccess: 查询link成功");
+//                    Log.i(TAG, "onSuccess: linkList size = " + list.size());
+//
+//                    if (list.size() >= 1) {
+//                        final RelationLink link = list.get(0);
+//                        for (String id : link.getFriendsId()) {
+//                            BmobQuery<User> query1 = new BmobQuery<>();
+//                            query1.getObject(outerClass, id, new GetListener<User>() {
+//                                @Override
+//                                public void onSuccess(User user) {
+//                                    Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
+//                                    mData.add(user);
+//
+//                                    if (link.getFriendsId().size() == mData.size())
+//                                        onLoadFinished();
+//                                }
+//
+//                                @Override
+//                                public void onFailure(int i, String s) {
+//                                    Log.i(TAG, "查询用户成功: " + " 错误码:" + i + " 错误信息:" + s);
+//                                    onLoadFinished();
+//                                }
+//                            });
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+//                    Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
+//                    onLoadFinished();
+//                }
+//            });
+
         }
 
-        @Override
         public void onLoadFinished() {
             ThreadUtils.runInUIThread(() -> buildAdapter());
         }
