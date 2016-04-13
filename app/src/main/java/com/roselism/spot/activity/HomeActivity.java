@@ -88,11 +88,6 @@ public class HomeActivity extends AppCompatActivity
             finish();
         }
 
-//        if (mDataThread == null) { // 数据加载进程
-//            mDataThread = new Thread(new DataLoader());
-//            mDataThread.start();
-//        }
-
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(configuration);

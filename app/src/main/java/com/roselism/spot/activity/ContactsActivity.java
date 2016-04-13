@@ -249,17 +249,6 @@ public class ContactsActivity extends AppCompatActivity
                     Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
                     onLoadFinished();
                 }
-
-//                /**
-//                 * 当加载完毕
-//                 */
-//                public void onLoadFinished() {
-////                    Log.i(TAG, "onLoadFinished: 数据加载完毕");
-////                    Log.i(TAG, "onLoadFinished: mData size = " + mData.size());
-//                    ThreadUtils.runInUIThread(() -> buildAdapter());
-//
-////                    mHandler.sendEmptyMessage(LOAD_FINISHED); // 通知handler数据加载完毕了
-//                }
             });
         }
 
@@ -268,9 +257,5 @@ public class ContactsActivity extends AppCompatActivity
             ThreadUtils.runInUIThread(() -> buildAdapter());
         }
 
-//        @Override
-//        public void onLoadFinished() {
-//            mHandler.sendEmptyMessage(LOAD_FINISHED);
-//        }
     }
 }

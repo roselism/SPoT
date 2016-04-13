@@ -20,15 +20,4 @@ public abstract class DataLoader implements Runnable {
         this.outerClass = outerClass;
     }
 
-//    /**
-//     * 获取一个当前对象的线程
-//     */
-//    public void getDataThread() {
-////        return new Thread();
-//    }
-
-    /**
-     * 当数据加载完毕是
-     */
-    public abstract void onLoadFinished();
 }

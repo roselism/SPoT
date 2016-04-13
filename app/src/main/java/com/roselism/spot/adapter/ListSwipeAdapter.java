@@ -16,6 +16,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
+import com.flyco.dialog.widget.internal.BaseAlertDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -41,10 +42,11 @@ import cn.bmob.v3.listener.DeleteListener;
 public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchListener, View.OnClickListener {
 
     private static final String TAG = "ListSwipeAdapter";
+    public final static List<File> mSelectedItem = new LinkedList<>(); // 选中的item
+
     private List<File> mData; // 数据
     private LayoutInflater mInflater; // 图形打气筒
     private Context mContext; // 上下文内容
-    public final static List<File> mSelectedItem = new LinkedList<>(); // 选中的item
     private ImageLoader imageLoader; // imageLoader 对象
     private DisplayImageOptions options; // 选项
 
@@ -101,8 +103,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
         viewHolder.createTimeText.setText(currentFile.getDate().substring(0, currentFile.getDate().indexOf(" ")));
 
         int currentType = getItemViewType(position);
-//        Log.i(TAG, "data2View: current type = " + currentType);
-//        Log.i(TAG, "data2View: current file = " + currentFile.toString());
         switch (currentType) { //
             case File.PICTURE_TYPE: // 对图片类型的item进行设置
                 imageLoader.displayImage(currentFile.getFileUrl(), viewHolder.thumbnail, options,
@@ -134,12 +134,13 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                             }
                         });
 
-
                 final Photo photo = new Photo(currentFile); // 要被删除的photo对象
 
                 viewHolder.deleteButton.setOnClickListener(view -> { // 删除按钮的点击事件
-                    NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_TWO); // 设置属性
-                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(), new ListenerBuilder().confimButtonListener(photo, position, viewHolder)); // 设置点击事件
+                    NormalDialog normalDialog = new NormalDialog(mContext).style(NormalDialog.STYLE_ONE); // 设置属性
+                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(),
+                            new ListenerBuilder().confimButtonListener(photo, position, viewHolder, normalDialog)); // 设置点击事件
+                    normalDialog.content("确认删除这个相册吗？");
                     normalDialog.show(); // 显示对话框
                 });
 
@@ -155,8 +156,10 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                 final Folder folder = new Folder(currentFile); // 要被删除的folder对象
                 viewHolder.deleteButton.setOnClickListener((view) -> { // 删除键的监听事件
                     NormalDialog normalDialog = new NormalDialog(mContext);
-                    normalDialog.style(NormalDialog.STYLE_TWO);
-                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(), new ListenerBuilder().confimButtonListener(folder, position, viewHolder));
+                    normalDialog.style(NormalDialog.STYLE_ONE);
+                    normalDialog.setOnBtnClickL(new ListenerBuilder().cancleButtonListener(),
+                            new ListenerBuilder().confimButtonListener(folder, position, viewHolder, normalDialog));
+                    normalDialog.setTitle("确定删除" + folder.getName() + "?");
                     normalDialog.show(); // 展示对话框
                 });
 
@@ -242,9 +245,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
         @Bind(R.id.subtitle_text) TextView subtitleText;
         @Bind(R.id.upload_name) TextView uploadName;
         @Bind(R.id.picture_layout) RelativeLayout pictureLayout;
-//        @Bind(R.id.btn_selected) ImageView btnSelected;
-
-        // bottom layer
         @Bind(R.id.edit_button) RelativeLayout editButton; // bottom button
         @Bind(R.id.delete_button) RelativeLayout deleteButton; // bottom button
         @Bind(R.id.delete_image) ImageView deleteImage;
@@ -254,7 +254,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
             ButterKnife.bind(this, view);
         }
     }
-
 
     /**
      * 提供dialog 按钮的监听器
@@ -269,7 +268,8 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
          * @param viewHolder viewhoder
          * @return
          */
-        public OnBtnClickL confimButtonListener(BmobObject data, int position, ViewHolder viewHolder) {
+        public OnBtnClickL confimButtonListener(
+                BmobObject data, int position, ViewHolder viewHolder, BaseAlertDialog dialog) {
             return () -> { // 确认按钮
                 data.delete(mContext, new DeleteListener() {
                     @Override
@@ -277,11 +277,13 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
                         mData.remove(position); // 从本地移除该数据
                         notifyDataSetChanged();
                         viewHolder.swipeLayout.close(true);
+                        dialog.dismiss(); // 让alert表格消失
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
                         Log.i(TAG, "onFailure: ");
+                        dialog.dismiss(); // 让alert表格消失
                     }
                 });
             };
