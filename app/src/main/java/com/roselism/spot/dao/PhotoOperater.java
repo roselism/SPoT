@@ -17,6 +17,7 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
@@ -60,6 +61,44 @@ public class PhotoOperater extends Operater {
                 listener.onLoadFinished(null);
             }
         });
+    }
+
+    /**
+     * 主界面的所有照片
+     */
+    public void allPhotoInHome(BmobUser user, LoadFinishedListener listener) {
+
+        // 查询picture
+        BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+        pictureQuery.addWhereEqualTo("uploader", user);
+        pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+        pictureQuery.include("uploader");
+        pictureQuery.findObjects(mContenxt, new FindListener<Photo>() {
+            @Override
+            public void onSuccess(List<Photo> list) {
+
+                listener.onLoadFinished(list);
+
+//
+//                for (Photo p : list)
+//                    fileList.add(new com.roselism.spot.domain.File(p));
+//
+//                mData.addAll(fileList);
+//                fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
+//                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
+
+//                    finished();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+//                    finished();
+//                Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+                listener.onLoadFinished(null);
+            }
+        });
+
+
     }
 
 

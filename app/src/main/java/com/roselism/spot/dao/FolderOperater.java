@@ -2,15 +2,19 @@ package com.roselism.spot.dao;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.MediaController;
 import android.widget.Toast;
 
 import com.roselism.spot.activity.FolderActivity;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.library.content.LoadFinishedListener;
 
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -44,18 +48,51 @@ public class FolderOperater extends Operater {
      *
      * @param user
      */
-    public void findFolderCreateBy(User user) {
+    public void findFolderCreateBy(BmobUser user, LoadFinishedListener listener) {
+        BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
+        query1.addWhereEqualTo("creater", new BmobPointer(user));
+        query1.include("creater"); // 查询文件夹的创建人
+        query1.findObjects(mContenxt, new FindListener<Folder>() {
+            @Override
+            public void onSuccess(List<Folder> list) {
+                listener.onLoadFinished(list);
+            }
 
+            @Override
+            public void onError(int i, String s) {
+                listener.onLoadFinished(null);
+            }
+        });
+    }
+
+//    public void
+
+    /**
+     * 查找某用户被邀请参与的文件夹
+     *
+     * @param user 目标用户
+     */
+    public void findFolderAssoiateWith(BmobUser user, LoadFinishedListener listener) {
+        BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
+        query2.addWhereContains("workers", user.getObjectId());
+        query2.findObjects(mContenxt, new FindListener<Folder>() {
+            @Override
+            public void onSuccess(List<Folder> list) {
+                listener.onLoadFinished(list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                listener.onLoadFinished(null);
+            }
+        });
     }
 
     /**
      * 查找与某个文件夹所有相关联的user（比如当前用户被邀请加入文件夹）
-     *
-     * @param user
+     * // TODO: 2016/4/13  l
      */
-    public static void findFolderAssoiateWith(User user) {
 
-    }
 
     /**
      * 给某个文件夹下添加参与者（只有读和上传权限，以及删除自己上传的照片的权限）

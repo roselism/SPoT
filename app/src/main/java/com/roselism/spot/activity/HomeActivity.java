@@ -30,12 +30,15 @@ import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.dao.Operater;
+import com.roselism.spot.dao.PhotoOperater;
+import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
+import com.roselism.spot.library.content.LoadFinishedListener;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ import static com.roselism.spot.domain.File.GALLARY_TYPE;
 /**
  * 主界面
  */
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends AppRoseActivity
         implements FolderNameDialog.FolderNameInputListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -83,7 +86,7 @@ public class HomeActivity extends AppCompatActivity
 
         mCurUser = User.getCurrentUser(this, User.class); // 当前用户
 
-        if (mCurUser == null) {
+        if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
@@ -189,7 +192,7 @@ public class HomeActivity extends AppCompatActivity
      * 为数据建造适配器
      */
     public void buildAdapter() {
-        Log.i(TAG, "buildAdapter: running");
+//        Log.i(TAG, "buildAdapter: running");
         ListSwipeAdapter listSwipeAdapter = new ListSwipeAdapter(mData, this);
         mListView.setAdapter(listSwipeAdapter);
         initListItemListener();
@@ -327,92 +330,146 @@ public class HomeActivity extends AppCompatActivity
         return false;
     }
 
+    @Override
+    protected <T extends BmobUser> T getUser() {
+        return (T) User.getCurrentUser(this);
+    }
+
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable {
+    private class DataLoader implements Runnable, LoadFinishedListener<File> {
 
-        public static final int LOAD_FINISHED = 0x16;
+        //        public static final int LOAD_FINISHED = 0x16;
+        boolean flag1 = false;
+        boolean flag2 = false;
+        boolean flag3 = false;
 
         @Override
         public void run() {
             mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
 
             final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
-            BmobUser curUser = User.getCurrentUser(HomeActivity.this);
+            BmobUser curUser = getUser();
 
+            // 查询主页要显示的内容：用户创建的文件夹，被邀请参与的文件夹，上传到主页的照片
             // 查询floder
-            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
-            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
-            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
-            query2.addWhereContains("workers", curUser.getObjectId());
+//            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
+//            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
+//            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
+//            query2.addWhereContains("workers", curUser.getObjectId());
+//
+//            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
+//            queryList.add(query1);
+//            queryList.add(query2);
+//
+//            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
+//            mainQuery.or(queryList);
+//            mainQuery.include("creater"); // 查询文件夹的创建人
+//            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
+//                @Override
+//                public void onSuccess(List<Folder> list) {
+//                    for (Folder f : list)
+//                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
+//                    mData.addAll(fileList);
+//                    fileList.clear(); // 清空fileList
+//                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+//                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+//                }
+//            });
 
-            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
-            queryList.add(query1);
-            queryList.add(query2);
-
-            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
-            mainQuery.or(queryList);
-            mainQuery.include("creater"); // 查询文件夹的创建人
-
-            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
-                @Override
-                public void onSuccess(List<Folder> list) {
-                    for (Folder f : list)
-                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
-                    mData.addAll(fileList);
-                    fileList.clear(); // 清空fileList
-                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
+            FolderOperater operater = new FolderOperater(getOutterClass(), null);
+            operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
+                for (Folder f : (List<Folder>) data) {
+                    mData.add(new File(f, 1));
                 }
-
-                @Override
-                public void onError(int i, String s) {
-                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-                }
+                flag1 = true;
+                onLoadFinished(null);
             });
 
-            // 查询picture
-            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
-            pictureQuery.addWhereEqualTo("uploader", curUser);
-            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
-            pictureQuery.include("uploader");
-            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
-                @Override
-                public void onSuccess(List<Photo> list) {
-                    for (Photo p : list)
-                        fileList.add(new File(p));
-
-                    mData.addAll(fileList);
-                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
-//                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
-
-                    finished();
+            operater.findFolderCreateBy(curUser, (data) -> {
+                for (Folder f : (List<Folder>) data) {
+                    mData.add(new File(f, 0));
                 }
-
-                @Override
-                public void onError(int i, String s) {
-                    finished();
-                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-                }
+                flag2 = true;
+                onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
             });
+
+            PhotoOperater photoOperater = new PhotoOperater(getOutterClass());
+            photoOperater.allPhotoInHome(getUser(), (data) -> {
+                for (Photo p : (List<Photo>) data) {
+                    mData.add(new File(p));
+                }
+                flag3 = true;
+                onLoadFinished(null);
+            });
+
+//            // 查询picture
+//            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+//            pictureQuery.addWhereEqualTo("uploader", curUser);
+//            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+//            pictureQuery.include("uploader");
+//            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
+//                @Override
+//                public void onSuccess(List<Photo> list) {
+//                    for (Photo p : list)
+//                        fileList.add(new File(p));
+//
+//                    mData.addAll(fileList);
+//                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
+////                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
+//
+////                    finished();
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+////                    finished();
+//                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
+//                }
+//            });
+
+
         }
-
 
         /**
          * 数据加载完毕
          */
-        public void finished() {
+//        public void finished() {
 //            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
 
-            ThreadUtils.runInUIThread(() -> {
-                if (mData.size() == 0)
-                    showBackGround(true);
-                else
-                    showBackGround(false);
-
-                buildAdapter();
-            });
+//            ThreadUtils.runInUIThread(() -> {
+//                if (mData.size() == 0)
+//                    showBackGround(true);
+//                else
+//                    showBackGround(false);
+//
+//                buildAdapter();
+//            });
 //            MyApplication.getMainHandler().post();
+//        }
+
+        /**
+         * 所有数据加载完毕时调用
+         *
+         * @param data
+         */
+        @Override
+        public void onLoadFinished(List<File> data) {
+            if (flag1 && flag2 && flag3) { // 如果两个都加载完毕，则执行加载数据
+                ThreadUtils.runInUIThread(() -> {
+                    if (mData.size() == 0)
+                        showBackGround(true);
+                    else
+                        showBackGround(false);
+
+                    buildAdapter();
+                });
+            }
         }
     }
 }
