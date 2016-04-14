@@ -311,7 +311,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -331,23 +330,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-
-//    private class UserData extends DataLoader {
-//
-//        /**
-//         * 创建一个数据加载器
-//         *
-//         * @param outerClass 上下文对象
-//         */
-//        public UserData(Context outerClass) {
-//            super(outerClass);
-//        }
-//
-//        @Override
-//        public void run() {
-//
-//        }
-//    }
 
     private class UserLoginThread implements Runnable {
         private final String mEmail;
