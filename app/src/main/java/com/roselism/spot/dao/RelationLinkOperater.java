@@ -205,15 +205,12 @@ public class RelationLinkOperater extends Operater {
                             friends.add(user);
                             if (link.getFriendsId().size() == friends.size())
                                 listener.onLoadFinished(friends);
-                            Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
-//                                mData.add(user);
+//                            Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                            Log.i(TAG, "查询用户失败: " + " 错误码:" + i + " 错误信息:" + s);
-//                                onLoadFinished();
-//                                onLoadFinished();
+//                            Log.i(TAG, "查询用户失败: " + " 错误码:" + i + " 错误信息:" + s);
                             listener.onLoadFinished(null);
                         }
                     });
