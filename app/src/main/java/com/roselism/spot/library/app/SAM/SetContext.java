@@ -1,4 +1,4 @@
-package com.roselism.spot;
+package com.roselism.spot.library.app.SAM;
 
 import android.content.Context;
 

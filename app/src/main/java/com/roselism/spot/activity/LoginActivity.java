@@ -201,11 +201,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
 
-        // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -260,81 +256,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 }
             };
             checkAccountThread.run();
-
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
-        }
-    }
-
-    /**
-     * 尝试登陆或注册
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        final String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        if (!isPasswordValid(password)) { // Check for a valid password, if the user entered one.
-            mPasswordView.setError(getString(R.string.error_too_short_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-        if (!isEmailValid(email)) { // Check for a valid email address.
-            mEmailView.setError(getString(R.string.error_email_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel) { // 这里有错误; 不要尝试登陆并且让第一个有错误的域获得焦点 don't attempt login and focus the first form field with an error.
-            focusView.requestFocus();
-        } else { // Show a progress spinner, and kick off a background task to perform the user login attempt.
-            showProgress(true);
-
-            Runnable checkAccountThread = new Runnable() { // 检查账户是否存在
-                boolean isExist;
-
-                @Override
-                public void run() {
-
-                    final Message message = new Message();
-                    final Bundle bundle = new Bundle();
-                    // 查询该email是否存在，存在则登陆，不存在则注册
-                    BmobQuery<User> query = new BmobQuery<>();
-                    query.addWhereEqualTo("email", email);
-                    query.count(LoginActivity.this, User.class, new CountListener() {
-                        @Override
-                        public void onSuccess(int i) {
-                            isExist = i == 1;
-                            bundle.putBoolean("isExist", isExist);
-                            message.setData(bundle);
-                            loginHandler.sendMessage(message); // 发送消息
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            bundle.putString("checkErro", "查询错误");
-                        }
-                    });
-                }
-            };
-            checkAccountThread.run();
-
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
         }
     }
 
@@ -351,7 +272,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             else  // 账户不存在，则进行注册
                 loginThread = new UserLoginThread(email, password, false);
             loginThread.run();
-
         }
     };
 
@@ -391,39 +311,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        return new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-//        List<String> emails = new ArrayList<>();
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-//            cursor.moveToNext();
-//        }
-//
-//        addEmailsToAutoComplete(emails);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-//
-//    }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -445,22 +332,22 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         int IS_PRIMARY = 1;
     }
 
-    private class UserData extends DataLoader {
-
-        /**
-         * 创建一个数据加载器
-         *
-         * @param outerClass 上下文对象
-         */
-        public UserData(Context outerClass) {
-            super(outerClass);
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
+//    private class UserData extends DataLoader {
+//
+//        /**
+//         * 创建一个数据加载器
+//         *
+//         * @param outerClass 上下文对象
+//         */
+//        public UserData(Context outerClass) {
+//            super(outerClass);
+//        }
+//
+//        @Override
+//        public void run() {
+//
+//        }
+//    }
 
     private class UserLoginThread implements Runnable {
         private final String mEmail;
@@ -494,7 +381,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     @Override
                     public void onFailure(int i, String s) {
                         showProgress(false);
-
                         isPasswordCorrect = false;
                     }
                 });

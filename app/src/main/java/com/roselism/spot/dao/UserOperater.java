@@ -2,7 +2,7 @@ package com.roselism.spot.dao;
 
 import android.content.Context;
 
-import com.roselism.spot.SetContext;
+import com.roselism.spot.library.app.SAM.SetContext;
 import com.roselism.spot.dao.listener.BuildFinishedListener;
 import com.roselism.spot.dao.listener.LoadFinishedListener;
 import com.roselism.spot.domain.Image;
