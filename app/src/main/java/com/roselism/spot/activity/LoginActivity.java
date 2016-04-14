@@ -320,7 +320,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
