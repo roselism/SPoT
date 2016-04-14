@@ -183,7 +183,6 @@ public class ContactsActivity extends AppCompatActivity
         return User.getCurrentUser(this, User.class);
     }
 
-
     /**
      * 数据加载器
      */
@@ -194,51 +193,6 @@ public class ContactsActivity extends AppCompatActivity
             super(outerClass);
             this.user = who;
         }
-
-
-//            BmobQuery<RelationLink> query = new BmobQuery<>();
-//            query.addWhereEqualTo("user", new BmobPointer(user));
-//            query.findObjects(outerClass, new FindListener<RelationLink>() {
-//                @Override
-//                public void onSuccess(List<RelationLink> list) {
-//                    Log.i(TAG, "onSuccess: 查询link成功");
-//                    Log.i(TAG, "onSuccess: linkList size = " + list.size());
-//
-//                    if (list.size() >= 1) {
-//                        final RelationLink link = list.get(0);
-//                        for (String id : link.getFriendsId()) {
-//                            BmobQuery<User> query1 = new BmobQuery<>();
-//                            query1.getObject(outerClass, id, new GetListener<User>() {
-//                                @Override
-//                                public void onSuccess(User user) {
-//                                    Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
-//                                    mData.add(user);
-//
-//                                    if (link.getFriendsId().size() == mData.size())
-//                                        onLoadFinished();
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int i, String s) {
-//                                    Log.i(TAG, "查询用户成功: " + " 错误码:" + i + " 错误信息:" + s);
-//                                    onLoadFinished();
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//                    Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
-//                    onLoadFinished();
-//                }
-//            });
-
-//
-//        public void LoadFinished() {
-//            ThreadUtils.runInUIThread(() -> buildAdapter());
-//        }
 
         @Override
         public void run() {
