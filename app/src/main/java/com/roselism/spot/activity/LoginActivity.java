@@ -246,11 +246,79 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     query.count(LoginActivity.this, User.class, new CountListener() {
                         @Override
                         public void onSuccess(int i) {
-                            if (i == 1) {
-                                isExist = true;
-                            } else {
-                                isExist = false;
-                            }
+                            isExist = i == 1;
+                            bundle.putBoolean("isExist", isExist);
+                            message.setData(bundle);
+                            loginHandler.sendMessage(message); // 发送消息
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                            bundle.putString("checkErro", "查询错误");
+                        }
+                    });
+                }
+            };
+            checkAccountThread.run();
+
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
+        }
+    }
+
+    /**
+     * 尝试登陆或注册
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private void attemptLogin() {
+//        if (mAuthTask != null) {
+//            return;
+//        }
+
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        final String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if (!isPasswordValid(password)) { // Check for a valid password, if the user entered one.
+            mPasswordView.setError(getString(R.string.error_too_short_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+        if (!isEmailValid(email)) { // Check for a valid email address.
+            mEmailView.setError(getString(R.string.error_email_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (cancel) { // 这里有错误; 不要尝试登陆并且让第一个有错误的域获得焦点 don't attempt login and focus the first form field with an error.
+            focusView.requestFocus();
+        } else { // Show a progress spinner, and kick off a background task to perform the user login attempt.
+            showProgress(true);
+
+            Runnable checkAccountThread = new Runnable() { // 检查账户是否存在
+                boolean isExist;
+
+                @Override
+                public void run() {
+
+                    final Message message = new Message();
+                    final Bundle bundle = new Bundle();
+                    // 查询该email是否存在，存在则登陆，不存在则注册
+                    BmobQuery<User> query = new BmobQuery<>();
+                    query.addWhereEqualTo("email", email);
+                    query.count(LoginActivity.this, User.class, new CountListener() {
+                        @Override
+                        public void onSuccess(int i) {
+                            isExist = i == 1;
                             bundle.putBoolean("isExist", isExist);
                             message.setData(bundle);
                             loginHandler.sendMessage(message); // 发送消息
@@ -386,11 +454,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
          */
         public UserData(Context outerClass) {
             super(outerClass);
-        }
-
-        @Override
-        public void onLoadFinished() {
-
         }
 
         @Override

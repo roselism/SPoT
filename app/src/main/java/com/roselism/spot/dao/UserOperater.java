@@ -2,9 +2,9 @@ package com.roselism.spot.dao;
 
 import android.content.Context;
 
+import com.roselism.spot.dao.listener.BuildFinishedListener;
 import com.roselism.spot.domain.Image;
 import com.roselism.spot.domain.User;
-import com.roselism.spot.dao.listener.BuildFinishedListener;
 
 import cn.bmob.v3.listener.SaveListener;
 
@@ -19,7 +19,6 @@ import cn.bmob.v3.listener.SaveListener;
 public class UserOperater {
     public static addOperater adder;
     public Context mContext;
-
 
     /**
      * 增加器

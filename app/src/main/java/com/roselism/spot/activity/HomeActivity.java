@@ -26,14 +26,14 @@ import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.dao.Operater;
 import com.roselism.spot.dao.PhotoOperater;
-import com.roselism.spot.library.app.AppRoseActivity;
-import com.roselism.spot.library.app.dialog.DetailProgressDialog;
-import com.roselism.spot.library.app.dialog.FolderNameDialog;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
 import com.roselism.spot.domain.File;
 import com.roselism.spot.domain.Folder;
 import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
-import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.library.app.AppRoseActivity;
+import com.roselism.spot.library.app.dialog.DetailProgressDialog;
+import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -61,8 +61,9 @@ public class HomeActivity extends AppRoseActivity
     @Bind(R.id.nav_view) NavigationView mNavView;
     @Bind(R.id.drawer) DrawerLayout mDrawer;
 
-    private User mCurUser; // 当前用户
+    private User mCurUser = null; // 当前用户
     private List<File> mData; // 数据
+
     //    private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
@@ -74,12 +75,17 @@ public class HomeActivity extends AppRoseActivity
         setSupportActionBar(mToolbar);
         Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
-        mCurUser = User.getCurrentUser(this, User.class); // 当前用户
+        mCurUser = BmobUser.getCurrentUser(this, User.class); // 当前用户
 
         if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+//            Log.i(TAG, "onCreate: -->null");
+            return;
         }
+//        Log.i(TAG, "onCreate: --> not null");
+
+        refreshData();
 
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();

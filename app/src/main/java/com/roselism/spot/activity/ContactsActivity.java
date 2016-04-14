@@ -13,22 +13,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.dao.RelationLinkOperater;
-import com.roselism.spot.dao.UserOperater;
-import com.roselism.spot.library.app.AppRoseActivity;
-import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.domain.User;
+import com.roselism.spot.library.app.UserListener;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.domain.RelationLink;
-import com.roselism.spot.domain.User;
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
+import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -38,16 +36,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
 
 /**
  * 联系人Activity，用于显示当前用户的所有好友
  */
-public class ContactsActivity extends AppRoseActivity
-        implements View.OnClickListener, SimpleInputDialog.OnInputFinishedListener,
-        View.OnFocusChangeListener {
+public class ContactsActivity extends AppCompatActivity
+        implements View.OnClickListener, SimpleInputDialog.OnInputFinishedListener, View.OnFocusChangeListener, UserListener<User> {
 
     public static final String TAG = "ContactsActivity";
 
@@ -70,9 +65,8 @@ public class ContactsActivity extends AppRoseActivity
     @Bind(R.id.fab_sheet) CardView fabSheet;
 
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-    private Thread dataThread; // 数据线程
+    //    private Thread dataThread; // 数据线程
     private List<User> mData;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +79,13 @@ public class ContactsActivity extends AppRoseActivity
         initListener();
         initMaterialSheetFab();
 
-        if (dataThread == null) {
-            dataThread = new Thread(new DataLoader(User.getCurrentUser(this, User.class), this));
-            dataThread.start();
-        }
+
+        ThreadUtils.runInThread(new DataLoader(getUser(), this));
+
+//        if (dataThread == null) {
+//            dataThread = new Thread(new DataLoader(User.getCurrentUser(this, User.class), this));
+//            dataThread.start();
+//        }
 
         mRecylerview.setAdapter(new ContactsAdapter(null, this));
         mRecylerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
@@ -144,15 +141,6 @@ public class ContactsActivity extends AppRoseActivity
         EditText editText = (EditText) view;
         String friendsEdmail = editText.getText().toString();
 
-        // 创建对象
-//        UserOperater.adder.setContext(this).newUser()
-//                .setNickName("wangzhen").build((user) -> {
-//            if (user == null)
-//                Toast.makeText(this, "创建失败", Toast.LENGTH_SHORT).show();
-//            else
-//                Toast.makeText(this, "创建成功", Toast.LENGTH_SHORT).show()
-//        });
-
         BmobQuery<User> query = new BmobQuery<>(); // 查询
         query.addWhereEqualTo("email", friendsEdmail);
         query.findObjects(this, new FindListener<User>() {
@@ -187,9 +175,10 @@ public class ContactsActivity extends AppRoseActivity
     }
 
     @Override
-    protected <T extends BmobUser> T getUser() {
-        return (T) User.getCurrentUser(this);
+    public User getUser() {
+        return User.getCurrentUser(this, User.class);
     }
+
 
     /**
      * 数据加载器
@@ -202,19 +191,6 @@ public class ContactsActivity extends AppRoseActivity
             this.user = who;
         }
 
-        @Override
-        public void run() {
-            if (mData != null)  // 在每次使用之前清空，避免刷新的时候数据重复
-                mData.clear();
-            else
-                mData = new ArrayList<>();
-
-            RelationLinkOperater operater = new RelationLinkOperater(ContactsActivity.this);
-            operater.friendsListOf(getUser(), (friends) -> {
-                for (User user : (List<User>) friends)
-                    mData.add(user);
-                onLoadFinished();
-            });
 
 //            BmobQuery<RelationLink> query = new BmobQuery<>();
 //            query.addWhereEqualTo("user", new BmobPointer(user));
@@ -255,10 +231,28 @@ public class ContactsActivity extends AppRoseActivity
 //                }
 //            });
 
-        }
+//
+//        public void LoadFinished() {
+//            ThreadUtils.runInUIThread(() -> buildAdapter());
+//        }
 
-        public void onLoadFinished() {
-            ThreadUtils.runInUIThread(() -> buildAdapter());
+        @Override
+        public void run() {
+            if (mData != null)  // 在每次使用之前清空，避免刷新的时候数据重复
+                mData.clear();
+            else
+                mData = new ArrayList<>();
+
+            RelationLinkOperater operater = new RelationLinkOperater(ContactsActivity.this);
+            operater.friendsListOf(user, new LoadFinishedListener<User>() {
+                @Override
+                public void onLoadFinished(List<User> data) {
+                    for (User user : data)
+                        mData.add(user);
+//                    LoadFinished();
+                    ThreadUtils.runInUIThread(() -> buildAdapter());
+                }
+            });
         }
 
     }

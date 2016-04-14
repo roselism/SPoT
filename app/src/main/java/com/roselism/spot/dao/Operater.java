@@ -15,7 +15,7 @@ public abstract class Operater {
     public static final int CREATE_FALLS = 1;
 
     //    private Folder mFolder;
-    protected Context mContenxt;
+    protected Context mContext;
 
     /**
      * 操作监听器
