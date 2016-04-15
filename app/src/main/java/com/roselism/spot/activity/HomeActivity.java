@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +26,9 @@ import com.roselism.spot.MyApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
-<<<<<<< HEAD
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.Operater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
-import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.model.domain.File;
@@ -37,23 +36,13 @@ import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.LoadListener;
-=======
-import com.roselism.spot.dao.FolderOperater;
-import com.roselism.spot.dao.Operater;
-import com.roselism.spot.dao.PhotoOperater;
-import com.roselism.spot.dao.listener.LoadFinishedListener;
-import com.roselism.spot.domain.File;
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.Photo;
-import com.roselism.spot.domain.User;
-import com.roselism.spot.library.app.AppRoseActivity;
-import com.roselism.spot.library.app.dialog.DetailProgressDialog;
-import com.roselism.spot.library.app.dialog.FolderNameDialog;
->>>>>>> ce0d74b1d1ca420dd95a46a510f722fcaed94bec
+
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -70,6 +59,7 @@ public class HomeActivity extends AppCompatActivity
         implements FolderNameDialog.FolderNameInputListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
+
     private static final String TAG = "HomeActivity";
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
@@ -81,7 +71,6 @@ public class HomeActivity extends AppCompatActivity
     private User mCurUser = null; // 当前用户
     private List<File> mData; // 数据
 
-    //    private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
     @Override
@@ -97,10 +86,8 @@ public class HomeActivity extends AppCompatActivity
         if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-//            Log.i(TAG, "onCreate: -->null");
             return;
         }
-//        Log.i(TAG, "onCreate: --> not null");
 
         refreshData();
 
@@ -281,8 +268,6 @@ public class HomeActivity extends AppCompatActivity
                     public void onSuccess() {
                         Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                        mDataThread.start();
-//                        ThreadUtils.runInUIThread(new DataLoader());
                         refreshData();
 
                     }
@@ -291,8 +276,6 @@ public class HomeActivity extends AppCompatActivity
                     public void onFailure(int i, String s) {
                         Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                        mDataThread.start();
-//                        ThreadUtils.runInUIThread(new DataLoader());
                         refreshData();
 
                     }
@@ -325,9 +308,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onOperateCreate(Folder folder, User creater, int state) {
         if (state == Operater.CREATE_SUCCESS) {
-//            reader.run(); // 如果创建成功 则重新装载数据
-//            mDataThread.start();
-//            ThreadUtils.runInUIThread(new DataLoader());
             refreshData();
         }
     }
@@ -365,11 +345,7 @@ public class HomeActivity extends AppCompatActivity
 
             BmobUser curUser = getUser();
 
-<<<<<<< HEAD
-            FolderOperater operater = new FolderOperater(getOutterClass(), null);
-=======
             FolderOperater operater = new FolderOperater(MyApplication.getContext(), null);
->>>>>>> ce0d74b1d1ca420dd95a46a510f722fcaed94bec
             operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
                 for (Folder f : (List<Folder>) data) {
                     mData.add(new File(f, 1));
@@ -406,16 +382,18 @@ public class HomeActivity extends AppCompatActivity
             if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
                 ThreadUtils.runInUIThread(() -> {
 
-                    // 对数据进行排序
-                    Comparator<File> file = new Comparator<File>() {
-                        @Override
-                        public int compare(File lhs, File rhs) {
-                            return 0;
-                        }
-                    };
+                    // 给加载到的数据进行排序->文件夹在上，图片在下
+                    Collections.sort(data, (s1, s2) -> {
+                        if (s1.getType() != s2.getType())
+                            return s1.getType() - s2.getType();
+                        return 1;
+//                        Calendar.getInstance().setTimeInMillis();
+//                        DateUtils.FORMAT_ABBREV_TIME
+//                    s1.toBmobObject().getCreatedAt()
+                    });
 
-
-                    if (mData.size() == 0) // 是否展示背景图片
+                    // 设置背景
+                    if (mData.size() == 0)
                         showBackGround(true);
                     else
                         showBackGround(false);

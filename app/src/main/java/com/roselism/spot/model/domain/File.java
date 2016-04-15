@@ -1,10 +1,11 @@
 package com.roselism.spot.model.domain;
 
+import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Photo 和 Folder 的抽象
- * <p/>
+ * <p>
  * Created by hero2 on 2016/1/26.
  */
 public class File {
@@ -72,6 +73,7 @@ public class File {
         return date;
     }
 
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -120,5 +122,18 @@ public class File {
 //                "bound file = " + boundFile.getFilename();
 
         return info;
+    }
+
+    /**
+     * 转换为bmobObject对象返回
+     *
+     * @return PICTURE_TYPE类型时返回Photo对象 GALLARY_TYPE类型时返回Folder对象，其他情况返回null
+     */
+    public BmobObject toBmobObject() {
+        if (getType() == PICTURE_TYPE)
+            return new Photo(this);
+        if (getType() == GALLARY_TYPE)
+            return new Folder(this);
+        return null;
     }
 }
