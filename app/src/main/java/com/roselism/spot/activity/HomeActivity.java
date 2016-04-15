@@ -37,6 +37,7 @@ import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -345,36 +346,6 @@ public class HomeActivity extends AppRoseActivity
 //            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
             BmobUser curUser = getUser();
 
-            // 查询主页要显示的内容：用户创建的文件夹，被邀请参与的文件夹，上传到主页的照片
-            // 查询floder
-//            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
-//            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
-//            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
-//            query2.addWhereContains("workers", curUser.getObjectId());
-//
-//            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
-//            queryList.add(query1);
-//            queryList.add(query2);
-//
-//            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
-//            mainQuery.or(queryList);
-//            mainQuery.include("creater"); // 查询文件夹的创建人
-//            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
-//                @Override
-//                public void onSuccess(List<Folder> list) {
-//                    for (Folder f : list)
-//                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
-//                    mData.addAll(fileList);
-//                    fileList.clear(); // 清空fileList
-//                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-//                }
-//            });
-
             FolderOperater operater = new FolderOperater(getOutterClass(), null);
             operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
                 for (Folder f : (List<Folder>) data) {
@@ -400,62 +371,28 @@ public class HomeActivity extends AppRoseActivity
                 flag3 = true;
                 onLoadFinished(null);
             });
-
-//            // 查询picture
-//            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
-//            pictureQuery.addWhereEqualTo("uploader", curUser);
-//            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
-//            pictureQuery.include("uploader");
-//            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
-//                @Override
-//                public void onSuccess(List<Photo> list) {
-//                    for (Photo p : list)
-//                        fileList.add(new File(p));
-//
-//                    mData.addAll(fileList);
-//                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
-////                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
-//
-////                    finished();
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-////                    finished();
-//                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-//                }
-//            });
-
-
         }
-
-        /**
-         * 数据加载完毕
-         */
-//        public void finished() {
-//            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
-
-//            ThreadUtils.runInUIThread(() -> {
-//                if (mData.size() == 0)
-//                    showBackGround(true);
-//                else
-//                    showBackGround(false);
-//
-//                buildAdapter();
-//            });
-//            MyApplication.getMainHandler().post();
-//        }
 
         /**
          * 所有数据加载完毕时调用
          *
-         * @param data
+         * @param data 这里传入null就好，数据在传入之前就已经添加进了mdata成员变量里面
          */
         @Override
         public void onLoadFinished(List<File> data) {
-            if (flag1 && flag2 && flag3) { // 如果两个都加载完毕，则执行加载数据
+            if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
                 ThreadUtils.runInUIThread(() -> {
-                    if (mData.size() == 0)
+
+                    // 对数据进行排序
+                    Comparator<File> file = new Comparator<File>() {
+                        @Override
+                        public int compare(File lhs, File rhs) {
+                            return 0;
+                        }
+                    };
+
+
+                    if (mData.size() == 0) // 是否展示背景图片
                         showBackGround(true);
                     else
                         showBackGround(false);
