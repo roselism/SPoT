@@ -1,4 +1,4 @@
-package com.roselism.spot.domain;
+package com.roselism.spot.model.domain;
 
 import java.util.List;
 

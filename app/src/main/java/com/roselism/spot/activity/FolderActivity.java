@@ -23,14 +23,13 @@ import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureGridAdapter;
-import com.roselism.spot.dao.PhotoOperater;
+import com.roselism.spot.model.dao.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.domain.File;
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.Photo;
-import com.roselism.spot.domain.User;
-import com.roselism.spot.dao.FolderOperater;
+import com.roselism.spot.model.domain.File;
+import com.roselism.spot.model.domain.Folder;
+import com.roselism.spot.model.domain.Photo;
+import com.roselism.spot.model.dao.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
 import com.roselism.spot.util.ThreadUtils;
 
@@ -39,8 +38,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * 文件夹详情Activity

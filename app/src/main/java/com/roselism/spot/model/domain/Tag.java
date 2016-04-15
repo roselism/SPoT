@@ -1,4 +1,4 @@
-package com.roselism.spot.domain;
+package com.roselism.spot.model.domain;
 
 import cn.bmob.v3.BmobObject;
 

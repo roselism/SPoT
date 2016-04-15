@@ -8,7 +8,7 @@ import android.widget.ListView;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.CommonAdapter;
 import com.roselism.spot.adapter.ViewHolder;
-import com.roselism.spot.domain.ImageFolder;
+import com.roselism.spot.model.domain.ImageFolder;
 import com.roselism.spot.library.widget.BasePopupWindowForListView;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.roselism.spot.dao.listener;
+package com.roselism.spot.model.dao.listener;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package com.roselism.spot.dao;
+package com.roselism.spot.model.dao;
 
 import android.content.Context;
 
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.User;
+import com.roselism.spot.model.domain.Folder;
+import com.roselism.spot.model.domain.User;
 
 /**
  * 所有操作类的父类

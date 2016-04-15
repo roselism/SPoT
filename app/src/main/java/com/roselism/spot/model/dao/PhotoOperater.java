@@ -1,12 +1,12 @@
-package com.roselism.spot.dao;
+package com.roselism.spot.model.dao;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.Photo;
-import com.roselism.spot.domain.User;
-import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.model.domain.Folder;
+import com.roselism.spot.model.domain.Photo;
+import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.dao.listener.LoadFinishedListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class PhotoOperater extends Operater {
 
 //
 //                for (Photo p : list)
-//                    fileList.add(new com.roselism.spot.domain.File(p));
+//                    fileList.add(new com.roselism.spot.model.domain.File(p));
 //
 //                mData.addAll(fileList);
 //                fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复

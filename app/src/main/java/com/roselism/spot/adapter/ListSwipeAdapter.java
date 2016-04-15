@@ -24,9 +24,9 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.roselism.spot.R;
-import com.roselism.spot.domain.File;
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.Photo;
+import com.roselism.spot.model.domain.File;
+import com.roselism.spot.model.domain.Folder;
+import com.roselism.spot.model.domain.Photo;
 
 import java.util.LinkedList;
 import java.util.List;

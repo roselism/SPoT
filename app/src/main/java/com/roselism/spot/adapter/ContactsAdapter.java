@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.roselism.spot.R;
-import com.roselism.spot.domain.User;
+import com.roselism.spot.model.domain.User;
 
 import java.util.List;
 

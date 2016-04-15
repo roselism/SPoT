@@ -1,12 +1,12 @@
-package com.roselism.spot.dao;
+package com.roselism.spot.model.dao;
 
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.roselism.spot.domain.Folder;
-import com.roselism.spot.domain.User;
-import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.model.domain.Folder;
+import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.dao.listener.LoadFinishedListener;
 
 import java.util.List;
 

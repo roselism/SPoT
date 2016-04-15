@@ -2,7 +2,6 @@ package com.roselism.spot.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,20 +12,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
-import com.roselism.spot.dao.RelationLinkOperater;
-import com.roselism.spot.dao.UserOperater;
+import com.roselism.spot.model.dao.RelationLinkOperater;
 import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.domain.RelationLink;
-import com.roselism.spot.domain.User;
+import com.roselism.spot.model.domain.User;
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
 import com.roselism.spot.util.ThreadUtils;
@@ -38,9 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
 
 /**
  * 联系人Activity，用于显示当前用户的所有好友

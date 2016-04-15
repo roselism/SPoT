@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,8 +25,7 @@ import android.widget.Toast;
 
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureSelectAdapter;
-import com.roselism.spot.domain.ImageFolder;
-import com.roselism.spot.domain.Photo;
+import com.roselism.spot.model.domain.ImageFolder;
 import com.roselism.spot.service.UploadService;
 import com.roselism.spot.library.app.ListImageDirPopupWindow;
 import com.roselism.spot.util.ThreadUtils;
@@ -38,7 +35,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
