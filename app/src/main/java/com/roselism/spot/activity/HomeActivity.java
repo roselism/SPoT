@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,10 @@ import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -53,6 +58,7 @@ public class HomeActivity extends AppRoseActivity
         implements FolderNameDialog.FolderNameInputListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
+
     private static final String TAG = "HomeActivity";
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
@@ -64,7 +70,6 @@ public class HomeActivity extends AppRoseActivity
     private User mCurUser = null; // 当前用户
     private List<File> mData; // 数据
 
-    //    private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
     @Override
@@ -80,10 +85,8 @@ public class HomeActivity extends AppRoseActivity
         if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-//            Log.i(TAG, "onCreate: -->null");
             return;
         }
-//        Log.i(TAG, "onCreate: --> not null");
 
         refreshData();
 
@@ -264,8 +267,6 @@ public class HomeActivity extends AppRoseActivity
                     public void onSuccess() {
                         Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                        mDataThread.start();
-//                        ThreadUtils.runInUIThread(new DataLoader());
                         refreshData();
 
                     }
@@ -274,8 +275,6 @@ public class HomeActivity extends AppRoseActivity
                     public void onFailure(int i, String s) {
                         Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
                         PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-//                        mDataThread.start();
-//                        ThreadUtils.runInUIThread(new DataLoader());
                         refreshData();
 
                     }
@@ -308,9 +307,6 @@ public class HomeActivity extends AppRoseActivity
     @Override
     public void onOperateCreate(Folder folder, User creater, int state) {
         if (state == Operater.CREATE_SUCCESS) {
-//            reader.run(); // 如果创建成功 则重新装载数据
-//            mDataThread.start();
-//            ThreadUtils.runInUIThread(new DataLoader());
             refreshData();
         }
     }
@@ -348,38 +344,7 @@ public class HomeActivity extends AppRoseActivity
             } else
                 mData.clear();
 
-//            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
             BmobUser curUser = getUser();
-
-            // 查询主页要显示的内容：用户创建的文件夹，被邀请参与的文件夹，上传到主页的照片
-            // 查询floder
-//            BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
-//            query1.addWhereEqualTo("creater", new BmobPointer(curUser));
-//            BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
-//            query2.addWhereContains("workers", curUser.getObjectId());
-//
-//            List<BmobQuery<Folder>> queryList = new ArrayList<>(); // 联合查询
-//            queryList.add(query1);
-//            queryList.add(query2);
-//
-//            BmobQuery<Folder> mainQuery = new BmobQuery<>(); // 主查询语句
-//            mainQuery.or(queryList);
-//            mainQuery.include("creater"); // 查询文件夹的创建人
-//            mainQuery.findObjects(HomeActivity.this, new FindListener<Folder>() {
-//                @Override
-//                public void onSuccess(List<Folder> list) {
-//                    for (Folder f : list)
-//                        fileList.add(new File(f, 0));// 先将数量设置为0，一会儿设置专门的进程来查询
-//                    mData.addAll(fileList);
-//                    fileList.clear(); // 清空fileList
-//                    Log.i(TAG, "onSuccess: Folder查询成功" + list.size());
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//                    Log.i(TAG, "onError: Folder 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-//                }
-//            });
 
             FolderOperater operater = new FolderOperater(getOutterClass(), null);
             operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
@@ -406,51 +371,7 @@ public class HomeActivity extends AppRoseActivity
                 flag3 = true;
                 onLoadFinished(null);
             });
-
-//            // 查询picture
-//            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
-//            pictureQuery.addWhereEqualTo("uploader", curUser);
-//            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
-//            pictureQuery.include("uploader");
-//            pictureQuery.findObjects(HomeActivity.this, new FindListener<Photo>() {
-//                @Override
-//                public void onSuccess(List<Photo> list) {
-//                    for (Photo p : list)
-//                        fileList.add(new File(p));
-//
-//                    mData.addAll(fileList);
-//                    fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
-////                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
-//
-////                    finished();
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-////                    finished();
-//                    Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
-//                }
-//            });
-
-
         }
-
-        /**
-         * 数据加载完毕
-         */
-//        public void finished() {
-//            mHandler.sendEmptyMessage(LOAD_FINISHED); // 向handler发送消息，通知已经file装填完了
-
-//            ThreadUtils.runInUIThread(() -> {
-//                if (mData.size() == 0)
-//                    showBackGround(true);
-//                else
-//                    showBackGround(false);
-//
-//                buildAdapter();
-//            });
-//            MyApplication.getMainHandler().post();
-//        }
 
         /**
          * 所有数据加载完毕时调用
@@ -461,6 +382,17 @@ public class HomeActivity extends AppRoseActivity
         public void onLoadFinished(List<File> data) {
             if (flag1 && flag2 && flag3) { // 如果两个都加载完毕，则执行加载数据
                 ThreadUtils.runInUIThread(() -> {
+                    // 给加载到的数据进行排序->文件夹在上，图片在下
+                    Collections.sort(data, (s1, s2) -> {
+                        if (s1.getType() != s2.getType())
+                            return s1.getType() - s2.getType();
+                        return 1;
+//                        Calendar.getInstance().setTimeInMillis();
+//                        DateUtils.FORMAT_ABBREV_TIME
+//                    s1.toBmobObject().getCreatedAt()
+                    });
+
+                    // 设置背景
                     if (mData.size() == 0)
                         showBackGround(true);
                     else
