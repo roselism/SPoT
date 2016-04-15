@@ -1,6 +1,5 @@
 package com.roselism.spot.util;
 
-import android.nfc.tech.IsoDep;
 import android.util.Log;
 
 /**
@@ -60,6 +59,7 @@ public class LogUtils {
      * 是否是调试模式
      *
      * @param isDebug 如果是调试模式则为true 反之false
+     * @author Simon
      * @since 1.1
      */
     public static void setIsDebug(boolean isDebug) {

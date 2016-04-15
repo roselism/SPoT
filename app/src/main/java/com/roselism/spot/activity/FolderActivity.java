@@ -32,6 +32,7 @@ import com.roselism.spot.domain.Photo;
 import com.roselism.spot.domain.User;
 import com.roselism.spot.dao.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.util.LogUtils;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.LinkedList;
@@ -137,7 +138,8 @@ public class FolderActivity extends AppCompatActivity
      * 建造适配器
      */
     protected void buildAdapter() {
-        Log.i(TAG, "buildAdapter: building...........");
+//        Log.i(TAG, "buildAdapter: building...........");
+        LogUtils.i("buildAdapter: building...........");
         PictureGridAdapter pictureGridAdapter = new PictureGridAdapter(this, mData);
         mGridView.setAdapter(pictureGridAdapter);
     }
@@ -244,22 +246,6 @@ public class FolderActivity extends AppCompatActivity
                 String email = editText.getText().toString(); // 获取输入的邮箱
                 FolderOperater operater = new FolderOperater(this, curFolder);
                 operater.addWorker(email); // 给当前文件夹添加参与者
-
-
-//                BmobQuery<User> query = new BmobQuery<>();
-//                query.addWhereEqualTo("email", email);
-//                query.findObjects(this, new FindListener<User>() {
-//                    @Override
-//                    public void onSuccess(List<User> list) {
-//                        FolderOperater operater = new FolderOperater(FolderActivity.this, new Folder(curFolderId));
-//                        operater.addWorker(list.get(0));
-//                    }
-//
-//                    @Override
-//                    public void onError(int i, String s) {
-//
-//                    }
-//                });
 
                 break;
         }
