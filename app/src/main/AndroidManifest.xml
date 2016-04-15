@@ -23,7 +23,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-<<<<<<< HEAD
         <activity android:name=".activity.ImagePickerActivity">
         </activity>
         <activity android:name=".activity.LoginActivity">
@@ -40,25 +39,7 @@
         </activity>
         <activity
             android:name=".activity.ContactsActivity"
-=======
-        <activity android:name=".ImagePickerActivity">
-        </activity>
-        <activity android:name=".LoginActivity">
-        </activity>
-        <activity
-            android:name=".HomeActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".FolderActivity">
-        </activity>
-        <activity
-            android:name=".ContactsActivity"
->>>>>>> 032282a... init
             android:theme="@style/AppTheme">
         </activity>
 
