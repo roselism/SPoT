@@ -11,6 +11,7 @@ android {
         targetSdkVersion 23
         versionCode 8
         versionName "1.1.1"
+
     }
     buildTypes {
         release {
@@ -18,6 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -25,6 +27,7 @@ android {
     dexOptions {
         incremental false
     }
+
 }
 
 allprojects {
@@ -44,6 +47,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'cn.bmob.android:bmob-sdk:3.4.5'
     compile 'com.daimajia.swipelayout:library:1.1.8@aar'
+
     compile 'com.google.guava:guava:19.0'
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -52,6 +56,7 @@ dependencies {
     // FlycoDialog-Master 一个强大的Android对话框库,简化自定义对话框.支持2.2+.
     compile 'com.flyco.dialog:FlycoDialog_Lib:1.2.6@aar'
     compile 'com.nineoldandroids:library:2.4.0'
+
     // 弹窗
     compile files('libs/metadata-extractor-2.7.0.jar')
 }

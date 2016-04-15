@@ -81,6 +81,7 @@ public class PictureGridAdapter extends BaseAdapter {
                 viewHolder.mInfoLayout.setVisibility(
                         viewHolder.mInfoLayout.getVisibility() == View.VISIBLE ?
                                 View.GONE : View.VISIBLE);
+
             }
         });
         return convertView;

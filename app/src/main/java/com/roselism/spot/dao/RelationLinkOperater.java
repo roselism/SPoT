@@ -10,6 +10,7 @@ import com.roselism.spot.domain.RelationLink;
 import com.roselism.spot.domain.User;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
+
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -40,6 +42,7 @@ public class RelationLinkOperater extends Operater {
     }
 
     public void addFriend(User user, User friend) {
+
         String id = friend.getObjectId();
         List<String> idList = new LinkedList<>();
         idList.addAll(Arrays.asList(id));
@@ -60,6 +63,7 @@ public class RelationLinkOperater extends Operater {
             if (data != null) {
                 RelationLink link;
                 if (data.size() == 0) { // 没有 创建
+
                     link = new RelationLink();
                     link.setUser(user);
                     link.addAllUnique("friendsId", friendsId); // 添加数组
@@ -76,6 +80,7 @@ public class RelationLinkOperater extends Operater {
                     }); // 储存
                 } else if (data.size() == 1) { // 有 修改
                     link = data.get(0);
+
                     link.addAllUnique("friendsId", friendsId); // 添加数组
                     link.update(mContext, new UpdateListener() {
                         @Override
@@ -87,10 +92,12 @@ public class RelationLinkOperater extends Operater {
                         @Override
                         public void onFailure(int i, String s) {
                             Log.i(TAG, "onError: 错误码:" + i + " 错误信息: " + s);
+
                         }
                     }); // 添加
                 }
             }
+
         }));
 //
 //        BmobQuery<RelationLink> linkQuery = new BmobQuery<>();
@@ -164,7 +171,8 @@ public class RelationLinkOperater extends Operater {
      * @param user     需要查询的用户
      * @param listener 加载监听器
      */
-    public void allRelationLinkOf(User user, LoadFinishedListener<RelationLink> listener) {
+    public void allRelationLinkOf(User
+                                          user, LoadFinishedListener<RelationLink> listener) {
         BmobQuery<RelationLink> query = new BmobQuery<>();
         query.addWhereEqualTo("user", new BmobPointer(user)); // 查询当前用户的关系链
         query.findObjects(this.mContext, new FindListener<RelationLink>() {

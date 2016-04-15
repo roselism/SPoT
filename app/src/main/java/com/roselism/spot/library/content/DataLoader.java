@@ -19,5 +19,4 @@ public abstract class DataLoader implements Runnable {
     public DataLoader(Context outerClass) {
         this.outerClass = outerClass;
     }
-
 }

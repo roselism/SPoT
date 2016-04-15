@@ -102,6 +102,7 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
+
                 </RelativeLayout>
 
                 <!--下载项-->
