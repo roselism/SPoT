@@ -4,7 +4,7 @@ package com.roselism.spot.model.dao.listener;
  * 删除操作监听器
  * Created by simon on 2016/4/15.
  */
-public interface DeleteListener<T> {
+public interface OnDeleteListener<T> {
 
     /**
      * 当删除完成时回掉

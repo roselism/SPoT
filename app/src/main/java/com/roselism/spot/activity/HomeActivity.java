@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,13 +34,12 @@ import com.roselism.spot.model.domain.File;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import java.util.List;
 
@@ -330,7 +328,7 @@ public class HomeActivity extends AppCompatActivity
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable, LoadListener<File> {
+    private class DataLoader implements Runnable, OnLoadListener<File> {
 
         boolean flag1 = false;
         boolean flag2 = false;
