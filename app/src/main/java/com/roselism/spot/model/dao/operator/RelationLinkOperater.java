@@ -1,10 +1,10 @@
-package com.roselism.spot.model.dao;
+package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.roselism.spot.model.dao.listener.LoadFinishedListener;
+import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.model.domain.RelationLink;
 import com.roselism.spot.model.domain.User;
 
@@ -107,7 +107,7 @@ public class RelationLinkOperater extends Operater {
      * @param user     需要查询的用户
      * @param listener 加载监听器
      */
-    public void allRelationLinkOf(User user, LoadFinishedListener<RelationLink> listener) {
+    public void allRelationLinkOf(User user, LoadListener<RelationLink> listener) {
         BmobQuery<RelationLink> query = new BmobQuery<>();
         query.addWhereEqualTo("user", new BmobPointer(user)); // 查询当前用户的关系链
         query.findObjects(mContenxt, new FindListener<RelationLink>() {
@@ -130,7 +130,7 @@ public class RelationLinkOperater extends Operater {
      * @param user     目标用户
      * @param listener 数据加载监听器
      */
-    public void friendsListOf(User user, LoadFinishedListener listener) {
+    public void friendsListOf(User user, LoadListener listener) {
 
         List<User> friends = new ArrayList<>();
 

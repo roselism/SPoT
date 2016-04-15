@@ -23,14 +23,16 @@ import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureGridAdapter;
-import com.roselism.spot.model.dao.PhotoOperater;
+import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
+import com.roselism.spot.model.dao.operator.UserOperater;
 import com.roselism.spot.model.domain.File;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
-import com.roselism.spot.model.dao.FolderOperater;
+import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.util.LogUtils;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.LinkedList;
@@ -99,6 +101,12 @@ public class FolderActivity extends AppCompatActivity
         materialSheetFab = new MaterialSheetFab(mFloatingButton, fabSheet, overlay, sheetColor, fabColor);
         materialSheetFab.showFab();
         mFloatingButton.attachToListView(mGridView);
+
+        // 创建一个新用户，设置昵称为wangzhen，头像为null并且在创建完成时打印user的昵称
+//        UserOperater.adder.newUser().
+//                setNickName("wangzhen").
+//                setProfile(null).
+//                build(user -> LogUtils.d(user.getNickName()));
     }
 
     /**

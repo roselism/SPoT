@@ -23,9 +23,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
-import com.roselism.spot.model.dao.FolderOperater;
-import com.roselism.spot.model.dao.Operater;
-import com.roselism.spot.model.dao.PhotoOperater;
+import com.roselism.spot.model.dao.operator.FolderOperater;
+import com.roselism.spot.model.dao.operator.Operater;
+import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
@@ -33,7 +33,7 @@ import com.roselism.spot.model.domain.File;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadFinishedListener;
+import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -328,7 +328,7 @@ public class HomeActivity extends AppRoseActivity
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable, LoadFinishedListener<File> {
+    private class DataLoader implements Runnable, LoadListener<File> {
 
         //        public static final int LOAD_FINISHED = 0x16;
         boolean flag1 = false;

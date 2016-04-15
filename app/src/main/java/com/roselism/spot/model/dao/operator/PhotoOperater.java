@@ -1,4 +1,4 @@
-package com.roselism.spot.model.dao;
+package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadFinishedListener;
+import com.roselism.spot.model.dao.listener.LoadListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,10 +32,15 @@ public class PhotoOperater extends Operater {
 
     private static final String TAG = "PhotoOperater";
 
+    /**
+     * 不推荐使用
+     *
+     * @param context 上下文对象
+     * @deprecated 已经过时，不推荐使用
+     */
     public PhotoOperater(Context context) {
         this.mContenxt = context;
     }
-
 
     /**
      * 获取相应文件夹下的所有的照片
@@ -43,7 +48,7 @@ public class PhotoOperater extends Operater {
      * @param folderId photo所在的文件夹的id
      * @param listener 加载完毕监听器（如果失败则会返回null）
      */
-    public void allPhotosFrom(String folderId, LoadFinishedListener listener) {
+    public void allPhotosFrom(String folderId, LoadListener listener) {
         BmobQuery<Photo> query = new BmobQuery<>();
         Folder folder = new Folder(folderId);
         query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
@@ -65,7 +70,7 @@ public class PhotoOperater extends Operater {
     /**
      * 主界面的所有照片
      */
-    public void allPhotoInHome(BmobUser user, LoadFinishedListener listener) {
+    public void allPhotoInHome(BmobUser user, LoadListener listener) {
 
         // 查询picture
         BmobQuery<Photo> pictureQuery = new BmobQuery<>();
@@ -75,29 +80,14 @@ public class PhotoOperater extends Operater {
         pictureQuery.findObjects(mContenxt, new FindListener<Photo>() {
             @Override
             public void onSuccess(List<Photo> list) {
-
                 listener.onLoadFinished(list);
-
-//
-//                for (Photo p : list)
-//                    fileList.add(new com.roselism.spot.model.domain.File(p));
-//
-//                mData.addAll(fileList);
-//                fileList.clear(); // 清除里面的所有数据，避免刷新时数据重复
-//                    Log.i(TAG, "onSuccess: List<Photo> size" + list.size());
-
-//                    finished();
             }
 
             @Override
             public void onError(int i, String s) {
-//                    finished();
-//                Log.i(TAG, "onError: Photo 查询失败--> " + "错误码：" + i + " 错误信息: " + s);
                 listener.onLoadFinished(null);
             }
         });
-
-
     }
 
 
@@ -106,7 +96,7 @@ public class PhotoOperater extends Operater {
      *
      * @param folder 文件夹对象
      */
-    public void allPhotosFrom(Folder folder, LoadFinishedListener listener) {
+    public void allPhotosFrom(Folder folder, LoadListener listener) {
         allPhotosFrom(folder.getObjectId(), listener);
     }
 
@@ -190,13 +180,6 @@ public class PhotoOperater extends Operater {
         });
     }
 
-//    public String[] list2Array(List<String> list) {
-//        String[] strings = new String[list.size()];
-//        for (int i = 0; i < list.size(); i++) {
-//            strings[i] = list.get(i);
-//        }
-//        return strings;
-//    }
 
     /**
      * 将url变为Photo对象

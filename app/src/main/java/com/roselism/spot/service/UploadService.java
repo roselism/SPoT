@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.roselism.spot.adapter.PictureSelectAdapter;
-import com.roselism.spot.model.dao.PhotoOperater;
+import com.roselism.spot.model.dao.operator.PhotoOperater;
 
 import java.util.LinkedList;
 import java.util.List;

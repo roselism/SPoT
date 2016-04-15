@@ -17,7 +17,7 @@ import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
-import com.roselism.spot.model.dao.RelationLinkOperater;
+import com.roselism.spot.model.dao.operator.RelationLinkOperater;
 import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
@@ -207,51 +207,14 @@ public class ContactsActivity extends AppRoseActivity
             operater.friendsListOf(getUser(), (friends) -> {
                 for (User user : (List<User>) friends)
                     mData.add(user);
-                onLoadFinished();
+
+                ThreadUtils.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+//                onLoadFinished();
             });
-
-//            BmobQuery<RelationLink> query = new BmobQuery<>();
-//            query.addWhereEqualTo("user", new BmobPointer(user));
-//            query.findObjects(outerClass, new FindListener<RelationLink>() {
-//                @Override
-//                public void onSuccess(List<RelationLink> list) {
-//                    Log.i(TAG, "onSuccess: 查询link成功");
-//                    Log.i(TAG, "onSuccess: linkList size = " + list.size());
-//
-//                    if (list.size() >= 1) {
-//                        final RelationLink link = list.get(0);
-//                        for (String id : link.getFriendsId()) {
-//                            BmobQuery<User> query1 = new BmobQuery<>();
-//                            query1.getObject(outerClass, id, new GetListener<User>() {
-//                                @Override
-//                                public void onSuccess(User user) {
-//                                    Log.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
-//                                    mData.add(user);
-//
-//                                    if (link.getFriendsId().size() == mData.size())
-//                                        onLoadFinished();
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int i, String s) {
-//                                    Log.i(TAG, "查询用户成功: " + " 错误码:" + i + " 错误信息:" + s);
-//                                    onLoadFinished();
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//                    Log.i(TAG, "onFailure: " + " 错误码:" + i + " 错误信息:" + s);
-//                    onLoadFinished();
-//                }
-//            });
-
         }
-        public void onLoadFinished() {
-            ThreadUtils.runInUIThread(() -> buildAdapter());
-        }
+//
+//        public void onLoadFinished() {
+//
+//        }
     }
 }
