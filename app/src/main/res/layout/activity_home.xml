@@ -18,10 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-<<<<<<< HEAD
         android:elevation="10dp"
-=======
->>>>>>> 032282a... init
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_common"
         app:menu="@menu/activity_home_drawer">
