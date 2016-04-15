@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -20,9 +21,11 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.roselism.spot.MyApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
+<<<<<<< HEAD
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.Operater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
@@ -34,6 +37,19 @@ import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.LoadListener;
+=======
+import com.roselism.spot.dao.FolderOperater;
+import com.roselism.spot.dao.Operater;
+import com.roselism.spot.dao.PhotoOperater;
+import com.roselism.spot.dao.listener.LoadFinishedListener;
+import com.roselism.spot.domain.File;
+import com.roselism.spot.domain.Folder;
+import com.roselism.spot.domain.Photo;
+import com.roselism.spot.domain.User;
+import com.roselism.spot.library.app.AppRoseActivity;
+import com.roselism.spot.library.app.dialog.DetailProgressDialog;
+import com.roselism.spot.library.app.dialog.FolderNameDialog;
+>>>>>>> ce0d74b1d1ca420dd95a46a510f722fcaed94bec
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -50,7 +66,7 @@ import cn.bmob.v3.listener.UpdateListener;
 /**
  * 主界面
  */
-public class HomeActivity extends AppRoseActivity
+public class HomeActivity extends AppCompatActivity
         implements FolderNameDialog.FolderNameInputListener,
         View.OnClickListener, FolderOperater.onOperatListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -62,8 +78,9 @@ public class HomeActivity extends AppRoseActivity
     @Bind(R.id.nav_view) NavigationView mNavView;
     @Bind(R.id.drawer) DrawerLayout mDrawer;
 
-    private User mCurUser; // 当前用户
+    private User mCurUser = null; // 当前用户
     private List<File> mData; // 数据
+
     //    private Thread mDataThread; // 加载数据线程
     private DetailProgressDialog detailProgressDialog; // 数据上传进度表
 
@@ -75,12 +92,17 @@ public class HomeActivity extends AppRoseActivity
         setSupportActionBar(mToolbar);
         Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
-        mCurUser = User.getCurrentUser(this, User.class); // 当前用户
+        mCurUser = BmobUser.getCurrentUser(this, User.class); // 当前用户
 
         if (mCurUser == null) { // 如果用户还未登录，则跳转至登陆界面
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+//            Log.i(TAG, "onCreate: -->null");
+            return;
         }
+//        Log.i(TAG, "onCreate: --> not null");
+
+        refreshData();
 
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
@@ -321,7 +343,6 @@ public class HomeActivity extends AppRoseActivity
         return false;
     }
 
-    @Override
     protected <T extends BmobUser> T getUser() {
         return (T) User.getCurrentUser(this);
     }
@@ -331,7 +352,6 @@ public class HomeActivity extends AppRoseActivity
      */
     private class DataLoader implements Runnable, LoadListener<File> {
 
-        //        public static final int LOAD_FINISHED = 0x16;
         boolean flag1 = false;
         boolean flag2 = false;
         boolean flag3 = false;
@@ -343,10 +363,13 @@ public class HomeActivity extends AppRoseActivity
             } else
                 mData.clear();
 
-//            final List<File> fileList = new ArrayList<>(); // 临时列表，用于将Picture和Folder对象转换成File对象
             BmobUser curUser = getUser();
 
+<<<<<<< HEAD
             FolderOperater operater = new FolderOperater(getOutterClass(), null);
+=======
+            FolderOperater operater = new FolderOperater(MyApplication.getContext(), null);
+>>>>>>> ce0d74b1d1ca420dd95a46a510f722fcaed94bec
             operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
                 for (Folder f : (List<Folder>) data) {
                     mData.add(new File(f, 1));
@@ -363,7 +386,7 @@ public class HomeActivity extends AppRoseActivity
                 onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
             });
 
-            PhotoOperater photoOperater = new PhotoOperater(getOutterClass());
+            PhotoOperater photoOperater = new PhotoOperater(MyApplication.getContext());
             photoOperater.allPhotoInHome(getUser(), (data) -> {
                 for (Photo p : (List<Photo>) data) {
                     mData.add(new File(p));

@@ -28,7 +28,8 @@
     <string name="nav_item_communicate">Communicate</string>
     <string name="menu_item_show">show file type</string>
     <string name="menu_item_progress">upload progress</string>
-    <string name="menu_item_order">order % group</string>
+    <string name="menu_item_order">order &#38; group</string>
+
     <string name="folder_dialog_title">create folder</string>
     <string name="et_friends_email_hint"></string>
     <string name="error_wrong_format_email">wrong email format</string>

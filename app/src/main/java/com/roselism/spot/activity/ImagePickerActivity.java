@@ -68,7 +68,6 @@ public class ImagePickerActivity extends AppCompatActivity
     private ProgressDialog mProgressDialog;
     private ListImageDirPopupWindow mListImageDirPopupWindow; // 展示图片文件夹的popupWindow
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

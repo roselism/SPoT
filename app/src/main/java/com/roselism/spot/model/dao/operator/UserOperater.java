@@ -4,10 +4,15 @@ import android.content.Context;
 
 import com.roselism.spot.MyApplication;
 import com.roselism.spot.model.dao.listener.DeleteListener;
+import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.model.domain.Image;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.BuildListener;
 
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
 /**
@@ -166,5 +171,29 @@ public class UserOperater {
 
     public static class QueryOperater extends UserOperater {
 
+        public void getUserByEmail(String email, LoadListener<User> listener) {
+            if (mContext == null)
+                throw new IllegalArgumentException("上下文对象不能为null,需要在此方法之前调用setContext(Context context) 方法");
+            BmobQuery<User> query = new BmobQuery<>(); // 查询
+            query.addWhereEqualTo("email", email);
+            query.findObjects(mContext, new FindListener<User>() {
+                @Override
+                public void onSuccess(List<User> list) {
+
+                    listener.onLoadFinished(list);
+//                    User friends = list.get(0);
+//                    User currentUser = BmobUser.getCurrentUser(mContext, User.class);
+//
+//                    RelationLinkOperater operater = new RelationLinkOperater(mContext);
+//                    operater.addFriend(currentUser, friends); // 添加好友
+                }
+
+                @Override
+                public void onError(int i, String s) {
+//                    Log.i(TAG, "onError: User查询错误 错误码:" + i + " 错误信息: " + s);
+                    listener.onLoadFinished(null);
+                }
+            });
+        }
     }
 }

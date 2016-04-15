@@ -34,10 +34,10 @@ public class User extends BmobUser {
         this.profile = profile;
     }
 
+
     public Image getProfile() {
         return profile;
     }
-
 
 
     /**

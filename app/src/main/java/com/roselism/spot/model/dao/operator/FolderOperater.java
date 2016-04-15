@@ -8,6 +8,7 @@ import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.LoadListener;
 
+
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -15,11 +16,13 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.FindListener;
+
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by hero2 on 2016/2/20.
+ * <p>
  * <p>
  * <p>
  * 增
@@ -30,6 +33,7 @@ import cn.bmob.v3.listener.UpdateListener;
 public class FolderOperater extends Operater {
     private Folder mFolder;
 
+
     /**
      * 操作某个文件夹
      *
@@ -38,7 +42,7 @@ public class FolderOperater extends Operater {
      */
     public FolderOperater(Context mContenxt, Folder mFolder) {
         this.mFolder = mFolder;
-        this.mContenxt = mContenxt;
+        this.mContext = mContenxt;
     }
 
     /**
@@ -50,7 +54,7 @@ public class FolderOperater extends Operater {
         BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
         query1.addWhereEqualTo("creater", new BmobPointer(user));
         query1.include("creater"); // 查询文件夹的创建人
-        query1.findObjects(mContenxt, new FindListener<Folder>() {
+        query1.findObjects(mContext, new FindListener<Folder>() {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
@@ -73,7 +77,7 @@ public class FolderOperater extends Operater {
     public void findFolderAssoiateWith(BmobUser user, LoadListener listener) {
         BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
         query2.addWhereContains("workers", user.getObjectId());
-        query2.findObjects(mContenxt, new FindListener<Folder>() {
+        query2.findObjects(mContext, new FindListener<Folder>() {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
@@ -102,13 +106,13 @@ public class FolderOperater extends Operater {
 
         BmobQuery<User> query = new BmobQuery<>();
         query.addWhereEqualTo("email", email);
-        query.findObjects(mContenxt, new FindListener<User>() {
+        query.findObjects(mContext, new FindListener<User>() {
             @Override
             public void onSuccess(List<User> list) {
                 BmobRelation relation = new BmobRelation();
                 relation.add(list.get(0));
                 mFolder.setWorkers(relation);
-                mFolder.update(mContenxt, new UpdateListener() {
+                mFolder.update(mContext, new UpdateListener() {
                     @Override
                     public void onSuccess() {
                         Log.i("TAG", "onSuccess: ");
@@ -126,21 +130,23 @@ public class FolderOperater extends Operater {
 
             }
         });
+
     }
 
     /**
      * 创建一个文件夹对象
      */
     public void createFolder() {
-        final User creater = User.getCurrentUser(mContenxt, User.class);
+        final User creater = User.getCurrentUser(mContext, User.class);
 //        final Folder folder = new Folder(name, creater);
-        final onOperatListener listener = (onOperatListener) mContenxt; // 监听器
+        final onOperatListener listener = (onOperatListener) mContext; // 监听器
 //        mFolder.setWorkers(null);
 
-        mFolder.save(mContenxt, new SaveListener() {
+        mFolder.save(mContext, new SaveListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(mContenxt, "文件夹创建成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "文件夹创建成功", Toast.LENGTH_SHORT).show();
+
                 //创建成功之后需要重新刷新数据
 //                reader.run(); // 在回掉函数中执行
                 listener.onOperateCreate(mFolder, creater, CREATE_SUCCESS);

@@ -1,6 +1,8 @@
 package com.roselism.spot.library.app;
 
 import android.content.Context;
+
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import cn.bmob.v3.BmobUser;
@@ -28,4 +30,5 @@ public abstract class AppRoseActivity extends AppCompatActivity {
     protected Context getOutterClass() {
         return this;
     }
+
 }

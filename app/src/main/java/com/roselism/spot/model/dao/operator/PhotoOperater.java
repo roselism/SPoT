@@ -8,6 +8,7 @@ import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.LoadListener;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
+
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadBatchListener;
 
@@ -39,10 +41,11 @@ public class PhotoOperater extends Operater {
      * @deprecated 已经过时，不推荐使用
      */
     public PhotoOperater(Context context) {
-        this.mContenxt = context;
+        this.mContext = context;
     }
 
     /**
+     * <<<<<<< HEAD
      * 获取相应文件夹下的所有的照片
      *
      * @param folderId photo所在的文件夹的id
@@ -53,7 +56,7 @@ public class PhotoOperater extends Operater {
         Folder folder = new Folder(folderId);
         query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
         query.include("uploader");
-        query.findObjects(mContenxt, new FindListener<Photo>() {
+        query.findObjects(mContext, new FindListener<Photo>() {
             @Override
             public void onSuccess(List<Photo> list) {
                 listener.onLoadFinished(list);
@@ -77,7 +80,7 @@ public class PhotoOperater extends Operater {
         pictureQuery.addWhereEqualTo("uploader", user);
         pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
         pictureQuery.include("uploader");
-        pictureQuery.findObjects(mContenxt, new FindListener<Photo>() {
+        pictureQuery.findObjects(mContext, new FindListener<Photo>() {
             @Override
             public void onSuccess(List<Photo> list) {
                 listener.onLoadFinished(list);
@@ -103,6 +106,10 @@ public class PhotoOperater extends Operater {
     /**
      * 上传所选中的照片
      * <p>
+     * =======
+     * 上传所选中的照片
+     * <p>
+     * >>>>>>> 032282a... init
      * 完整的过程：选中图片-> 上传图片并返回图片的url地址，储存Photo对象，并将返回的url对象赋值给Photo对象的相应属性
      *
      * @param parentFolderId 照片所在文件夹的Id，如果为根文件夹则应该传入 null
@@ -119,7 +126,7 @@ public class PhotoOperater extends Operater {
         uploadingPhotos.addAll(url2Photo(parentFolderId, filePaths));
 
         // 上传File
-        Bmob.uploadBatch(mContenxt, filePaths, new UploadBatchListener() {
+        Bmob.uploadBatch(mContext, filePaths, new UploadBatchListener() {
             @Override
             public void onSuccess(List<BmobFile> list, List<String> urls) {
 
@@ -175,7 +182,6 @@ public class PhotoOperater extends Operater {
             @Override
             public void onError(int i, String s) {
                 Log.i(TAG, "onError: " + "错误码:" + i + " 错误信息:" + s);
-//                Toast.makeText(mContenxt, i + " " + s, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -197,7 +203,7 @@ public class PhotoOperater extends Operater {
             File file = new File(url);
             Date takenDate = new Date(file.lastModified()); // 拍摄时间
             String fileName = url.substring(url.lastIndexOf("/") + 1);// 获取照片名
-            User uploader = User.getCurrentUser(mContenxt, User.class); // 上传者
+            User uploader = User.getCurrentUser(mContext, User.class); // 上传者
 
             photo = new Photo();
             photo.setName(fileName);
@@ -220,7 +226,7 @@ public class PhotoOperater extends Operater {
 
         // 存储Picture对象
         for (Photo p : photos) {
-            p.save(mContenxt, new SaveListener() {
+            p.save(mContext, new SaveListener() {
                 @Override
                 public void onSuccess() {
                     Log.i("TAG", "onSuccess: " + " picture对象储存完成");
@@ -240,7 +246,7 @@ public class PhotoOperater extends Operater {
      * @param photo 要被持久化的Photo对象
      */
     private void savePhoto(Photo photo) {
-        photo.save(mContenxt, new SaveListener() {
+        photo.save(mContext, new SaveListener() {
             @Override
             public void onSuccess() {
 
@@ -252,6 +258,4 @@ public class PhotoOperater extends Operater {
             }
         });
     }
-
-
 }

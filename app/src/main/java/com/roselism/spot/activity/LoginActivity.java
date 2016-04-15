@@ -201,11 +201,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
 
-        // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -246,11 +242,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     query.count(LoginActivity.this, User.class, new CountListener() {
                         @Override
                         public void onSuccess(int i) {
-                            if (i == 1) {
-                                isExist = true;
-                            } else {
-                                isExist = false;
-                            }
+                            isExist = i == 1;
                             bundle.putBoolean("isExist", isExist);
                             message.setData(bundle);
                             loginHandler.sendMessage(message); // 发送消息
@@ -264,9 +256,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 }
             };
             checkAccountThread.run();
-
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
         }
     }
 
@@ -283,7 +272,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             else  // 账户不存在，则进行注册
                 loginThread = new UserLoginThread(email, password, false);
             loginThread.run();
-
         }
     };
 
@@ -323,40 +311,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        return new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-//        List<String> emails = new ArrayList<>();
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-//            cursor.moveToNext();
-//        }
-//
-//        addEmailsToAutoComplete(emails);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-//
-//    }
-
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -365,7 +319,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         mEmailView.setAdapter(adapter);
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -397,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         }
     }
+
 
     private class UserLoginThread implements Runnable {
         private final String mEmail;
@@ -430,7 +384,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     @Override
                     public void onFailure(int i, String s) {
                         showProgress(false);
-
                         isPasswordCorrect = false;
                     }
                 });

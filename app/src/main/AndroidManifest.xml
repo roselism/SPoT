@@ -39,6 +39,7 @@
         </activity>
         <activity
             android:name=".activity.ContactsActivity"
+
             android:theme="@style/AppTheme">
         </activity>
 
