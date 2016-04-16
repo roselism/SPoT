@@ -11,16 +11,30 @@ import android.util.Log;
  * @描述 Log日志管理
  */
 public class LogUtils {
-    private static boolean isDebug;
+
+    /**
+     * @since 1.0
+     */
+    private static final String APPTAG = "SPoT";
+
+    private static boolean isDebug = true;
+
+    /**
+     * @since 1.0
+     */
+    private LogUtils() {
+    }
+
 
     /**
      * 打印log.d日志
+     * 默认的TAG 是 SPoT
      *
      * @param message 打印的信息
      */
     public static void d(String message) {
         if (isDebug)
-            d("SPoT", message);
+            d(APPTAG, message);
     }
 
     /**
@@ -30,7 +44,7 @@ public class LogUtils {
      */
     public static void i(String message) {
         if (isDebug)
-            i("SPoT", message);
+            Log.i(APPTAG, message);
     }
 
     /**

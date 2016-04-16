@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
+import com.roselism.spot.util.LogUtils;
+
 /**
  * @创建者 lai
  * @创建时间 2016/4/10
@@ -11,7 +13,7 @@ import android.os.*;
  * @更新时间 2016/4/10 15:33
  * @描述 TODO
  */
-public class MyApplication extends Application {
+public class SPoTApplication extends Application {
     private static Handler sMainHandler = new Handler();
 
     private static Context sContext;// Application的上下文
@@ -26,7 +28,6 @@ public class MyApplication extends Application {
         return sContext;
     }
 
-
     /**
      * 获取主线程ID
      *
@@ -40,8 +41,12 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        LogUtils.i("SPoTApplication", "onCreate");
+
         sContext = getApplicationContext();
         sMainThreadId = android.os.Process.myTid();
+
+        LogUtils.setIsDebug(true); // 开启debug模式
     }
 
     public static Handler getMainHandler() {

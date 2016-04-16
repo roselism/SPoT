@@ -2,17 +2,17 @@ package com.roselism.spot.util;
 
 import android.os.Handler;
 
-import com.roselism.spot.MyApplication;
+import com.roselism.spot.SPoTApplication;
 
 /**
  * @创建者 lai
  * @创建时间 2016/4/10
- * @packageName com.roselism.spot.MyApplication
+ * @packageName com.roselism.spot.SPoTApplication
  * @更新时间 2016/4/10 15:33
  * @描述 在不同的线程之间切换的工具类
  */
 public class ThreadUtils {
-    public static Handler mHandler = MyApplication.getMainHandler();
+    public static Handler mHandler = SPoTApplication.getMainHandler();
 
     /**
      * 在UI线程中执行任务

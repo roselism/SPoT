@@ -2,7 +2,7 @@ package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 
-import com.roselism.spot.MyApplication;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.DeleteListener;
 import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.model.domain.Image;
@@ -35,7 +35,7 @@ public class UserOperater {
      * 初始化上下文对象
      */
     protected static void initContext() {
-        mContext = MyApplication.getContext();
+        mContext = SPoTApplication.getContext();
     }
 
     /**
@@ -179,13 +179,7 @@ public class UserOperater {
             query.findObjects(mContext, new FindListener<User>() {
                 @Override
                 public void onSuccess(List<User> list) {
-
                     listener.onLoadFinished(list);
-//                    User friends = list.get(0);
-//                    User currentUser = BmobUser.getCurrentUser(mContext, User.class);
-//
-//                    RelationLinkOperater operater = new RelationLinkOperater(mContext);
-//                    operater.addFriend(currentUser, friends); // 添加好友
                 }
 
                 @Override
