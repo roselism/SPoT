@@ -3,11 +3,11 @@ package com.roselism.spot.model.dao.operator;
 import android.content.Context;
 
 import com.roselism.spot.SPoTApplication;
-import com.roselism.spot.model.dao.listener.DeleteListener;
-import com.roselism.spot.model.dao.listener.LoadListener;
+import com.roselism.spot.model.dao.listener.OnDeleteListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Image;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.BuildListener;
+import com.roselism.spot.model.dao.listener.OnBuildListener;
 
 import java.util.List;
 
@@ -113,7 +113,6 @@ public class UserOperater {
          * @return
          */
         public AddOperater setProfile(Image profile) {
-//            this.profile = profile;
             user.setProfile(profile);
             return this;
         }
@@ -121,13 +120,11 @@ public class UserOperater {
         /**
          * 建造对象
          */
-        public void build(BuildListener<User> listener) {
+        public void build(OnBuildListener<User> listener) {
             if (user == null)
                 throw new IllegalArgumentException("User不能为null，在调用build方法之前请先调用newUser()方法");
             if (mContext == null || user.getProfile() == null)
                 throw new IllegalArgumentException("用户头像不能为null");
-
-//            UserOperater.deleter.
 
             user.save(mContext, new SaveListener() { // 储存user对象
                 @Override
@@ -150,16 +147,16 @@ public class UserOperater {
          *
          * @param user 要被删除的用户（希望不会用到这个功能）
          */
-        public static void delete(User user, DeleteListener<User> deleteListener) {
+        public static void delete(User user, OnDeleteListener<User> onDeleteListener) {
             user.delete(mContext, new cn.bmob.v3.listener.DeleteListener() {
                 @Override
                 public void onSuccess() {
-                    deleteListener.onDeleteFinished(user);
+                    onDeleteListener.onDeleteFinished(user);
                 }
 
                 @Override
                 public void onFailure(int i, String s) {
-                    deleteListener.onDeleteFinished(null);
+                    onDeleteListener.onDeleteFinished(null);
                 }
             });
         }
@@ -171,7 +168,7 @@ public class UserOperater {
 
     public static class QueryOperater extends UserOperater {
 
-        public void getUserByEmail(String email, LoadListener<User> listener) {
+        public void getUserByEmail(String email, OnLoadListener<User> listener) {
             if (mContext == null)
                 throw new IllegalArgumentException("上下文对象不能为null,需要在此方法之前调用setContext(Context context) 方法");
             BmobQuery<User> query = new BmobQuery<>(); // 查询

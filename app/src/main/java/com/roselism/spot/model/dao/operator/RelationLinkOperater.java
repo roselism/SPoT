@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.roselism.spot.model.dao.listener.LoadListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.RelationLink;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.util.LogUtils;
@@ -104,7 +104,7 @@ public class RelationLinkOperater extends Operater {
      * @param user     需要查询的用户
      * @param listener 加载监听器
      */
-    public void allRelationLinkOf(User user, LoadListener<RelationLink> listener) {
+    public void allRelationLinkOf(User user, OnLoadListener<RelationLink> listener) {
 
         BmobQuery<RelationLink> query = new BmobQuery<>();
         query.addWhereEqualTo("user", new BmobPointer(user)); // 查询当前用户的关系链
@@ -130,7 +130,7 @@ public class RelationLinkOperater extends Operater {
      * @param user     将要加载他的所有好友
      * @param listener 数据加载监听器
      */
-    public void friendsListOf(User user, LoadListener listener) {
+    public void friendsListOf(User user, OnLoadListener listener) {
 
         List<User> friends = new ArrayList<>();
 

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Tag;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.util.LogUtils;
+
 
 import java.util.List;
 
@@ -64,8 +64,8 @@ public class FolderOperater extends Operater {
      *
      * @param user
      */
-    public void findFolderCreateBy(BmobUser user, LoadListener listener) {
 
+    public void findFolderCreateBy(BmobUser user, OnLoadListener listener) {
         BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
         query1.addWhereEqualTo("creater", new BmobPointer(user));
         query1.include("creater"); // 查询文件夹的创建人
@@ -94,7 +94,7 @@ public class FolderOperater extends Operater {
      *
      * @param user 目标用户
      */
-    public void findFolderAssoiateWith(BmobUser user, LoadListener listener) {
+    public void findFolderAssoiateWith(BmobUser user, OnLoadListener listener) {
         BmobQuery<Folder> query2 = new BmobQuery<>(); // 第二个条件，查询出被邀请的
         query2.addWhereContains("workers", user.getObjectId());
         query2.findObjects(mContext, new FindListener<Folder>() {

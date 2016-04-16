@@ -33,7 +33,7 @@ import com.roselism.spot.model.domain.File;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import com.roselism.spot.util.LogUtils;
 import com.roselism.spot.util.ThreadUtils;
@@ -329,7 +329,7 @@ public class HomeActivity extends AppCompatActivity
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable, LoadListener<File> {
+    private class DataLoader implements Runnable, OnLoadListener<File> {
 
         boolean flag1 = false;
         boolean flag2 = false;

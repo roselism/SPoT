@@ -5,9 +5,9 @@ import android.content.Context;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.LoadListener;
 import com.roselism.spot.util.LogUtils;
 
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class PhotoOperater extends Operater {
      * @param folderId photo所在的文件夹的id
      * @param listener 加载完毕监听器（如果失败则会返回null）
      */
-    public void allPhotosFrom(String folderId, LoadListener listener) {
+    public void allPhotosFrom(String folderId, OnLoadListener listener) {
         BmobQuery<Photo> query = new BmobQuery<>();
         Folder folder = new Folder(folderId);
         query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
@@ -75,7 +75,7 @@ public class PhotoOperater extends Operater {
     /**
      * 主界面的所有照片
      */
-    public void allPhotoInHome(BmobUser user, LoadListener listener) {
+    public void allPhotoInHome(BmobUser user, OnLoadListener listener) {
 
         // 查询picture
         BmobQuery<Photo> pictureQuery = new BmobQuery<>();
@@ -100,7 +100,7 @@ public class PhotoOperater extends Operater {
      *
      * @param folder 文件夹对象
      */
-    public void allPhotosFrom(Folder folder, LoadListener listener) {
+    public void allPhotosFrom(Folder folder, OnLoadListener listener) {
         allPhotosFrom(folder.getObjectId(), listener);
     }
 
