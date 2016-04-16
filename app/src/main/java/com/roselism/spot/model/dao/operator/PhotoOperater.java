@@ -6,7 +6,6 @@ import android.util.Log;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import java.io.File;
 import java.util.ArrayList;

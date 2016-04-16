@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.roselism.spot.MyApplication;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Image;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.OnBuildListener;

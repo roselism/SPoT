@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 
 import java.util.List;

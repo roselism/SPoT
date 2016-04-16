@@ -34,7 +34,6 @@ import com.roselism.spot.model.domain.File;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import com.roselism.spot.util.ThreadUtils;
 
