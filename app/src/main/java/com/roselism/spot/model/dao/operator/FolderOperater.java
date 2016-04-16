@@ -1,12 +1,13 @@
 package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
+import com.roselism.spot.util.LogUtils;
 
 
 import java.util.List;
@@ -16,7 +17,6 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.FindListener;
-
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -29,16 +29,23 @@ import cn.bmob.v3.listener.UpdateListener;
  * 闪
  * 改
  * 查
+ *
+ * @version 1.1
  */
 public class FolderOperater extends Operater {
     private Folder mFolder;
+    public static AddOperater adder = getAdder();
 
+    private static AddOperater getAdder() {
+        return new AddOperater(null);
+    }
 
     /**
      * 操作某个文件夹
      *
      * @param mContenxt 上下文对象
      * @param mFolder   要被操作的文件夹对象（增删改查）
+     * @deprecated 不再推荐使用 请使用 FolderOperater(Folder folder) 作为替代
      */
     public FolderOperater(Context mContenxt, Folder mFolder) {
         this.mFolder = mFolder;
@@ -46,10 +53,18 @@ public class FolderOperater extends Operater {
     }
 
     /**
+     * @param folder 要被操作的文件夹
+     */
+    public FolderOperater(Folder folder) {
+        this.mFolder = folder;
+    }
+
+    /**
      * 查找某个用户创建的所有文件夹
      *
      * @param user
      */
+
     public void findFolderCreateBy(BmobUser user, OnLoadListener listener) {
         BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
         query1.addWhereEqualTo("creater", new BmobPointer(user));
@@ -58,16 +73,21 @@ public class FolderOperater extends Operater {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
+                LogUtils.i("findFolderCreateBy: list size= " + list.size());
+                LogUtils.i("findFolderCreateBy", "onSuccess: ");
+
             }
 
             @Override
             public void onError(int i, String s) {
+//                LogUtils.i("TAG", "onFailure: " + i + " " + s);
+                LogUtils.i("onFailure: " + i + " " + s);
+                LogUtils.i("FolderOperater", "onError: -->");
+                LogUtils.i("FolderOperater", "onError: --> is debug?" + LogUtils.isDebug());
                 listener.onLoadFinished(null);
             }
         });
     }
-
-//    public void
 
     /**
      * 查找某用户被邀请参与的文件夹
@@ -81,11 +101,13 @@ public class FolderOperater extends Operater {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
+                LogUtils.i("findFolderAssoiateWith: 查询成功");
             }
 
             @Override
             public void onError(int i, String s) {
                 listener.onLoadFinished(null);
+                LogUtils.i("onFailure: " + i + " " + s);
             }
         });
     }
@@ -109,25 +131,27 @@ public class FolderOperater extends Operater {
         query.findObjects(mContext, new FindListener<User>() {
             @Override
             public void onSuccess(List<User> list) {
+                LogUtils.i("list size= " + list.size());
+
                 BmobRelation relation = new BmobRelation();
                 relation.add(list.get(0));
                 mFolder.setWorkers(relation);
                 mFolder.update(mContext, new UpdateListener() {
                     @Override
                     public void onSuccess() {
-                        Log.i("TAG", "onSuccess: ");
+                        LogUtils.i("TAG", "onSuccess: ");
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.i("TAG", "onFailure: " + i + " " + s);
+                        LogUtils.i("TAG", "onFailure: " + i + " " + s);
                     }
                 });
             }
 
             @Override
             public void onError(int i, String s) {
-
+                LogUtils.i("onFailure: " + i + " " + s);
             }
         });
 
@@ -138,9 +162,7 @@ public class FolderOperater extends Operater {
      */
     public void createFolder() {
         final User creater = User.getCurrentUser(mContext, User.class);
-//        final Folder folder = new Folder(name, creater);
         final onOperatListener listener = (onOperatListener) mContext; // 监听器
-//        mFolder.setWorkers(null);
 
         mFolder.save(mContext, new SaveListener() {
             @Override
@@ -148,15 +170,29 @@ public class FolderOperater extends Operater {
                 Toast.makeText(mContext, "文件夹创建成功", Toast.LENGTH_SHORT).show();
 
                 //创建成功之后需要重新刷新数据
-//                reader.run(); // 在回掉函数中执行
                 listener.onOperateCreate(mFolder, creater, CREATE_SUCCESS);
             }
 
             @Override
             public void onFailure(int i, String s) {
-                Log.i("TAG", "onFailure: " + i + " " + s);
+                LogUtils.i("TAG", "onFailure: " + i + " " + s);
                 listener.onOperateCreate(mFolder, creater, CREATE_FALLS);
             }
         });
+    }
+
+    /**
+     * Folder 的建造器
+     *
+     * @since 1.1
+     */
+    public static class AddOperater extends FolderOperater {
+
+        /**
+         * @param folder 传入null即可
+         */
+        public AddOperater(@Nullable Folder folder) {
+            super(folder);
+        }
     }
 }

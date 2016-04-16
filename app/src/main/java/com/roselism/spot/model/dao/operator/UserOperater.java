@@ -2,7 +2,7 @@ package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 
-import com.roselism.spot.MyApplication;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Image;
@@ -35,7 +35,7 @@ public class UserOperater {
      * 初始化上下文对象
      */
     protected static void initContext() {
-        mContext = MyApplication.getContext();
+        mContext = SPoTApplication.getContext();
     }
 
     /**
