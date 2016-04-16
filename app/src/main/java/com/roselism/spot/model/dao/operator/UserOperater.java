@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
+import com.roselism.spot.model.dao.listener.OnFindListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Image;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.model.dao.listener.OnBuildListener;
@@ -172,18 +174,20 @@ public class UserOperater {
                 throw new IllegalArgumentException("上下文对象不能为null,需要在此方法之前调用setContext(Context context) 方法");
             BmobQuery<User> query = new BmobQuery<>(); // 查询
             query.addWhereEqualTo("email", email);
-            query.findObjects(mContext, new FindListener<User>() {
-                @Override
-                public void onSuccess(List<User> list) {
-                    listener.onLoadFinished(list);
-                }
+            query.findObjects(mContext,new OnFindListener(listener));
 
-                @Override
-                public void onError(int i, String s) {
-//                    Log.i(TAG, "onError: User查询错误 错误码:" + i + " 错误信息: " + s);
-                    listener.onLoadFinished(null);
-                }
-            });
+//            query.findObjects(mContext, new FindListener<User>() {
+//                @Override
+//                public void onSuccess(List<User> list) {
+//                    listener.onLoadFinished(list);
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+////                    Log.i(TAG, "onError: User查询错误 错误码:" + i + " 错误信息: " + s);
+//                    listener.onLoadFinished(null);
+//                }
+//            });
         }
     }
 }

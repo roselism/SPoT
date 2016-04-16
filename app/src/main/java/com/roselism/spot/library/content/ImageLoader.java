@@ -43,7 +43,6 @@ public class ImageLoader {
         FIFO, LIFO
     }
 
-
     /**
      * 单例获得该实例对象
      *
@@ -97,8 +96,6 @@ public class ImageLoader {
             protected int sizeOf(String key, Bitmap value) {
                 return value.getRowBytes() * value.getHeight();
             }
-
-            ;
         };
 
         mThreadPool = Executors.newFixedThreadPool(threadCount);

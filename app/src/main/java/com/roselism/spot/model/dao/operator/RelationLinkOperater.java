@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.RelationLink;
 import com.roselism.spot.model.domain.User;
 import com.roselism.spot.util.LogUtils;
@@ -54,6 +55,13 @@ public class RelationLinkOperater extends Operater {
      * @param friendsId 好友的id
      */
     public void addFriends(final User user, final List<String> friendsId) {
+
+//        allRelationLinkOf(user, new OnLoadListener<RelationLink>() {
+//            @Override
+//            public void onLoadFinished(List<RelationLink> data) {
+//                data.size();
+//            }
+//        });
 
         allRelationLinkOf(user, (data -> {
             LogUtils.i(TAG, "onSuccess: 查找Link成功");

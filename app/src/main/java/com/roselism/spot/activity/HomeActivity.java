@@ -1,12 +1,10 @@
 package com.roselism.spot.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,13 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ListSwipeAdapter;
-import com.roselism.spot.adapter.PictureListAdapter;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.Operater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
@@ -40,15 +37,12 @@ import com.roselism.spot.util.ThreadUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 主界面
@@ -87,12 +81,12 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
 
-        ThreadUtils.runInUIThread(new DataLoader());
+        refreshData();
+//        ThreadUtils.runInUIThread(new DataLoader());
 
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(configuration);
-        initClickListener();
 
         detailProgressDialog = new DetailProgressDialog();
 
@@ -167,26 +161,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     * 创建一个文件夹对象
-     */
-    private void createFolder(String name) {
-        Folder folder = new Folder(name, User.getCurrentUser(this, User.class));
-        folder.save(this, new SaveListener() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(HomeActivity.this, "文件夹创建成功", Toast.LENGTH_SHORT).show();
-//                mDataThread.start(); //创建成功之后需要重新刷新数据
-                refreshData();
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                Log.i(TAG, "onFailure: " + i + " " + s);
-            }
-        });
-    }
-
-    /**
      * 为数据建造适配器
      */
     public void buildAdapter() {
@@ -240,57 +214,6 @@ public class HomeActivity extends AppCompatActivity
         folderOperater.createFolder();//创建该文件夹
     }
 
-    void initClickListener() {
-    }
-
-    /**
-     * 创建一个确定对话框
-     *
-     * @param folderId
-     */
-    protected void buildConfirmDialog(final String folderId) {
-
-        // 创建一个对话框，提醒是否移动到该文件夹
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("移动到当前文件夹");
-        builder.setPositiveButton("确定", (dialog, which) -> {
-
-            dialog.dismiss();
-            // 更新数据
-            Photo pic;
-            for (File f : PictureListAdapter.mSelectedItem) {
-                pic = new Photo(f);
-                pic.setParent(new Folder(folderId));
-                pic.update(HomeActivity.this, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(HomeActivity.this, "成功", Toast.LENGTH_SHORT).show();
-                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-                        refreshData();
-
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-                        Toast.makeText(HomeActivity.this, i + " " + s, Toast.LENGTH_SHORT).show();
-                        PictureListAdapter.mSelectedItem.clear(); // 清空选中项
-                        refreshData();
-
-                    }
-                });
-            }
-        });
-
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                PictureListAdapter.removeAll();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 
     @Override
     public void onClick(View v) {
