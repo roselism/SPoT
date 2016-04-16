@@ -2,12 +2,13 @@ package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.User;
 
 /**
  * 所有操作类的父类
- * <p/>
+ * <p>
  * Created by hero2 on 2016/3/6.
  */
 public abstract class Operater {
@@ -16,6 +17,14 @@ public abstract class Operater {
 
     //    private Folder mFolder;
     protected Context mContext;
+
+    public Operater() {
+        initContext();
+    }
+
+    public void initContext() {
+        mContext = SPoTApplication.getContext();
+    }
 
     /**
      * 操作监听器

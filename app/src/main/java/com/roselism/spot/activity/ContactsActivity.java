@@ -15,12 +15,11 @@ import android.widget.TextView;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.roselism.spot.MyApplication;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.library.app.UserListener;
 import com.roselism.spot.model.dao.operator.RelationLinkOperater;
-import com.roselism.spot.library.app.AppRoseActivity;
 import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
@@ -29,7 +28,6 @@ import com.roselism.spot.model.domain.User;
 
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
-import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.util.ThreadUtils;
 
 import java.util.ArrayList;
@@ -37,9 +35,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.FindListener;
 
 
 /**
@@ -209,7 +204,7 @@ public class ContactsActivity extends AppCompatActivity
             else
                 mData = new ArrayList<>();
 
-            RelationLinkOperater operater = new RelationLinkOperater(MyApplication.getContext());
+            RelationLinkOperater operater = new RelationLinkOperater(SPoTApplication.getContext());
             operater.friendsListOf(getUser(), (friends) -> {
                 for (User user : (List<User>) friends)
                     mData.add(user);
