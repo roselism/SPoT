@@ -3,6 +3,12 @@ package com.roselism.spot.model.domain;
 import android.content.Context;
 import android.util.Log;
 
+import com.roselism.spot.SPoTApplication;
+import com.roselism.spot.model.dao.listener.OnDeleteListener;
+import com.roselism.spot.model.dao.listener.OnLoadListener;
+import com.roselism.spot.model.dao.operator.PhotoOperater;
+import com.roselism.spot.util.LogUtils;
+
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -72,30 +78,57 @@ public class Folder extends BmobObject {
     @Override
     public void delete(final Context context, DeleteListener listener) {
         super.delete(context, listener); // 删除当前的Folder对象
-        BmobQuery<Photo> query = new BmobQuery<Photo>();
-        query.addWhereEqualTo("parent", new BmobPointer(this));
-        query.findObjects(context, new FindListener<Photo>() {
-            @Override
-            public void onSuccess(List<Photo> list) {
-                for (Photo p : list) { // 遍历当前文件夹下的图片
-                    p.delete(context, new DeleteListener() {
-                        @Override
-                        public void onSuccess() {
-                            Log.i("TAG", "onSuccess:" + Folder.this.getName() + "文件夹下的 图片删除成功");
-                        }
+//        BmobQuery<Photo> query = new BmobQuery<>();
+        PhotoOperater.query.allPhotosFrom(this, (list -> { // 查询当前文件夹下的所有的照片
+            for (Photo p : list) { // 遍历当前文件夹下的图片
+                if (p.getUploader().getObjectId().equals(SPoTApplication.getUser().getObjectId())) // 只删除自己的照片
+                    PhotoOperater.deleter.delete(p, (photo) -> {
 
-                        @Override
-                        public void onFailure(int i, String s) {
-
-                        }
                     });
-                }
-            }
 
-            @Override
-            public void onError(int i, String s) {
-
+//                    p.delete(context, new DeleteListener() {
+//                        @Override
+//                        public void onSuccess() {
+//                            LogUtils.i("TAG", "onSuccess:" + Folder.this.getName() + "文件夹下的 图片删除成功");
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int i, String s) {
+//
+//                        }
+//                    });
             }
-        });
+        }));
+
+
+//        query.addWhereEqualTo("parent", new BmobPointer(this));
+//
+//        query.findObjects(context, new FindListener<Photo>() {
+//            @Override
+//            public void onSuccess(List<Photo> list) {
+//
+//
+//                for (Photo p : list) { // 遍历当前文件夹下的图片
+//                    p.delete(context, new DeleteListener() {
+//                        @Override
+//                        public void onSuccess() {
+//                            LogUtils.i("TAG", "onSuccess:" + Folder.this.getName() + "文件夹下的 图片删除成功");
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int i, String s) {
+//
+//                        }
+//                    });
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//
+//            }
+//        });
     }
 }

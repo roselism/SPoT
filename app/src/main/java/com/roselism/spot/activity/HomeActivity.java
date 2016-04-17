@@ -1,5 +1,6 @@
 package com.roselism.spot.activity;
 
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.adapter.ListSwipeAdapter;
 import com.roselism.spot.adapter.PictureListAdapter;
 import com.roselism.spot.model.dao.operator.FolderOperater;
@@ -87,6 +90,7 @@ public class HomeActivity extends AppCompatActivity
             finish();
             return;
         }
+        SPoTApplication.setUser(mCurUser);
 
         ThreadUtils.runInUIThread(new DataLoader());
 
@@ -218,17 +222,6 @@ public class HomeActivity extends AppCompatActivity
                     // TODO: 2016/4/13 跳转进浏览picture专用的Activity中，而不是Folder中，这里还需要更改
                     startActivity(new Intent(HomeActivity.this, FolderActivity.class).putExtra("fileId", curFile.getId()).putExtra("fileName", curFile.getTitle()));
                 }
-
-                // 将当前文件夹的数据发送给FolderActivity
-//                Bundle bundle = new Bundle();
-//                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-//                bundle.putString("fileId", curFile.getId());
-//                bundle.putString("fileName", curFile.getTitle());
-//
-//
-//                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
             }
         };
 
@@ -326,6 +319,13 @@ public class HomeActivity extends AppCompatActivity
         return (T) User.getCurrentUser(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(mDrawer))
+
+            super.onBackPressed();
+    }
+
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
@@ -372,16 +372,26 @@ public class HomeActivity extends AppCompatActivity
                 onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
             });
 
-            PhotoOperater photoOperater = new PhotoOperater();
-            photoOperater.allPhotoInHome(getUser(), (data) -> {
-                if (data != null) {
-                    for (Photo p : (List<Photo>) data) {
+//            PhotoOperater photoOperater = new PhotoOperater();
+//            photoOperater.allPhotoInHome(getUser(), (data) -> {
+//                if (data != null) {
+//                    for (Photo p : (List<Photo>) data) {
+//                        mData.add(new File(p));
+//                    }
+//                }
+//                flag3 = true;
+//                onLoadFinished(null);
+//            });
+
+            PhotoOperater.query.allPhotoInHome(getUser(), (data) -> {
+                if (data != null)
+                    for (Photo p : data)
                         mData.add(new File(p));
-                    }
-                }
+
                 flag3 = true;
                 onLoadFinished(null);
             });
+
         }
 
         /**

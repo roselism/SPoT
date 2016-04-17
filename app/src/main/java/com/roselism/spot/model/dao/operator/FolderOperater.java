@@ -30,7 +30,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * 改
  * 查
  *
- * @version 1.1
+ * @version 1.0
  */
 public class FolderOperater extends Operater {
     private Folder mFolder;
@@ -154,7 +154,6 @@ public class FolderOperater extends Operater {
                 LogUtils.i("onFailure: " + i + " " + s);
             }
         });
-
     }
 
     /**
@@ -194,5 +193,18 @@ public class FolderOperater extends Operater {
         public AddOperater(@Nullable Folder folder) {
             super(folder);
         }
+    }
+
+    /**
+     * 查询器
+     *
+     * @since 1.1
+     */
+    public static class QueryOperater extends FolderOperater {
+        public QueryOperater(Folder folder) {
+            super(folder);
+        }
+
+
     }
 }

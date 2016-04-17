@@ -2,6 +2,7 @@ package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 
+import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Filter;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -21,6 +23,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.listener.DeleteListener;
 import cn.bmob.v3.listener.FindListener;
 
 import cn.bmob.v3.listener.SaveListener;
@@ -33,6 +36,17 @@ import cn.bmob.v3.listener.UploadBatchListener;
 public class PhotoOperater extends Operater {
 
     private static final String TAG = "PhotoOperater";
+
+    public static QueryOperater query = getQuery();
+    public static DeleteOperater deleter = getDeleter();
+
+    private static QueryOperater getQuery() {
+        return new QueryOperater();
+    }
+
+    private static DeleteOperater getDeleter() {
+        return new DeleteOperater();
+    }
 
     public PhotoOperater() {
     }
@@ -47,62 +61,71 @@ public class PhotoOperater extends Operater {
         this.mContext = context;
     }
 
+//    /**
+//     * 获取相应文件夹下的所有的照片
+//     *
+//     * @param folderId photo所在的文件夹的id
+//     * @param listener 加载完毕监听器（如果失败则会返回null）
+//     * @deprecated 不推荐使用，请使用query中的同名称方法
+//     */
+//    public void allPhotosFrom(String folderId, OnLoadListener listener) {
+//        BmobQuery<Photo> query = new BmobQuery<>();
+//        Folder folder = new Folder(folderId);
+//        query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
+//        query.include("uploader");
+//        query.findObjects(mContext, new FindListener<Photo>() {
+//            @Override
+//            public void onSuccess(List<Photo> list) {
+//                listener.onLoadFinished(list);
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                LogUtils.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
+//                listener.onLoadFinished(null);
+//            }
+//        });
+//    }
+
     /**
-     * 获取相应文件夹下的所有的照片
      *
-     * @param folderId photo所在的文件夹的id
-     * @param listener 加载完毕监听器（如果失败则会返回null）
      */
-    public void allPhotosFrom(String folderId, OnLoadListener listener) {
-        BmobQuery<Photo> query = new BmobQuery<>();
-        Folder folder = new Folder(folderId);
-        query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
-        query.include("uploader");
-        query.findObjects(mContext, new FindListener<Photo>() {
-            @Override
-            public void onSuccess(List<Photo> list) {
-                listener.onLoadFinished(list);
-            }
 
-            @Override
-            public void onError(int i, String s) {
-                LogUtils.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
-                listener.onLoadFinished(null);
-            }
-        });
-    }
+//    /**
+//     * 主界面的所有照片
+//     *
+//     * @param user
+//     * @param listener
+//     * @deprecated 不推荐使用，请使用query中的同名称方法
+//     */
+//    public void allPhotoInHome(BmobUser user, OnLoadListener listener) {
+//
+//        // 查询picture
+//        BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+//        pictureQuery.addWhereEqualTo("uploader", user);
+//        pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+//        pictureQuery.include("uploader");
+//        pictureQuery.findObjects(mContext, new FindListener<Photo>() {
+//            @Override
+//            public void onSuccess(List<Photo> list) {
+//                listener.onLoadFinished(list);
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                listener.onLoadFinished(null);
+//            }
+//        });
+//    }
 
-    /**
-     * 主界面的所有照片
-     */
-    public void allPhotoInHome(BmobUser user, OnLoadListener listener) {
-
-        // 查询picture
-        BmobQuery<Photo> pictureQuery = new BmobQuery<>();
-        pictureQuery.addWhereEqualTo("uploader", user);
-        pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
-        pictureQuery.include("uploader");
-        pictureQuery.findObjects(mContext, new FindListener<Photo>() {
-            @Override
-            public void onSuccess(List<Photo> list) {
-                listener.onLoadFinished(list);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                listener.onLoadFinished(null);
-            }
-        });
-    }
-
-    /**
-     * 获取相应文件夹下的所有的照片
-     *
-     * @param folder 文件夹对象
-     */
-    public void allPhotosFrom(Folder folder, OnLoadListener listener) {
-        allPhotosFrom(folder.getObjectId(), listener);
-    }
+//    /**
+//     * 获取相应文件夹下的所有的照片
+//     *
+//     * @param folder 文件夹对象
+//     */
+//    public void allPhotosFrom(Folder folder, OnLoadListener listener) {
+//        allPhotosFrom(folder.getObjectId(), listener);
+//    }
 
     /**
      * 上传所选中的照片
@@ -255,5 +278,89 @@ public class PhotoOperater extends Operater {
 
             }
         });
+    }
+
+
+    public static class QueryOperater extends PhotoOperater {
+
+        /**
+         * 获取相应文件夹下的所有的照片
+         *
+         * @param folderId photo所在的文件夹的id
+         * @param listener 加载完毕监听器（如果失败则会返回null）
+         */
+        public void allPhotosFrom(String folderId, OnLoadListener<Photo> listener) {
+            BmobQuery<Photo> query = new BmobQuery<>();
+            Folder folder = new Folder(folderId);
+            query.addWhereEqualTo("parent", new BmobPointer(folder)); // 查询所有parent属性为folder的picture对象
+            query.include("uploader");
+            query.findObjects(mContext, new FindListener<Photo>() {
+                @Override
+                public void onSuccess(List<Photo> list) {
+                    listener.onLoadFinished(list);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    LogUtils.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
+                    listener.onLoadFinished(null);
+                }
+            });
+        }
+
+        /**
+         * 获取相应文件夹下的所有的照片
+         *
+         * @param folder 文件夹对象
+         */
+        public void allPhotosFrom(Folder folder, OnLoadListener<Photo> listener) {
+            allPhotosFrom(folder.getObjectId(), listener);
+        }
+
+        /**
+         * 主界面的所有照片
+         */
+        public void allPhotoInHome(BmobUser user, OnLoadListener<Photo> listener) {
+
+            // 查询picture
+            BmobQuery<Photo> pictureQuery = new BmobQuery<>();
+            pictureQuery.addWhereEqualTo("uploader", user);
+            pictureQuery.addWhereDoesNotExists("parent"); // parent 列中没有值
+            pictureQuery.include("uploader");
+            pictureQuery.findObjects(mContext, new FindListener<Photo>() {
+                @Override
+                public void onSuccess(List<Photo> list) {
+                    listener.onLoadFinished(list);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    listener.onLoadFinished(null);
+                }
+            });
+        }
+    }
+
+    public static class DeleteOperater extends PhotoOperater {
+
+        /**
+         * 删除某张照片
+         *
+         * @param photo    要被删除的照片对象
+         * @param listener 删除操作监听器，删除成功则返回被删除的photo对象，失败则返回null
+         */
+        public void delete(Photo photo, OnDeleteListener<Photo> listener) {
+            photo.delete(mContext, new DeleteListener() {
+                @Override
+                public void onSuccess() {
+                    listener.onDeleteFinished(photo);
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    listener.onDeleteFinished(null);
+                }
+            });
+        }
     }
 }
