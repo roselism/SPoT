@@ -3,10 +3,11 @@ package com.roselism.spot.model.domain.bmob;
 import android.content.Context;
 
 import com.roselism.spot.SPoTApplication;
+import com.roselism.spot.model.dao.listener.OnUpdateListener;
+import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.model.domain.File;
 import com.roselism.spot.util.LogUtils;
-
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobRelation;
@@ -74,6 +75,8 @@ public class Folder extends BmobObject {
     public void delete(final Context context, DeleteListener listener) {
         super.delete(context, listener); // 删除当前的Folder对象
 //        BmobQuery<Photo> query = new BmobQuery<>();
+
+        // 删除当前文件夹下所有的该用户的照片
         PhotoOperater.query.allPhotosFrom(this, (list -> { // 查询当前文件夹下的所有的照片
             for (Photo p : list) { // 遍历当前文件夹下的图片
                 if (p.getUploader().getObjectId().equals(SPoTApplication.getUser().getObjectId())) // 只删除自己的照片
@@ -82,6 +85,18 @@ public class Folder extends BmobObject {
                             LogUtils.i("照片" + photo.getName() + "删除成功");
                         }
                     });
+            }
+        }));
+
+        // 移除当前用户权限
+        FolderOperater.updater.removeWorkder(this, (User) SPoTApplication.getUser(), new OnUpdateListener<User>() {
+            @Override
+            public void onUpdateFinished(User user) {
+                if (user != null)
+                    LogUtils.i("用户权限移除成功");
+            }
+        });
+
 
 //                    p.delete(context, new DeleteListener() {
 //                        @Override
@@ -94,8 +109,6 @@ public class Folder extends BmobObject {
 //
 //                        }
 //                    });
-            }
-        }));
 
 
 //        query.addWhereEqualTo("parent", new BmobPointer(this));

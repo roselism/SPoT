@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
+import com.roselism.spot.model.dao.listener.OnUpdateListener;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtils;
@@ -35,9 +36,15 @@ import cn.bmob.v3.listener.UpdateListener;
 public class FolderOperater extends Operater {
     private Folder mFolder;
     public static AddOperater adder = getAdder();
+    public static UpdateOperater updater = getUpdater();
+
 
     private static AddOperater getAdder() {
         return new AddOperater(null);
+    }
+
+    private static UpdateOperater getUpdater() {
+        return new UpdateOperater(null);
     }
 
     /**
@@ -204,7 +211,38 @@ public class FolderOperater extends Operater {
         public QueryOperater(Folder folder) {
             super(folder);
         }
+    }
 
+    /**
+     * 更新器
+     */
+    public static class UpdateOperater extends FolderOperater {
 
+        public UpdateOperater(Folder folder) {
+            super(folder);
+        }
+
+        /**
+         * 移除当前文件夹下的某个参与者
+         *
+         * @param folder   目标文件夹
+         * @param user     要被移除参与权限的用户
+         * @param listener 移除监听器 如果移除成功则返回被移除的用户，否则返回null
+         */
+        public void removeWorkder(Folder folder, User user, OnUpdateListener<User> listener) {
+            folder.getWorkers().remove(user);
+            folder.setWorkers(folder.getWorkers());
+            folder.update(mContext, new UpdateListener() {
+                @Override
+                public void onSuccess() {
+                    listener.onUpdateFinished(user);
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    listener.onUpdateFinished(null);
+                }
+            });
+        }
     }
 }

@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.CommonAdapter;
-import com.roselism.spot.adapter.ViewHolder;
+import com.roselism.spot.adapter.viewholder.CommonViewHolder;
 import com.roselism.spot.model.domain.ImageFolder;
 import com.roselism.spot.library.widget.BasePopupWindowForListView;
 
@@ -25,7 +25,7 @@ public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFol
         mListDir = (ListView) findViewById(R.id.id_list_dir);
         mListDir.setAdapter(new CommonAdapter<ImageFolder>(context, mDatas, R.layout.list_item_dir) {
             @Override
-            public void convert(ViewHolder helper, ImageFolder item) {
+            public void convert(CommonViewHolder helper, ImageFolder item) {
                 helper.setText(R.id.id_dir_item_name, item.getName());
                 helper.setImageByUrl(R.id.id_dir_item_image, item.getFirstImagePath());
                 helper.setText(R.id.id_dir_item_count, item.getCount() + "张");
