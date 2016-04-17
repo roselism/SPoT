@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
-import com.roselism.spot.model.domain.RelationLink;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.RelationLink;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtils;
 
 

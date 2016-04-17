@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtils;
 
 

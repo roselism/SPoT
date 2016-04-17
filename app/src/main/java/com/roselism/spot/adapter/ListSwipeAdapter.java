@@ -25,8 +25,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.roselism.spot.R;
 import com.roselism.spot.model.domain.File;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Photo;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
 
 import java.util.LinkedList;
 import java.util.List;

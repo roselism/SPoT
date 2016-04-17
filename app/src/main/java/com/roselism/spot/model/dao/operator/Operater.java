@@ -3,8 +3,8 @@ package com.roselism.spot.model.dao.operator;
 import android.content.Context;
 
 import com.roselism.spot.SPoTApplication;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.User;
 
 /**
  * 所有操作类的父类

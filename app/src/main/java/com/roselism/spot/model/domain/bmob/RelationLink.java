@@ -1,4 +1,4 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.bmob;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import cn.bmob.v3.BmobObject;
  * <p>
  * <p>
  * Created by hero2 on 2016/3/14.
+ * 请不要做任何修改！
  */
 public class RelationLink extends BmobObject {
 

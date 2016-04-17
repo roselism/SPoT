@@ -24,7 +24,7 @@ import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
 import com.roselism.spot.model.dao.operator.UserOperater;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.User;
 
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;

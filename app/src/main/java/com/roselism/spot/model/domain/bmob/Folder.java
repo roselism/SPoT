@@ -1,22 +1,16 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.bmob;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.roselism.spot.SPoTApplication;
-import com.roselism.spot.model.dao.listener.OnDeleteListener;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
+import com.roselism.spot.model.domain.File;
 import com.roselism.spot.util.LogUtils;
 
-import java.util.List;
 
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.DeleteListener;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * 持久层 Folder 对象
@@ -25,6 +19,7 @@ import cn.bmob.v3.listener.FindListener;
  * Created by hero2 on 2016/1/26.
  * <p>
  * 继承BmobObject，是为了能让其他类能够指向它
+ * 请不要做任何修改！
  */
 public class Folder extends BmobObject {
     private String name;// 文件夹的名称 (不可变对象)
@@ -83,7 +78,9 @@ public class Folder extends BmobObject {
             for (Photo p : list) { // 遍历当前文件夹下的图片
                 if (p.getUploader().getObjectId().equals(SPoTApplication.getUser().getObjectId())) // 只删除自己的照片
                     PhotoOperater.deleter.delete(p, (photo) -> {
-
+                        if (photo != null) {
+                            LogUtils.i("照片" + photo.getName() + "删除成功");
+                        }
                     });
 
 //                    p.delete(context, new DeleteListener() {

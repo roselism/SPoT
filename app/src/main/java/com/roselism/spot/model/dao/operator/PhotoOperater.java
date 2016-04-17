@@ -3,9 +3,9 @@ package com.roselism.spot.model.dao.operator;
 import android.content.Context;
 
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Photo;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtils;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Filter;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;

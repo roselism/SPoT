@@ -4,6 +4,7 @@ package com.roselism.spot.model.domain;
  * Created by hero2 on 2016/1/24.
  * <p/>
  * 存放有图片的文件夹
+ * 请不要做任何修改！
  */
 public class ImageFolder {
     private String dir; // 该文件夹的路径

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
-import com.roselism.spot.model.domain.User;
 import com.roselism.spot.util.LogUtils;
 
 import cn.bmob.v3.BmobUser;

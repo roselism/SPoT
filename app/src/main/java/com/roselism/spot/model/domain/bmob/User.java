@@ -1,7 +1,10 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.bmob;
 
 import android.content.Context;
 import android.widget.Toast;
+
+import com.roselism.spot.model.domain.Image;
+import com.roselism.spot.model.domain.bmob.Folder;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
@@ -9,6 +12,7 @@ import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by hero2 on 2016/1/25.
+ * 请不要做任何修改！
  */
 public class User extends BmobUser {
     private String nickName;
@@ -38,7 +42,6 @@ public class User extends BmobUser {
     public Image getProfile() {
         return profile;
     }
-
 
     /**
      * 当前用户退出某个相册组

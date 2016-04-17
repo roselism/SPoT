@@ -1,6 +1,5 @@
 package com.roselism.spot.activity;
 
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,9 +31,9 @@ import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.model.domain.File;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Photo;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 
 import com.roselism.spot.util.LogUtils;
@@ -44,7 +42,6 @@ import com.roselism.spot.util.ThreadUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;

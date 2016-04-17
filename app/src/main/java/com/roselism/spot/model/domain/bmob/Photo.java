@@ -1,7 +1,9 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.bmob;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.roselism.spot.model.domain.File;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobDate;
@@ -14,6 +16,7 @@ import cn.bmob.v3.listener.DeleteListener;
  * 有别于 image和picture
  * <p/>
  * Created by hero2 on 2016/1/26.
+ * 请不要做任何修改！
  */
 public class Photo extends BmobObject {
     private String name; // 照片的名字

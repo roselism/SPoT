@@ -6,7 +6,7 @@ import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Image;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.model.dao.listener.OnBuildListener;
 
 import java.util.List;

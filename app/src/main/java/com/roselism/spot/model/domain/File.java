@@ -1,10 +1,15 @@
 package com.roselism.spot.model.domain;
 
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
+import com.roselism.spot.model.domain.bmob.User;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Photo 和 Folder 的抽象
+ * 请不要做任何修改！
  * <p>
  * Created by hero2 on 2016/1/26.
  */
