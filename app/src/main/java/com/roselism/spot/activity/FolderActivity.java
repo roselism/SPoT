@@ -25,7 +25,7 @@ import com.roselism.spot.adapter.PictureGridAdapter;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.model.domain.File;
+import com.roselism.spot.model.domain.local.File;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;
 import com.roselism.spot.model.dao.operator.FolderOperater;

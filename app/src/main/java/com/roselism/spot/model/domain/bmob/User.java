@@ -3,8 +3,7 @@ package com.roselism.spot.model.domain.bmob;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.roselism.spot.model.domain.Image;
-import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.local.Image;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;

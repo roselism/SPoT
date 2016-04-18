@@ -1,4 +1,4 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.local;
 
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;

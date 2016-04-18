@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureSelectAdapter;
-import com.roselism.spot.model.domain.ImageFolder;
+import com.roselism.spot.model.domain.local.ImageFolder;
 import com.roselism.spot.service.UploadService;
 import com.roselism.spot.library.app.ListImageDirPopupWindow;
 import com.roselism.spot.util.ThreadUtil;

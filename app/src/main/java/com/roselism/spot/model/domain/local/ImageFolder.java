@@ -1,4 +1,4 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.local;
 
 /**
  * Created by hero2 on 2016/1/24.

@@ -1,4 +1,4 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.local;
 
 /**
  * Created by simon on 16-4-18.
@@ -6,10 +6,8 @@ package com.roselism.spot.model.domain;
 public class Config {
     String name;
     String id;
-
-
+    
     public String getName() {
-
         return name;
     }
 

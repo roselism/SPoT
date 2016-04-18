@@ -3,7 +3,7 @@ package com.roselism.spot.model.domain.bmob;
 import android.content.Context;
 import android.util.Log;
 
-import com.roselism.spot.model.domain.File;
+import com.roselism.spot.model.domain.local.File;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobDate;

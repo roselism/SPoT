@@ -1,4 +1,6 @@
-package com.roselism.spot.model.domain;
+package com.roselism.spot.model.domain.local;
+
+import android.support.annotation.MainThread;
 
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -10,4 +12,5 @@ import cn.bmob.v3.datatype.BmobFile;
  * 请不要做任何修改！
  */
 public class Image extends BmobFile {
+
 }

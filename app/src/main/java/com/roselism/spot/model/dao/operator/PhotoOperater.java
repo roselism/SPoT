@@ -6,7 +6,6 @@ import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;
 import com.roselism.spot.model.domain.bmob.User;
-import com.roselism.spot.model.dao.listener.OnFindListener;
 
 import com.roselism.spot.util.LogUtil;
 
@@ -33,6 +32,8 @@ import cn.bmob.v3.listener.UploadBatchListener;
 /**
  * Image对象的操作类
  * Created by hero2 on 2016/3/8.
+ *
+ * @deprecated
  */
 public class PhotoOperater extends Operater {
 

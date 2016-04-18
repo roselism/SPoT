@@ -3,7 +3,7 @@ package com.roselism.spot.util;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.roselism.spot.model.domain.Config;
+import com.roselism.spot.model.domain.local.Config;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

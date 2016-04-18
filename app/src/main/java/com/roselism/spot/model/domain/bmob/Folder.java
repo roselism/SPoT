@@ -6,7 +6,7 @@ import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.OnUpdateListener;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
-import com.roselism.spot.model.domain.File;
+import com.roselism.spot.model.domain.local.File;
 import com.roselism.spot.util.LogUtil;
 
 import cn.bmob.v3.BmobObject;

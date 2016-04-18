@@ -11,7 +11,6 @@ import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtil;
 
 
-
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -31,12 +30,12 @@ import cn.bmob.v3.listener.UpdateListener;
  * 查
  *
  * @version 1.0
+ * @deprecated
  */
 public class FolderOperater extends Operater {
     private Folder mFolder;
     public static AddOperater adder = getAdder();
     public static UpdateOperater updater = getUpdater();
-
 
     private static AddOperater getAdder() {
         return new AddOperater(null);
@@ -59,7 +58,14 @@ public class FolderOperater extends Operater {
     }
 
     /**
-     * @param folder 要被操作的文件夹
+     * @param folder 要被操作的文件夹    void test() {
+     *               QueryOperater queryOperater = new BmobOperater();
+     *               queryOperater.query(new QueryStrategyPackage(new UserQuery()), new OnLoadListener() {
+     * @Override public void onLoadFinished(List data) {
+     * <p>
+     * }
+     * });
+     * }
      */
     public FolderOperater(Folder folder) {
         this.mFolder = folder;
@@ -70,7 +76,6 @@ public class FolderOperater extends Operater {
      *
      * @param user
      */
-
     public void findFolderCreateBy(BmobUser user, OnLoadListener listener) {
         BmobQuery<Folder> query1 = new BmobQuery<>(); // 第一个条件，查询出自己创建的
         query1.addWhereEqualTo("creater", new BmobPointer(user));

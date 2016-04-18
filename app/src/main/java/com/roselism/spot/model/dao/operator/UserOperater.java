@@ -2,18 +2,14 @@ package com.roselism.spot.model.dao.operator;
 
 import android.content.Context;
 
-import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.dao.listener.OnFindListener;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
-import com.roselism.spot.model.domain.Image;
+import com.roselism.spot.model.domain.local.Image;
 import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.model.dao.listener.OnBuildListener;
 
-import java.util.List;
-
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
 /**
@@ -23,21 +19,17 @@ import cn.bmob.v3.listener.SaveListener;
  * 删
  * 改
  * 查
+ *
+ * @deprecated
  */
-public class UserOperater {
+public class UserOperater extends Operater {
+
     public static AddOperater adder = getAdder();
     public static DeleteOperater deleter = getDeleter();
     public static UpdateOperater updater = getUpdater();
     public static QueryOperater query = getQuery();
 
     public static Context mContext; // 上下文对象
-
-    /**
-     * 初始化上下文对象
-     */
-    protected static void initContext() {
-        mContext = SPoTApplication.getContext();
-    }
 
     /**
      * 获取添加器
