@@ -31,8 +31,8 @@ import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
 
-import com.roselism.spot.util.LogUtils;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.util.LogUtil;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity
         }
 
         refreshData();
-//        ThreadUtils.runInUIThread(new DataLoader());
 
         // 初始化ImageLoader
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
@@ -97,7 +96,7 @@ public class HomeActivity extends AppCompatActivity
      * 刷新界面数据
      */
     public void refreshData() {
-        ThreadUtils.runInUIThread(new DataLoader());
+        ThreadUtil.runInUIThread(new DataLoader());
     }
 
     /**
@@ -189,19 +188,9 @@ public class HomeActivity extends AppCompatActivity
 
                 if (curFile.getType() == File.PICTURE_TYPE) { // 图片类型
                     // TODO: 2016/4/13 跳转进浏览picture专用的Activity中，而不是Folder中，这里还需要更改
-                    startActivity(new Intent(HomeActivity.this, FolderActivity.class).putExtra("fileId", curFile.getId()).putExtra("fileName", curFile.getTitle()));
+                    startActivity(new Intent(HomeActivity.this, FolderActivity.class).
+                            putExtra("fileId", curFile.getId()).putExtra("fileName", curFile.getTitle()));
                 }
-
-                // 将当前文件夹的数据发送给FolderActivity
-//                Bundle bundle = new Bundle();
-//                bundle.putString("fileType", curFile.getType() == File.GALLARY_TYPE ? File.PICTURE_TYPE + "" : GALLARY_TYPE + "");
-//                bundle.putString("fileId", curFile.getId());
-//                bundle.putString("fileName", curFile.getTitle());
-//
-//
-//                Intent intent = new Intent(HomeActivity.this, FolderActivity.class);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
             }
         };
 
@@ -269,13 +258,13 @@ public class HomeActivity extends AppCompatActivity
             FolderOperater operater = new FolderOperater(null);
             operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
                 if (data != null) {
-                    LogUtils.i("数据不为null");
+                    LogUtil.i("数据不为null");
 
                     for (Folder f : (List<Folder>) data) {
                         mData.add(new File(f, 1));
                     }
                 } else
-                    LogUtils.i("用户关联相册为null");
+                    LogUtil.i("用户关联相册为null");
 
                 flag1 = true;
                 onLoadFinished(null);
@@ -283,12 +272,12 @@ public class HomeActivity extends AppCompatActivity
 
             operater.findFolderCreateBy(curUser, (data) -> {
                 if (data != null) {
-                    LogUtils.i("数据不为bull");
+                    LogUtil.i("数据不为bull");
                     for (Folder f : (List<Folder>) data) {
                         mData.add(new File(f, 0));
                     }
                 } else
-                    LogUtils.i("用户创建相册为null");
+                    LogUtil.i("用户创建相册为null");
                 Log.i(TAG, "run: mdata.size -->" + mData.size());
                 flag2 = true;
                 onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
@@ -314,8 +303,8 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void onLoadFinished(List<File> data) {
             if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
-                ThreadUtils.runInUIThread(() -> {
-                    LogUtils.i("mdata size = " + mData.size());
+                ThreadUtil.runInUIThread(() -> {
+                    LogUtil.i("mdata size = " + mData.size());
                     Collections.sort(mData, (s1, s2) -> {// 给加载到的数据进行排序->文件夹在上，图片在下
                         if (s1.getType() != s2.getType())
                             return -(s1.getType() - s2.getType()); // 图片类型为0, 相册类型为1 相册大于图片，但是要排在上面，所以要取负

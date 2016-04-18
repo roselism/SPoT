@@ -11,7 +11,7 @@ import com.roselism.spot.SPoTApplication;
  * @更新时间 2016/4/10 15:33
  * @描述 在不同的线程之间切换的工具类
  */
-public class ThreadUtils {
+public class ThreadUtil {
     public static Handler mHandler = SPoTApplication.getMainHandler();
 
     /**

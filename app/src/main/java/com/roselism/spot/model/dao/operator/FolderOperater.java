@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.util.LogUtil;
 
 
 import java.util.List;
@@ -71,17 +71,17 @@ public class FolderOperater extends Operater {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
-                LogUtils.i("findFolderCreateBy: list size= " + list.size());
-                LogUtils.i("findFolderCreateBy", "onSuccess: ");
+                LogUtil.i("findFolderCreateBy: list size= " + list.size());
+                LogUtil.i("findFolderCreateBy", "onSuccess: ");
 
             }
 
             @Override
             public void onError(int i, String s) {
-//                LogUtils.i("TAG", "onFailure: " + i + " " + s);
-                LogUtils.i("onFailure: " + i + " " + s);
-                LogUtils.i("FolderOperater", "onError: -->");
-                LogUtils.i("FolderOperater", "onError: --> is debug?" + LogUtils.isDebug());
+//                LogUtil.i("TAG", "onFailure: " + i + " " + s);
+                LogUtil.i("onFailure: " + i + " " + s);
+                LogUtil.i("FolderOperater", "onError: -->");
+                LogUtil.i("FolderOperater", "onError: --> is debug?" + LogUtil.isDebug());
                 listener.onLoadFinished(null);
             }
         });
@@ -99,13 +99,13 @@ public class FolderOperater extends Operater {
             @Override
             public void onSuccess(List<Folder> list) {
                 listener.onLoadFinished(list);
-                LogUtils.i("findFolderAssoiateWith: 查询成功");
+                LogUtil.i("findFolderAssoiateWith: 查询成功");
             }
 
             @Override
             public void onError(int i, String s) {
                 listener.onLoadFinished(null);
-                LogUtils.i("onFailure: " + i + " " + s);
+                LogUtil.i("onFailure: " + i + " " + s);
             }
         });
     }
@@ -129,7 +129,7 @@ public class FolderOperater extends Operater {
         query.findObjects(mContext, new FindListener<User>() {
             @Override
             public void onSuccess(List<User> list) {
-                LogUtils.i("list size= " + list.size());
+                LogUtil.i("list size= " + list.size());
 
                 BmobRelation relation = new BmobRelation();
                 relation.add(list.get(0));
@@ -137,19 +137,19 @@ public class FolderOperater extends Operater {
                 mFolder.update(mContext, new UpdateListener() {
                     @Override
                     public void onSuccess() {
-                        LogUtils.i("TAG", "onSuccess: ");
+                        LogUtil.i("TAG", "onSuccess: ");
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        LogUtils.i("TAG", "onFailure: " + i + " " + s);
+                        LogUtil.i("TAG", "onFailure: " + i + " " + s);
                     }
                 });
             }
 
             @Override
             public void onError(int i, String s) {
-                LogUtils.i("onFailure: " + i + " " + s);
+                LogUtil.i("onFailure: " + i + " " + s);
             }
         });
 
@@ -173,7 +173,7 @@ public class FolderOperater extends Operater {
 
             @Override
             public void onFailure(int i, String s) {
-                LogUtils.i("TAG", "onFailure: " + i + " " + s);
+                LogUtil.i("TAG", "onFailure: " + i + " " + s);
                 listener.onOperateCreate(mFolder, creater, CREATE_FALLS);
             }
         });

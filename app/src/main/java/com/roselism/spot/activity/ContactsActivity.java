@@ -28,7 +28,7 @@ import com.roselism.spot.model.domain.User;
 
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class ContactsActivity extends AppCompatActivity
         initListener();
         initMaterialSheetFab();
 
-        ThreadUtils.runInThread(new DataLoader(getUser(), this));
+        ThreadUtil.runInThread(new DataLoader(getUser(), this));
 
         mRecylerview.setAdapter(new ContactsAdapter(null, this));
         mRecylerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
@@ -144,28 +144,6 @@ public class ContactsActivity extends AppCompatActivity
                 operater.addFriend(getUser(), data.get(0));
             }
         });
-
-//        operater
-
-//
-//        BmobQuery<User> query = new BmobQuery<>(); // 查询
-//        query.addWhereEqualTo("email", friendsEdmail);
-//        query.findObjects(this, new FindListener<User>() {
-//            @Override
-//            public void onSuccess(List<User> list) {
-//
-//                User friends = list.get(0);
-//                User currentUser = BmobUser.getCurrentUser(ContactsActivity.this, User.class);
-//
-//                RelationLinkOperater operater = new RelationLinkOperater(ContactsActivity.this);
-//                operater.addFriend(currentUser, friends); // 添加好友
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                Log.i(TAG, "onError: User查询错误 错误码:" + i + " 错误信息: " + s);
-//            }
-//        });
     }
 
     @Override
@@ -209,14 +187,9 @@ public class ContactsActivity extends AppCompatActivity
                 for (User user : (List<User>) friends)
                     mData.add(user);
 
-                ThreadUtils.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
 //                onLoadFinished();
             });
         }
-//
-//        public void onLoadFinished() {
-//
-//        }
-
     }
 }

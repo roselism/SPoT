@@ -1,7 +1,7 @@
 package com.roselism.spot.model.dao.listener;
 
 
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.util.LogUtil;
 
 import java.util.List;
 
@@ -25,13 +25,13 @@ public class OnFindListener extends FindListener {
 
     @Override
     public void onError(int i, String s) { // 查询错误
-        LogUtils.i("错误码：" + i + "错误信息：" + s); // 打印出错误信息
+        LogUtil.i("错误码：" + i + "错误信息：" + s); // 打印出错误信息
         onLoadListener.onLoadFinished(null); // 回掉
     }
 
     @Override
     public void onSuccess(List list) { // 查询成功
-        LogUtils.i("OnFindListener: " + "查询成功"); // 打印查询成功
+        LogUtil.i("OnFindListener: " + "查询成功"); // 打印查询成功
         onLoadListener.onLoadFinished(list); // 回掉listener
     }
 }

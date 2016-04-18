@@ -6,7 +6,7 @@ import com.roselism.spot.model.dao.listener.OnFindListener;
 import com.roselism.spot.model.domain.Folder;
 import com.roselism.spot.model.domain.Photo;
 import com.roselism.spot.model.domain.User;
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.util.LogUtil;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 
@@ -68,7 +68,7 @@ public class PhotoOperater extends Operater {
 //
 //            @Override
 //            public void onError(int i, String s) {
-//                LogUtils.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
+//                LogUtil.i(TAG, "onError: " + "错误码：" + i + " " + "错误信息：" + s + " !!!");
 //                listener.onLoadFinished(null);
 //            }
 //        });
@@ -117,7 +117,7 @@ public class PhotoOperater extends Operater {
      * @deprecated 需要将所有图片都上传完毕之后才能上传与之对应的Photo对象
      */
     public void uploadFile(String parentFolderId, List<String> selectedFileUrls) {
-        LogUtils.i("TAG", "uploadFile: " + "-----------开始上传---------");
+        LogUtil.i("TAG", "uploadFile: " + "-----------开始上传---------");
 
         final List<Photo> uploadingPhotos = new ArrayList<>(); // 将要持久化的Photo对象
 //        String[] filePaths = list2Array(selectedFileUrls); // 将List<String> 转换到 String[]
@@ -135,7 +135,7 @@ public class PhotoOperater extends Operater {
                 String curUrl; // 当前url对象
                 Photo curPhoto; // 当前pic对象
 
-                LogUtils.i(TAG, "onSuccess: current list size = " + list.size() + " urls size = " + urls.size());
+                LogUtil.i(TAG, "onSuccess: current list size = " + list.size() + " urls size = " + urls.size());
 
                 if (list.size() == uploadingPhotos.size()) { // 当list的size和uploadingPicture相同时，说明上传并返回完了url，这时可以开始update picture对象
                     List<Photo> tempPhotos = new LinkedList<>();
@@ -147,7 +147,7 @@ public class PhotoOperater extends Operater {
                             curBmobFile = list.get(i); // 遍历到的当前的文件
                             curUrl = urls.get(i); // 当前url
                             curPhoto = tempPhotos.get(j);
-                            LogUtils.i(TAG, "onSuccess: curBmobFile name = " + curBmobFile.getFilename());
+                            LogUtil.i(TAG, "onSuccess: curBmobFile name = " + curBmobFile.getFilename());
                             if (curPhoto.getName().equals(curBmobFile.getFilename())) {
                                 curPhoto.setPic(curUrl); // 获取图片的服务器地址
                                 curPhoto.setPhoto(curBmobFile);
@@ -155,14 +155,14 @@ public class PhotoOperater extends Operater {
                                 tempPhotos.remove(j);
 //                                savePhoto(curPhoto);
 
-                                LogUtils.i(TAG, "onSuccess: tempPhotos size = " + tempPhotos.size() + " list size = " + list.size());
+                                LogUtil.i(TAG, "onSuccess: tempPhotos size = " + tempPhotos.size() + " list size = " + list.size());
                                 break;
                             }
                         }
                     }
 
-                    LogUtils.i(TAG, "onSuccess: count = " + count);
-//                    LogUtils.i(TAG, "onSuccess: count = " + count);
+                    LogUtil.i(TAG, "onSuccess: count = " + count);
+//                    LogUtil.i(TAG, "onSuccess: count = " + count);
 
                     savePhoto(uploadingPhotos); // 开始上传Photo对象
                 }
@@ -176,15 +176,15 @@ public class PhotoOperater extends Operater {
              */
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-//                LogUtils.i(TAG, "onProgress: current percent " + curPercent + "%");
-//                LogUtils.i(TAG, "onProgress: total percent " + totalPercent + "%");
+//                LogUtil.i(TAG, "onProgress: current percent " + curPercent + "%");
+//                LogUtil.i(TAG, "onProgress: total percent " + totalPercent + "%");
 //                progressDialog.setProgress(curIndex);
 //                progressDialog.setSecondaryProgress(totalPercent);
             }
 
             @Override
             public void onError(int i, String s) {
-                LogUtils.i(TAG, "onError: " + "错误码:" + i + " 错误信息:" + s);
+                LogUtil.i(TAG, "onError: " + "错误码:" + i + " 错误信息:" + s);
             }
         });
     }
@@ -196,7 +196,7 @@ public class PhotoOperater extends Operater {
      * @param filePaths
      * @return 返回从url转变成Photo的对象列表
      */
-    private List<Photo> url2Photo(String parentFolderId, String[] filePaths) {
+    public List<Photo> url2Photo(String parentFolderId, String[] filePaths) {
 //        String curPath;
         Photo photo; // 要储存的Photo对象
         List<Photo> photoList = new LinkedList<>();
@@ -231,7 +231,7 @@ public class PhotoOperater extends Operater {
             p.save(mContext, new SaveListener() {
                 @Override
                 public void onSuccess() {
-                    LogUtils.i("TAG", "onSuccess: " + " picture对象储存完成");
+                    LogUtil.i("TAG", "onSuccess: " + " picture对象储存完成");
                 }
 
                 @Override

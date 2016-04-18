@@ -12,7 +12,7 @@ import cn.bmob.v3.listener.DeleteListener;
  * 持久层 Photo 对象
  * 用户拍摄的照片
  * 有别于 image和picture
- * <p/>
+ * <p>
  * Created by hero2 on 2016/1/26.
  */
 public class Photo extends BmobObject {
@@ -23,7 +23,7 @@ public class Photo extends BmobObject {
     private BmobDate takenDate; // 照片的拍摄时间
     private User uploader; // 上传者
     private BmobFile photoFile; // 与picture对相关联的照片
-
+    
     public Photo() {
     }
 

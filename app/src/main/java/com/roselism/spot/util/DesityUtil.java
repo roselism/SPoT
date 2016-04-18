@@ -13,7 +13,7 @@ import android.util.DisplayMetrics;
  * px=dp*(dpi/160)
  * pd=px*160/dpi
  */
-public class DesityUtils {
+public class DesityUtil {
     /**
      * dp转成px
      *
