@@ -9,9 +9,19 @@
     <include layout="@layout/toolbar_blue"></include>
 
     <EditText
+        android:id="@+id/nickName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="30dp"
+        android:hint="please input your email"/>
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nickName"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="30dp"
         android:hint="please input your email"/>
