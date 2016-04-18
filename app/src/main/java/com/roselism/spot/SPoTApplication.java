@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.util.LogUtil;
 
 import cn.bmob.v3.BmobUser;
 
@@ -52,12 +52,12 @@ public class SPoTApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        LogUtils.i("SPoTApplication", "onCreate");
+        LogUtil.i("SPoTApplication", "onCreate");
 
         sContext = getApplicationContext();
         sMainThreadId = android.os.Process.myTid();
 
-        LogUtils.setIsDebug(true); // 开启debug模式
+        LogUtil.setIsDebug(true); // 开启debug模式
     }
 
     public static Handler getMainHandler() {

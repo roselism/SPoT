@@ -10,7 +10,7 @@ import android.util.Log;
  * @更新时间 2016/4/10 15:45
  * @描述 Log日志管理
  */
-public class LogUtils {
+public class LogUtil {
 
     /**
      * @since 1.0
@@ -22,7 +22,7 @@ public class LogUtils {
     /**
      * @since 1.0
      */
-    private LogUtils() {
+    private LogUtil() {
     }
 
 
@@ -77,7 +77,7 @@ public class LogUtils {
      * @since 1.1
      */
     public static void setIsDebug(boolean isDebug) {
-        LogUtils.isDebug = isDebug;
+        LogUtil.isDebug = isDebug;
     }
 
     /**

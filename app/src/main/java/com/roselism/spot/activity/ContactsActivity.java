@@ -28,7 +28,7 @@ import com.roselism.spot.model.domain.bmob.User;
 
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class ContactsActivity extends AppCompatActivity
         initListener();
         initMaterialSheetFab();
 
-        ThreadUtils.runInThread(new DataLoader(getUser(), this));
+        ThreadUtil.runInThread(new DataLoader(getUser(), this));
 
         mRecylerview.setAdapter(new ContactsAdapter(null, this));
         mRecylerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
@@ -182,7 +182,7 @@ public class ContactsActivity extends AppCompatActivity
                 for (User user : (List<User>) friends)
                     mData.add(user);
 
-                ThreadUtils.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
 //                onLoadFinished();
             });
         }

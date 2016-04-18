@@ -30,8 +30,8 @@ import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
-import com.roselism.spot.util.LogUtils;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.util.LogUtil;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -80,16 +80,13 @@ public class FolderActivity extends AppCompatActivity
         setContentView(R.layout.activity_folder);
         ButterKnife.bind(this);
 
-        // 获取当前文件夹的名字
-//        Bundle bundle = this.getIntent().getExtras();
-//        String curFolderId = bundle.getString("fileId");
         curFolder = new Folder(this.getIntent().getStringExtra("fileId"));
         String folderName = this.getIntent().getStringExtra("fileName");
 
         toolbar.setTitle(folderName); // 设置toolbar的Title为当前文件夹
         setSupportActionBar(toolbar); // 设置支持toolbar
 
-        ThreadUtils.runInUIThread(new FolderLoader(curFolder, this)); // 开启一条线程，加载数据
+        ThreadUtil.runInUIThread(new FolderLoader(curFolder, this)); // 开启一条线程，加载数据
 
         initClickListener(); // 初始化点击监听器
 
@@ -100,11 +97,6 @@ public class FolderActivity extends AppCompatActivity
         materialSheetFab.showFab();
         mFloatingButton.attachToListView(mGridView);
 
-        // 创建一个新用户，设置昵称为wangzhen，头像为null并且在创建完成时打印user的昵称
-//        UserOperater.adder.newUser().
-//                setNickName("wangzhen").
-//                setProfile(null).
-//                build(user -> LogUtils.d(user.getNickName()));
     }
 
     /**
@@ -141,7 +133,7 @@ public class FolderActivity extends AppCompatActivity
      */
     protected void buildAdapter() {
 //        Log.i(TAG, "buildAdapter: building...........");
-        LogUtils.i("buildAdapter: building...........");
+        LogUtil.i("buildAdapter: building...........");
         PictureGridAdapter pictureGridAdapter = new PictureGridAdapter(this, mData);
         mGridView.setAdapter(pictureGridAdapter);
     }
@@ -277,7 +269,8 @@ public class FolderActivity extends AppCompatActivity
                 for (Photo p : list) {
                     mData.add(new File(p));
                 }
-                ThreadUtils.runInUIThread(() -> buildAdapter());
+
+                ThreadUtil.runInUIThread(() -> buildAdapter());
             });
 
 //

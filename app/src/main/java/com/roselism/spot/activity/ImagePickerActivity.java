@@ -28,7 +28,7 @@ import com.roselism.spot.adapter.PictureSelectAdapter;
 import com.roselism.spot.model.domain.ImageFolder;
 import com.roselism.spot.service.UploadService;
 import com.roselism.spot.library.app.ListImageDirPopupWindow;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -338,7 +338,7 @@ public class ImagePickerActivity extends AppCompatActivity
                 mCursor.close();
                 mDirPaths = null;// 扫描完成，辅助的HashSet也就可以释放内存了
 
-                ThreadUtils.runInUIThread(() -> {
+                ThreadUtil.runInUIThread(() -> {
                     mProgressDialog.dismiss(); // 取消dialog
                     data2View();  //  为View绑定数据
                     initListDirPopupWindw();  // 初始化展示文件夹的popupWindw

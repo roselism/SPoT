@@ -9,3 +9,4 @@ import cn.bmob.v3.BmobObject;
 public interface OnUpdateListener<T extends BmobObject> {
     void onUpdateFinished(T t);
 }
+
