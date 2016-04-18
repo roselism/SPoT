@@ -10,14 +10,14 @@ import cn.bmob.v3.Bmob;
  * 初始化bmob对象
  * Created by simon on 2016/4/18.
  */
-public class BmobInit {
+public class BmobIniter {
     Context mContext;
 
-    public BmobInit(Context context) {
+    public BmobIniter(Context context) {
         this.mContext = context;
     }
 
-    void initBmob() {
+    public void initBmob() {
         Bmob.initialize(mContext, ConfUtil.getBmobAppId());
     }
 }

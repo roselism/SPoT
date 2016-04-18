@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
+import com.roselism.spot.conf.BmobIniter;
 import com.roselism.spot.util.LogUtil;
 
 import cn.bmob.v3.BmobUser;
@@ -58,6 +59,10 @@ public class SPoTApplication extends Application {
         sMainThreadId = android.os.Process.myTid();
 
         LogUtil.setIsDebug(true); // 开启debug模式
+
+        BmobIniter bmobIniter = new BmobIniter(sContext); // 初始化bmob全局变量
+        bmobIniter.initBmob();
+
     }
 
     public static Handler getMainHandler() {

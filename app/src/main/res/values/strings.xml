@@ -1,16 +1,12 @@
 <resources>
     <string name="app_name">SPoT</string>
-    <string name="app_description">Save Photos Together</string>
-    <string name="title_activity_login">Login</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Go</string>
-    <string name="error_wrong_email">This email address is invalid</string>
     <string name="error_too_short_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_email_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="et_folder_name_hint"></string>
@@ -18,7 +14,6 @@
     <string name="btn_canle">cancle</string>
     <string name="btn_create_folder">create</string>
     <string name="btn_list_delete">delete</string>
-    <string name="btn_list_edit">edit</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_item_share">share</string>

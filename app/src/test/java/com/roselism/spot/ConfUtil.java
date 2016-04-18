@@ -13,8 +13,6 @@ public class ConfUtil {
 
     @Test
     public void testGetBmobAppId() {
-//        assertEquals("a736bff2e503810b1e7e68b248ff5a7d", com.roselism.spot.util.ConfUtil.getBmobAppId());
-//        assertEquals("a736bff2e503810b1e7e68b248ff5a7d", com.roselism.spot.util.ConfUtil.getBmobAppId());
         assertNotNull(com.roselism.spot.util.ConfUtil.getBmobAppId());
     }
 }

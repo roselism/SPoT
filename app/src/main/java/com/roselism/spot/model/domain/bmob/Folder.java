@@ -7,7 +7,7 @@ import com.roselism.spot.model.dao.listener.OnUpdateListener;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.model.domain.File;
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.util.LogUtil;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobRelation;
@@ -82,7 +82,7 @@ public class Folder extends BmobObject {
                 if (p.getUploader().getObjectId().equals(SPoTApplication.getUser().getObjectId())) // 只删除自己的照片
                     PhotoOperater.deleter.delete(p, (photo) -> {
                         if (photo != null) {
-                            LogUtils.i("照片" + photo.getName() + "删除成功");
+                            LogUtil.i("照片" + photo.getName() + "删除成功");
                         }
                     });
             }
@@ -93,7 +93,7 @@ public class Folder extends BmobObject {
             @Override
             public void onUpdateFinished(User user) {
                 if (user != null)
-                    LogUtils.i("用户权限移除成功");
+                    LogUtil.i("用户权限移除成功");
             }
         });
 

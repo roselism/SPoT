@@ -40,7 +40,7 @@ public class RelationLinkOperater extends Operater {
         this.mContext = context;
     }
 
-    public void addFriend(User user, User friend) {
+    public void addFriend(@NonNull User user, @NonNull User friend) {
 
         String id = friend.getObjectId();
         List<String> idList = new LinkedList<>();
@@ -55,14 +55,6 @@ public class RelationLinkOperater extends Operater {
      * @param friendsId 好友的id
      */
     public void addFriends(final User user, final List<String> friendsId) {
-
-//        allRelationLinkOf(user, new OnLoadListener<RelationLink>() {
-//            @Override
-//            public void onLoadFinished(List<RelationLink> data) {
-//                data.size();
-//            }
-//        });
-
         allRelationLinkOf(user, (data -> {
             LogUtil.i(TAG, "onSuccess: 查找Link成功");
 
