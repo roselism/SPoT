@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,6 +84,8 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
         SPoTApplication.setUser(mCurUser);
+
+        LogUtil.i(TAG, "onCreate->>>");
 
         refreshData();
 
@@ -238,14 +239,13 @@ public class HomeActivity extends AppCompatActivity
         return false;
     }
 
-    protected <T extends BmobUser> T getUser() {
-        return (T) User.getCurrentUser(this);
+    protected User getUser() {
+        return User.getCurrentUser(this, User.class);
     }
 
     @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(mDrawer))
-
             super.onBackPressed();
     }
 
@@ -264,8 +264,6 @@ public class HomeActivity extends AppCompatActivity
                 mData = new ArrayList<>(); // 初始化，每次使用的时候初始化，避免数据重复
             } else
                 mData.clear();
-
-//            BmobUser curUser = getUser();
 
             // 设定operater的操作
             Operater<List<Folder>> bmobOperater = (StrategyContext strategyPackage, OnOperateListener<List<Folder>> listener) -> {
@@ -288,46 +286,15 @@ public class HomeActivity extends AppCompatActivity
                     new StrategyContext(new QueryFolderByCreater(getUser())),
                     (list -> {
                         if (list != null) {
-                            LogUtil.i("数据不为bull");
+//                            LogUtil.i("数据不为bull");
                             for (Folder f : list) {
                                 mData.add(new File(f, 0));
                             }
                         } else
-                            LogUtil.i("用户创建相册为null");
-                        Log.i(TAG, "run: mdata.size -->" + mData.size());
-                        flag2 = true;
+//                            LogUtil.i("用户创建相册为null");
+                            flag2 = true;
                         onOperated(null);// 数据已经添加了进去,所以这里赋值为空就行
                     }));
-
-//            FolderOperater operater = new FolderOperater(null);
-//            operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
-//                if (data != null) {
-//                    LogUtil.i("数据不为null");
-//
-//                    for (Folder f : (List<Folder>) data) {
-//                        mData.add(new File(f, 1));
-//                    }
-//                } else
-//                    LogUtil.i("用户关联相册为null");
-//
-//                flag1 = true;
-//                onLoadFinished(null);
-//            });
-
-
-//            operater.findFolderCreateBy(curUser, (data) -> {
-//                if (data != null) {
-//                    LogUtil.i("数据不为bull");
-//                    for (Folder f : (List<Folder>) data) {
-//                        mData.add(new File(f, 0));
-//                    }
-//                } else
-//                    LogUtil.i("用户创建相册为null");
-//                Log.i(TAG, "run: mdata.size -->" + mData.size());
-//                flag2 = true;
-//                onOperated(null);// 数据已经添加了进去,所以这里赋值为空就行
-//            });
-
 
             PhotoOperater.query.allPhotoInHome(getUser(), (data) -> {
                 if (data != null)
@@ -337,36 +304,7 @@ public class HomeActivity extends AppCompatActivity
                 flag3 = true;
                 onOperated(null);
             });
-
         }
-
-        /**
-         * 所有数据加载完毕时调用
-         *
-         * @param data 这里传入null就好，数据在传入之前就已经添加进了mdata成员变量里面
-         */
-//        @Override
-//        public void onLoadFinished(List<File> data) {
-//            if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
-//                ThreadUtil.runInUIThread(() -> {
-//                    LogUtil.i("mdata size = " + mData.size());
-//                    Collections.sort(mData, (s1, s2) -> {// 给加载到的数据进行排序->文件夹在上，图片在下
-//                        if (s1.getType() != s2.getType())
-//                            return -(s1.getType() - s2.getType()); // 图片类型为0, 相册类型为1 相册大于图片，但是要排在上面，所以要取负
-//                        return 1;
-//                    });
-//
-//                    // 设置背景
-//                    if (mData.size() == 0)
-//                        showBackGround(true);
-//                    else
-//                        showBackGround(false);
-//
-//                    buildAdapter();
-//                });
-//            }
-//        }
-
 
         /**
          * 所有数据加载完毕时调用

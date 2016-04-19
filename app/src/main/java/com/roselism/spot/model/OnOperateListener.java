@@ -1,6 +1,5 @@
 package com.roselism.spot.model;
 
-
 /**
  * 操作的监听器
  * 其他所有类型操作的超类

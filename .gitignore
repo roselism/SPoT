@@ -11,5 +11,5 @@
 /captures
 *.apk
 
-bmob.txt
-AppConfig.xml
+app/config/bmob.txt
+app/config/AppConfig.xml

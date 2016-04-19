@@ -138,16 +138,13 @@ public class ImagePickerActivity extends AppCompatActivity
                 mImgFloderList,
                 LayoutInflater.from(getApplicationContext()).inflate(R.layout.list_dir, null));
 
-        mListImageDirPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-
-            @Override
-            public void onDismiss() {
-                // 设置背景颜色变暗
-                WindowManager.LayoutParams lp = getWindow().getAttributes();
-                lp.alpha = 1.0f;
-                getWindow().setAttributes(lp);
-            }
-        });
+        mListImageDirPopupWindow.setOnDismissListener(() -> {
+                    // 设置背景颜色变暗
+                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                    lp.alpha = 1.0f;
+                    getWindow().setAttributes(lp);
+                }
+        );
         // 设置选择文件夹的回调
         mListImageDirPopupWindow.setOnImageDirSelected(this);
     }

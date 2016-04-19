@@ -19,13 +19,13 @@ import java.util.List;
  */
 public class ConfUtil {
 
-
     public static List<Config> xml2List() throws XmlPullParserException, FileNotFoundException {
 
         List<Config> configs = Lists.newArrayList();
-        File in = new File("src\\main\\res\\conf\\AppConfig.xml");
+        File in = new File("config\\AppConfig.xml");
 
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        XmlPullParser parser = factory.newPullParser();
         parser.setInput(Files.newReader(in, Charsets.UTF_8));
 
         int type = parser.getEventType();
