@@ -60,7 +60,7 @@ public class FolderOperater extends Operater {
     /**
      * @param folder 要被操作的文件夹    void test() {
      *               QueryOperater queryOperater = new BmobOperater();
-     *               queryOperater.query(new QueryStrategyPackage(new UserQuery()), new OnLoadListener() {
+     *               queryOperater.query(new StrategyContext(new UserQuery()), new OnLoadListener() {
      * @Override public void onLoadFinished(List data) {
      * <p>
      * }

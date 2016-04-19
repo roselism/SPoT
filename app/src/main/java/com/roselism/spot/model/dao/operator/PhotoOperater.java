@@ -173,7 +173,7 @@ public class PhotoOperater extends Operater {
                             LogUtil.i(TAG, "onSuccess: curBmobFile name = " + curBmobFile.getFilename());
                             if (curPhoto.getName().equals(curBmobFile.getFilename())) {
                                 curPhoto.setPic(curUrl); // 获取图片的服务器地址
-                                curPhoto.setPhoto(curBmobFile);
+                                curPhoto.setPhotoFile(curBmobFile);
 
                                 tempPhotos.remove(j);
 //                                savePhoto(curPhoto);

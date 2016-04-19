@@ -26,7 +26,7 @@ public class Photo extends BmobObject {
     private BmobDate takenDate; // 照片的拍摄时间
     private User uploader; // 上传者
     private BmobFile photoFile; // 与picture对相关联的照片
-    
+
     public Photo() {
     }
 
@@ -34,7 +34,7 @@ public class Photo extends BmobObject {
         setObjectId(file.getId()); // 只需获得pic对象的id
         setName(file.getTitle());
         setPic(file.getFileUrl());
-        setPhoto(file.getBoundFile());
+        setPhotoFile(file.getBoundFile());
     }
 
     public String getName() {
@@ -97,8 +97,13 @@ public class Photo extends BmobObject {
         return photoFile;
     }
 
-    public void setPhoto(BmobFile photo) {
-        this.photoFile = photo;
+
+    public BmobFile getPhotoFile() {
+        return photoFile;
+    }
+
+    public void setPhotoFile(BmobFile photoFile) {
+        this.photoFile = photoFile;
     }
 
     @Override

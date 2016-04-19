@@ -1,12 +1,14 @@
 package com.roselism.spot.model.dao.listener;
 
-import cn.bmob.v3.BmobObject;
+import com.roselism.spot.model.dao.OnOperateListener;
 
 /**
  * 删除操作监听器
  * Created by simon on 2016/4/15.
+ *
+ * @deprecated 请使用统一接口OnOperateListener 替代
  */
-public interface OnDeleteListener<T> {
+public interface OnDeleteListener<T> extends OnOperateListener<T> {
 
     /**
      * 当删除完成时回掉

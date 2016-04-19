@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.*;
 
 import com.roselism.spot.conf.BmobIniter;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtil;
 
 import cn.bmob.v3.BmobUser;
@@ -20,14 +21,14 @@ public class SPoTApplication extends Application {
     private static Handler sMainHandler = new Handler();
 
     private static Context sContext;// Application的上下文
-    private static BmobUser sUser; // 当前登录的用户
+    private static User sUser; // 当前登录的用户
     private static int sMainThreadId;// 主线程Handler
 
-    public static BmobUser getUser() {
+    public static User getUser() {
         return sUser;
     }
 
-    public static void setUser(BmobUser user) {
+    public static void setUser(User user) {
         sUser = user;
     }
 

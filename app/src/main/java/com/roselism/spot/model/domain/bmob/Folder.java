@@ -3,9 +3,11 @@ package com.roselism.spot.model.domain.bmob;
 import android.content.Context;
 
 import com.roselism.spot.SPoTApplication;
+import com.roselism.spot.model.dao.listener.OnDeleteListener;
 import com.roselism.spot.model.dao.listener.OnUpdateListener;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
+import com.roselism.spot.model.domain.hyper.Queryable;
 import com.roselism.spot.model.domain.local.File;
 import com.roselism.spot.util.LogUtil;
 
@@ -22,7 +24,7 @@ import cn.bmob.v3.listener.DeleteListener;
  * 继承BmobObject，是为了能让其他类能够指向它
  * 请不要做任何修改！
  */
-public class Folder extends BmobObject {
+public class Folder extends BmobObject implements Queryable {
     private String name;// 文件夹的名称 (不可变对象)
     private User creater; // 文件夹的创建者
     private BmobRelation workers;// 被邀请的用户
@@ -70,7 +72,7 @@ public class Folder extends BmobObject {
     public void setCreater(User creater) {
         this.creater = creater;
     }
-
+    
     @Override
     public void delete(final Context context, DeleteListener listener) {
         super.delete(context, listener); // 删除当前的Folder对象
@@ -80,11 +82,26 @@ public class Folder extends BmobObject {
         PhotoOperater.query.allPhotosFrom(this, (list -> { // 查询当前文件夹下的所有的照片
             for (Photo p : list) { // 遍历当前文件夹下的图片
                 if (p.getUploader().getObjectId().equals(SPoTApplication.getUser().getObjectId())) // 只删除自己的照片
-                    PhotoOperater.deleter.delete(p, (photo) -> {
-                        if (photo != null) {
+
+                    PhotoOperater.deleter.delete(p, new OnDeleteListener<Photo>() {
+                        @Override
+                        public void onDeleteFinished(Photo photo) {
+//                            listener.onFinish();
+                            LogUtil.i("照片" + photo.getName() + "删除成功");
+                        }
+
+                        @Override
+                        public void onOperated(Photo photo) {
+//                            listener.onFinish();
                             LogUtil.i("照片" + photo.getName() + "删除成功");
                         }
                     });
+
+//                    PhotoOperater.deleter.delete(p, (photo) -> {
+//                        if (photo != null) {
+//                            LogUtil.i("照片" + "删除成功");
+//                        }
+//                    });
             }
         }));
 
@@ -96,49 +113,5 @@ public class Folder extends BmobObject {
                     LogUtil.i("用户权限移除成功");
             }
         });
-
-
-//                    p.delete(context, new DeleteListener() {
-//                        @Override
-//                        public void onSuccess() {
-//                            LogUtils.i("TAG", "onSuccess:" + Folder.this.getName() + "文件夹下的 图片删除成功");
-//                        }
-//
-//                        @Override
-//                        public void onFailure(int i, String s) {
-//
-//                        }
-//                    });
-
-
-//        query.addWhereEqualTo("parent", new BmobPointer(this));
-//
-//        query.findObjects(context, new FindListener<Photo>() {
-//            @Override
-//            public void onSuccess(List<Photo> list) {
-//
-//
-//                for (Photo p : list) { // 遍历当前文件夹下的图片
-//                    p.delete(context, new DeleteListener() {
-//                        @Override
-//                        public void onSuccess() {
-//                            LogUtils.i("TAG", "onSuccess:" + Folder.this.getName() + "文件夹下的 图片删除成功");
-//                        }
-//
-//                        @Override
-//                        public void onFailure(int i, String s) {
-//
-//                        }
-//                    });
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//
-//            }
-//        });
     }
 }

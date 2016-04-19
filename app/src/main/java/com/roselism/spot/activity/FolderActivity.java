@@ -263,8 +263,6 @@ public class FolderActivity extends AppCompatActivity
             else
                 mData = new LinkedList<>();
 
-//            PhotoOperater photoOperater = new PhotoOperater(outerClass);
-
             PhotoOperater.query.allPhotosFrom(mFolderId, (list) -> {
                 for (Photo p : list) {
                     mData.add(new File(p));
@@ -272,15 +270,6 @@ public class FolderActivity extends AppCompatActivity
 
                 ThreadUtil.runInUIThread(() -> buildAdapter());
             });
-
-//
-//            photoOperater.allPhotosFrom(mFolderId, (list) -> {
-//                for (Photo p : (List<Photo>) list) {
-//                    mData.add(new File(p));
-//                }
-//
-//                ThreadUtils.runInUIThread(() -> buildAdapter());
-//            });
         }
     }
 }

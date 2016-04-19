@@ -33,6 +33,7 @@ public class RelationLinkOperater extends Operater {
     private static final String TAG = "RelationLinkOperater";
 
     public static QueryOperater query = getQuery();
+    public static AddOperater adder = getadder();
 
     /**
      * 构建一个关系链对象
@@ -62,6 +63,17 @@ public class RelationLinkOperater extends Operater {
     private static QueryOperater getQuery() {
         initContext(); // 初始化上下文对象
         return new QueryOperater();
+    }
+
+
+    /**
+     * 获取查询器
+     *
+     * @return
+     */
+    private static AddOperater getadder() {
+        initContext(); // 初始化上下文对象
+        return new AddOperater();
     }
 
     public static class QueryOperater extends UserOperater {
@@ -102,7 +114,6 @@ public class RelationLinkOperater extends Operater {
         public void friendsListOf(User user, OnLoadListener listener) {
 
             List<User> friends = new ArrayList<>();
-
 
             allRelationLinkOf(user, (relationLinks) -> {
                 if (relationLinks != null && relationLinks.size() >= 1) {
