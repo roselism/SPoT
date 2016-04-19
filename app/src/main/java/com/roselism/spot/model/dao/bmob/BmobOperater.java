@@ -1,9 +1,9 @@
-package com.roselism.spot.model.dao.data.bmob;
+package com.roselism.spot.model.dao.bmob;
 
 
-import com.roselism.spot.model.dao.OnOperateListener;
-import com.roselism.spot.model.dao.Operater;
-import com.roselism.spot.model.dao.StrategyContext;
+import com.roselism.spot.model.OnOperateListener;
+import com.roselism.spot.model.Operater;
+import com.roselism.spot.model.StrategyContext;
 
 /**
  * 对于bmob对象的操作者

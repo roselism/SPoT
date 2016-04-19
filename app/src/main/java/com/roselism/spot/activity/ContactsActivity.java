@@ -15,22 +15,17 @@ import android.widget.TextView;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.library.app.UserListener;
-import com.roselism.spot.model.dao.OnOperateListener;
-import com.roselism.spot.model.dao.Operater;
-import com.roselism.spot.model.dao.Strategy;
-import com.roselism.spot.model.dao.StrategyContext;
-import com.roselism.spot.model.dao.data.bmob.BmobOperater;
-import com.roselism.spot.model.dao.data.bmob.query.QueryFriendsByUser;
+import com.roselism.spot.model.Operater;
+import com.roselism.spot.model.StrategyContext;
+import com.roselism.spot.model.dao.bmob.query.QueryFriendsByUser;
 import com.roselism.spot.model.dao.operator.RelationLinkOperater;
 import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
 import com.roselism.spot.model.dao.operator.UserOperater;
-import com.roselism.spot.model.domain.bmob.RelationLink;
 import com.roselism.spot.model.domain.bmob.User;
 
 import com.roselism.spot.library.widget.MenuActionButton;

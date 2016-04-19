@@ -1,6 +1,6 @@
 package com.roselism.spot.model.dao.stragegy;
 
-import com.roselism.spot.model.dao.Strategy;
+import com.roselism.spot.model.Strategy;
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
 
 /**

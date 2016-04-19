@@ -1,6 +1,6 @@
 package com.roselism.spot.model.dao.listener;
 
-import com.roselism.spot.model.dao.OnOperateListener;
+import com.roselism.spot.model.OnOperateListener;
 
 /**
  * 删除操作监听器

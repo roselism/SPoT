@@ -1,4 +1,4 @@
-package com.roselism.spot.model.dao.data.bmob.listener;
+package com.roselism.spot.model.dao.bmob.listener;
 
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;

@@ -1,11 +1,10 @@
-package com.roselism.spot.model.dao.data.bmob.query;
+package com.roselism.spot.model.dao.bmob.query;
 
-import com.roselism.spot.model.dao.OnOperateListener;
-import com.roselism.spot.model.dao.Strategy;
+import com.roselism.spot.model.OnOperateListener;
+import com.roselism.spot.model.Strategy;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.User;
-import com.roselism.spot.model.domain.local.File;
 import com.roselism.spot.util.LogUtil;
 
 import java.util.List;

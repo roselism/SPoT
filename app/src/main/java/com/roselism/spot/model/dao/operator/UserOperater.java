@@ -3,7 +3,7 @@ package com.roselism.spot.model.dao.operator;
 import android.content.Context;
 
 import com.roselism.spot.model.dao.listener.OnDeleteListener;
-import com.roselism.spot.model.dao.data.bmob.listener.OnFindListener;
+import com.roselism.spot.model.dao.bmob.listener.OnFindListener;
 import com.roselism.spot.model.dao.listener.OnLoadListener;
 import com.roselism.spot.model.domain.local.Image;
 import com.roselism.spot.model.domain.bmob.User;

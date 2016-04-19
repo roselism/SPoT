@@ -1,4 +1,4 @@
-package com.roselism.spot.model.dao;
+package com.roselism.spot.model;
 
 import com.roselism.spot.model.dao.stragegy.QueryStrategy;
 

@@ -1,12 +1,9 @@
-package com.roselism.spot.model.dao.data.bmob.query;
+package com.roselism.spot.model.dao.bmob.query;
 
-import com.roselism.spot.model.dao.OnOperateListener;
-import com.roselism.spot.model.dao.Strategy;
+import com.roselism.spot.model.OnOperateListener;
+import com.roselism.spot.model.Strategy;
 import com.roselism.spot.model.dao.operator.RelationLinkOperater;
 import com.roselism.spot.model.domain.bmob.User;
-import com.roselism.spot.util.ThreadUtil;
-
-import java.util.List;
 
 /**
  * 查询一个用户的所有好友

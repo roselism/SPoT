@@ -1,6 +1,4 @@
-package com.roselism.spot.model.dao;
-
-import com.roselism.spot.model.dao.OnOperateListener;
+package com.roselism.spot.model;
 
 
 /**

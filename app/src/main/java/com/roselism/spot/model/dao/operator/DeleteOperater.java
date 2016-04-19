@@ -1,12 +1,14 @@
 package com.roselism.spot.model.dao.operator;
 
-import com.roselism.spot.model.dao.OnOperateListener;
-import com.roselism.spot.model.dao.StrategyContext;
+import com.roselism.spot.model.OnOperateListener;
+import com.roselism.spot.model.StrategyContext;
 import com.roselism.spot.model.domain.hyper.Deleteable;
 
 /**
  * 删除操作者
  * Created by simon on 16-4-18.
+ *
+ * @deprecated 请使用超类Operater代替
  */
 public interface DeleteOperater {
 
