@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.roselism.spot.adapter.viewholder.CommonViewHolder;
+
 import java.util.List;
 
 public abstract class CommonAdapter<T> extends BaseAdapter {
@@ -39,14 +41,14 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final ViewHolder viewHolder = getViewHolder(position, convertView, parent);
-        convert(viewHolder, getItem(position));
-        return viewHolder.getConvertView();
+        final CommonViewHolder commonViewHolder = getViewHolder(position, convertView, parent);
+        convert(commonViewHolder, getItem(position));
+        return commonViewHolder.getConvertView();
     }
 
-    public abstract void convert(ViewHolder helper, T item);
+    public abstract void convert(CommonViewHolder helper, T item);
 
-    private ViewHolder getViewHolder(int position, View convertView, ViewGroup parent) {
-        return ViewHolder.get(mContext, convertView, parent, mItemLayoutId, position);
+    private CommonViewHolder getViewHolder(int position, View convertView, ViewGroup parent) {
+        return CommonViewHolder.get(mContext, convertView, parent, mItemLayoutId, position);
     }
 }

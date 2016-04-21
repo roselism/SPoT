@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,17 +18,21 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.adapter.ListSwipeAdapter;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
+import com.roselism.spot.model.OnOperateListener;
+import com.roselism.spot.model.StrategyContext;
+import com.roselism.spot.model.dao.bmob.query.QueryFolderByCreater;
+import com.roselism.spot.model.dao.bmob.query.QueryFolderByAssociateUser;
 import com.roselism.spot.model.dao.operator.FolderOperater;
-import com.roselism.spot.model.dao.operator.Operater;
+import com.roselism.spot.model.Operater;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
-import com.roselism.spot.model.domain.File;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Photo;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.local.File;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
+import com.roselism.spot.model.domain.bmob.User;
 
 import com.roselism.spot.util.LogUtil;
 import com.roselism.spot.util.ThreadUtil;
@@ -80,6 +83,9 @@ public class HomeActivity extends AppCompatActivity
             finish();
             return;
         }
+        SPoTApplication.setUser(mCurUser);
+
+        LogUtil.i(TAG, "onCreate->>>");
 
         refreshData();
 
@@ -217,7 +223,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onOperateCreate(Folder folder, User creater, int state) {
-        if (state == Operater.CREATE_SUCCESS) {
+        if (state == com.roselism.spot.model.dao.operator.Operater.CREATE_SUCCESS) {
             refreshData();
         }
     }
@@ -233,14 +239,20 @@ public class HomeActivity extends AppCompatActivity
         return false;
     }
 
-    protected <T extends BmobUser> T getUser() {
-        return (T) User.getCurrentUser(this);
+    protected User getUser() {
+        return User.getCurrentUser(this, User.class);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(mDrawer))
+            super.onBackPressed();
     }
 
     /**
      * 读取存放在首页的所有的照片和相册的任务
      */
-    private class DataLoader implements Runnable, OnLoadListener<File> {
+    private class DataLoader implements Runnable, OnOperateListener<List<File>> {
 
         boolean flag1 = false;
         boolean flag2 = false;
@@ -253,55 +265,54 @@ public class HomeActivity extends AppCompatActivity
             } else
                 mData.clear();
 
-            BmobUser curUser = getUser();
+            // 设定operater的操作
+            Operater<List<Folder>> bmobOperater = (StrategyContext strategyPackage, OnOperateListener<List<Folder>> listener) -> {
+                strategyPackage.Do(listener);
+            };
+            bmobOperater.operate( // 设定operater的行为
+                    new StrategyContext(new QueryFolderByAssociateUser(getUser())),
+                    (list -> {
+                        if (list != null)
+                            for (Folder f : list) {
+                                mData.add(new File(f, 1));
+                            }
+                        else
+                            LogUtil.i("用户关联相册为null");
 
-            FolderOperater operater = new FolderOperater(null);
-            operater.findFolderAssoiateWith(curUser, (data) -> { // 获取与用户相关联的文件夹
-                if (data != null) {
-                    LogUtil.i("数据不为null");
+                        flag1 = true;
+                        onOperated(null);
+                    }));
+            bmobOperater.operate(
+                    new StrategyContext(new QueryFolderByCreater(getUser())),
+                    (list -> {
+                        if (list != null) {
+//                            LogUtil.i("数据不为bull");
+                            for (Folder f : list) {
+                                mData.add(new File(f, 0));
+                            }
+                        } else
+//                            LogUtil.i("用户创建相册为null");
+                            flag2 = true;
+                        onOperated(null);// 数据已经添加了进去,所以这里赋值为空就行
+                    }));
 
-                    for (Folder f : (List<Folder>) data) {
-                        mData.add(new File(f, 1));
-                    }
-                } else
-                    LogUtil.i("用户关联相册为null");
-
-                flag1 = true;
-                onLoadFinished(null);
-            });
-
-            operater.findFolderCreateBy(curUser, (data) -> {
-                if (data != null) {
-                    LogUtil.i("数据不为bull");
-                    for (Folder f : (List<Folder>) data) {
-                        mData.add(new File(f, 0));
-                    }
-                } else
-                    LogUtil.i("用户创建相册为null");
-                Log.i(TAG, "run: mdata.size -->" + mData.size());
-                flag2 = true;
-                onLoadFinished(null); // 数据已经添加了进去,所以这里赋值为空就行
-            });
-
-            PhotoOperater photoOperater = new PhotoOperater();
-            photoOperater.allPhotoInHome(getUser(), (data) -> {
-                if (data != null) {
-                    for (Photo p : (List<Photo>) data) {
+            PhotoOperater.query.allPhotoInHome(getUser(), (data) -> {
+                if (data != null)
+                    for (Photo p : data)
                         mData.add(new File(p));
-                    }
-                }
+
                 flag3 = true;
-                onLoadFinished(null);
+                onOperated(null);
             });
         }
 
         /**
          * 所有数据加载完毕时调用
          *
-         * @param data 这里传入null就好，数据在传入之前就已经添加进了mdata成员变量里面
+         * @param files 这里传入null就好，数据在传入之前就已经添加进了mdata成员变量里面
          */
         @Override
-        public void onLoadFinished(List<File> data) {
+        public void onOperated(List<File> files) {
             if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
                 ThreadUtil.runInUIThread(() -> {
                     LogUtil.i("mdata size = " + mData.size());

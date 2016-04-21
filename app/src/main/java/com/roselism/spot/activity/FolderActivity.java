@@ -25,9 +25,9 @@ import com.roselism.spot.adapter.PictureGridAdapter;
 import com.roselism.spot.model.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.model.domain.File;
-import com.roselism.spot.model.domain.Folder;
-import com.roselism.spot.model.domain.Photo;
+import com.roselism.spot.model.domain.local.File;
+import com.roselism.spot.model.domain.bmob.Folder;
+import com.roselism.spot.model.domain.bmob.Photo;
 import com.roselism.spot.model.dao.operator.FolderOperater;
 import com.roselism.spot.library.content.DataLoader;
 import com.roselism.spot.util.LogUtil;
@@ -263,9 +263,8 @@ public class FolderActivity extends AppCompatActivity
             else
                 mData = new LinkedList<>();
 
-            PhotoOperater photoOperater = new PhotoOperater(outerClass);
-            photoOperater.allPhotosFrom(mFolderId, (list) -> {
-                for (Photo p : (List<Photo>) list) {
+            PhotoOperater.query.allPhotosFrom(mFolderId, (list) -> {
+                for (Photo p : list) {
                     mData.add(new File(p));
                 }
 

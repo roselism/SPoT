@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roselism.spot.R;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.library.content.DataLoader;
 
 import java.util.List;
@@ -68,10 +68,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
-        //        if (User.getCurrentUser(this, User.class) != null) //如果没登陆，跳转到LoginActivity进行登陆
-        //            startActivity(new Intent(this, HomeActivity.class));
-
         populateAutoComplete();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -379,6 +375,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
                         showProgress(false);
                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        finish();
                     }
 
                     @Override
@@ -394,6 +391,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         Toast.makeText(LoginActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                         showProgress(false);
                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        finish();
                     }
 
                     @Override

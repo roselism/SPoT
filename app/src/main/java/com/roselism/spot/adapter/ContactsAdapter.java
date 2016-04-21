@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.roselism.spot.R;
-import com.roselism.spot.model.domain.User;
+import com.roselism.spot.model.domain.bmob.User;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  * 好友适配器
  * Created by hero2 on 2016/3/11.
  */
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Viewholder> {
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewholder> {
 
     private List<User> mData;
     private Context mContext;
@@ -44,14 +44,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Viewho
     }
 
     @Override
-    public Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ContactsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
         View convertView = mInflater.inflate(R.layout.list_item_contacts, null);
-        Viewholder viewholder = new Viewholder(convertView);
-        return viewholder;
+        ContactsViewholder contactsViewholder = new ContactsViewholder(convertView);
+        return contactsViewholder;
     }
 
     @Override
-    public void onBindViewHolder(Viewholder holder, int position) {
+    public void onBindViewHolder(ContactsViewholder holder, int position) {
         User user = (User) mData.get(position);
 
         holder.friendName.setText(user.getNickName());
@@ -59,7 +59,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Viewho
         holder.colorBar.setBackgroundColor(mContext.getResources().getColor(R.color.pomegranate));
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder {
+    public class ContactsViewholder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.profile) ImageView profile;
         @Bind(R.id.color_bar) ImageView colorBar;
@@ -67,7 +67,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Viewho
         @Bind(R.id.signature) TextView signature;
         @Bind(R.id.info_layout) RelativeLayout infoLayout;
 
-        public Viewholder(View itemView) {
+        public ContactsViewholder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

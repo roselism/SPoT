@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.roselism.spot.R;
+import com.roselism.spot.adapter.viewholder.CommonViewHolder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class PictureSelectAdapter extends CommonAdapter<String> {
     }
 
     @Override
-    public void convert(final ViewHolder helper, final String item) {
+    public void convert(final CommonViewHolder helper, final String item) {
 
         helper.setImageResource(R.id.id_item_image, R.drawable.pictures_no); //设置no_pic
         helper.setImageResource(R.id.id_item_select, R.drawable.picture_unselected);//设置no_selected
