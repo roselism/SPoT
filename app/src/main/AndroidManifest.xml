@@ -48,6 +48,8 @@
 
         <activity android:name=".activity.NewUserActivity">
         </activity>
+        <activity android:name=".activity.SplashActivity">
+        </activity>
     </application>
 
 </manifest>
