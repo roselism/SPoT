@@ -1,7 +1,7 @@
-package com.roselism.spot.model.dao.bmob.delete;
+package com.roselism.spot.model.engine.bmob.delete;
 
-import com.roselism.spot.model.OnOperateListener;
-import com.roselism.spot.model.Strategy;
+import com.roselism.spot.model.engine.OnOperateListener;
+import com.roselism.spot.model.engine.Strategy;
 import com.roselism.spot.model.domain.bmob.User;
 
 /**

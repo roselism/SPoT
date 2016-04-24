@@ -3,6 +3,7 @@ package com.roselism.spot.model.domain.bmob;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.roselism.spot.model.domain.hyper.IUserBO;
 import com.roselism.spot.model.domain.local.Image;
 
 import cn.bmob.v3.BmobUser;
@@ -13,7 +14,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by hero2 on 2016/1/25.
  * 请不要做任何修改！
  */
-public class User extends BmobUser {
+public class User extends BmobUser implements IUserBO {
     private String nickName;
     private Image profile;
 
@@ -36,7 +37,6 @@ public class User extends BmobUser {
     public void setProfile(Image profile) {
         this.profile = profile;
     }
-
 
     public Image getProfile() {
         return profile;
@@ -65,5 +65,20 @@ public class User extends BmobUser {
                 Toast.makeText(context, "退出" + folder.getName() + "组失败", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    
+    @Override
+    public String getId() {
+        return this.getObjectId();
+    }
+
+    @Override
+    public String getCreateAt() {
+        return this.getCreateAt();
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
     }
 }

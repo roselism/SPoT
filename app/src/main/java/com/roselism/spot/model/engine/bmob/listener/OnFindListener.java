@@ -1,7 +1,7 @@
-package com.roselism.spot.model.dao.bmob.listener;
+package com.roselism.spot.model.engine.bmob.listener;
 
 
-import com.roselism.spot.model.dao.listener.OnLoadListener;
+import com.roselism.spot.model.db.dao.listener.OnLoadListener;
 import com.roselism.spot.util.LogUtil;
 
 import java.util.List;

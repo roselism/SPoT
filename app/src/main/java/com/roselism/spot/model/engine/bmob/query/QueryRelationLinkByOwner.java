@@ -1,8 +1,8 @@
-package com.roselism.spot.model.dao.bmob.query;
+package com.roselism.spot.model.engine.bmob.query;
 
 import com.roselism.spot.SPoTApplication;
-import com.roselism.spot.model.dao.listener.OnLoadListener;
-import com.roselism.spot.model.dao.stragegy.QueryStrategy;
+import com.roselism.spot.model.db.dao.listener.OnLoadListener;
+import com.roselism.spot.model.db.dao.stragegy.QueryStrategy;
 import com.roselism.spot.model.domain.bmob.RelationLink;
 import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.util.LogUtil;

@@ -25,7 +25,7 @@ public class Photo extends BmobObject {
     private String picUrl; // 照片的服务器地址
     private BmobDate takenDate; // 照片的拍摄时间
     private User uploader; // 上传者
-    private BmobFile photoFile; // 与picture对相关联的照片
+    private BmobFile photoFile; // 与picture相关联的照片
 
     public Photo() {
     }
@@ -85,13 +85,13 @@ public class Photo extends BmobObject {
         this.uploader = uploader;
     }
 
-    public String getPicUrl() {
-        return picUrl;
-    }
-
-    public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
-    }
+//    public String getPicUrl() {
+//        return picUrl;
+//    }
+//
+//    public void setPicUrl(String picUrl) {
+//        this.picUrl = picUrl;
+//    }
 
     public BmobFile getPhoto() {
         return photoFile;

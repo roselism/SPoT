@@ -20,13 +20,13 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
 import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.adapter.ListSwipeAdapter;
-import com.roselism.spot.model.OnOperateListener;
-import com.roselism.spot.model.StrategyContext;
-import com.roselism.spot.model.dao.bmob.query.QueryFolderByCreater;
-import com.roselism.spot.model.dao.bmob.query.QueryFolderByAssociateUser;
-import com.roselism.spot.model.dao.operator.FolderOperater;
-import com.roselism.spot.model.Operater;
-import com.roselism.spot.model.dao.operator.PhotoOperater;
+import com.roselism.spot.model.engine.OnOperateListener;
+import com.roselism.spot.model.engine.StrategyContext;
+import com.roselism.spot.model.engine.bmob.query.QueryFolderByCreater;
+import com.roselism.spot.model.engine.bmob.query.QueryFolderByAssociateUser;
+import com.roselism.spot.model.db.dao.operator.FolderOperater;
+import com.roselism.spot.model.engine.Operater;
+import com.roselism.spot.model.db.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
 import com.roselism.spot.model.domain.local.File;
@@ -223,7 +223,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onOperateCreate(Folder folder, User creater, int state) {
-        if (state == com.roselism.spot.model.dao.operator.Operater.CREATE_SUCCESS) {
+        if (state == com.roselism.spot.model.db.dao.operator.Operater.CREATE_SUCCESS) {
             refreshData();
         }
     }

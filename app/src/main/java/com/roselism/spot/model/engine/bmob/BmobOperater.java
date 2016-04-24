@@ -1,15 +1,15 @@
-package com.roselism.spot.model.dao.bmob;
+package com.roselism.spot.model.engine.bmob;
 
 
-import com.roselism.spot.model.OnOperateListener;
-import com.roselism.spot.model.Operater;
-import com.roselism.spot.model.StrategyContext;
+import com.roselism.spot.model.engine.OnOperateListener;
+import com.roselism.spot.model.engine.Operater;
+import com.roselism.spot.model.engine.StrategyContext;
 
 /**
  * 对于bmob对象的操作者
  * Created by simon on 16-4-18.
  *
- * @param <T> 要被操作的类型
+ * @param <T> 要被操作的类型, 继承自bmobobject对象
  */
 public class BmobOperater<T> implements Operater<T> {
 
