@@ -70,19 +70,34 @@ public class ContactsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initView();
+        initData();
+        initEvent();
+
+    }
+
+
+    void initView() {
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
-
         setSupportActionBar(toolbar);
-
-        initListener();
         initMaterialSheetFab();
 
-        ThreadUtil.runInThread(new DataLoader(getUser(), this));
-
+        // 初始化Recylerview
         mRecylerview.setAdapter(new ContactsAdapter(null, this));
         mRecylerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mRecylerview.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    void initData() {
+        ThreadUtil.runInThread(new DataLoader(getUser(), this));
+    }
+
+    void initEvent() {
+        initListener();
+
+
         mRecylerview.setOnScrollListener(new RecyclerViewScrollListener(4) {
             @Override
             public void onScrollUp() {
@@ -96,19 +111,6 @@ public class ContactsActivity extends AppCompatActivity
                 //                materialSheetFab.
             }
         });
-    }
-
-
-    void initView(){
-
-    }
-
-    void initData(){
-
-    }
-
-    void initEvent(){
-
     }
 
     void initListener() {
@@ -148,13 +150,8 @@ public class ContactsActivity extends AppCompatActivity
         String friendsEdmail = editText.getText().toString();
 
         UserOperater.query.getUserByEmail(friendsEdmail, (data) -> {
-            if (data != null || data.size() >= 1) {
-                RelationLinkOperater operater = new RelationLinkOperater(this);
-//                RelationLinkOperater
-//                operater.addFriend(getUser(), data.get(0));
+            if (data != null || data.size() >= 1)
                 RelationLinkOperater.adder.addFriend(getUser(), data.get(0));
-//          UserOperater
-            }
         });
     }
 
@@ -194,18 +191,8 @@ public class ContactsActivity extends AppCompatActivity
             else
                 mData = new ArrayList<>();
 
-//            RelationLinkOperater operater = new RelationLinkOperater(SPoTApplication.getContext());
-//            operater.friendsListOf(getUser(), (friends) -> {
-//                for (User user : (List<User>) friends)
-//                    mData.add(user);
-//
-//                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
-////                onLoadFinished();
-//            });
 
-            Operater<List<User>> bmobOperater = (strategyContext, listener) -> {
-                strategyContext.Do(listener);
-            };
+            Operater<List<User>> bmobOperater = (strategyContext, listener) -> strategyContext.Do(listener);
             bmobOperater.operate(
                     new StrategyContext(new QueryFriendsByUser(getUser())),
                     (users) -> {
@@ -215,13 +202,7 @@ public class ContactsActivity extends AppCompatActivity
                         ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
                     }
             );
-//            RelationLinkOperater.query.friendsListOf(getUser(), (friends) -> {
-//                for (User user : (List<User>) friends)
-//                    mData.add(user);
-//
-//                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
-////                onLoadFinished();
-//            });
+
         }
     }
 }
