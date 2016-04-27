@@ -3,22 +3,30 @@ package com.roselism.spot.activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roselism.spot.R;
+import com.roselism.spot.util.HttpConnectionHelper;
 import com.roselism.spot.util.StreamUtils;
 import com.roselism.spot.util.ThreadUtil;
+import com.roselism.spot.util.convert.Converter;
+import com.roselism.spot.util.convert.InStream2OutStream;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +36,8 @@ import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
 
+    public static final String TAG = "SplashActivity";
+
     @Bind(R.id.versionName_textview) TextView versionNameTextview;
     @Bind(R.id.progressbar) ProgressBar progressbar;
 
@@ -35,6 +45,16 @@ public class SplashActivity extends AppCompatActivity {
     private int serverVersionCode;
     private String desc;
     private String downloadUrl;
+
+    {
+        // 跳转到系统下载页面
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setDataAndType(Uri.fromFile(new File("sdaf")),
+                "application/vnd.android.package-archive");
+        // startActivity(intent);
+        startActivityForResult(intent, 0);// 如果用户取消安装的话,会返回结果,回调方法onActivityResult
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +66,6 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-//        mHandler = null;
         super.onDestroy();
     }
 
@@ -60,12 +79,11 @@ public class SplashActivity extends AppCompatActivity {
                 setMessage(desc).
                 setPositiveButton("现在升级！", (whichDialog, which) ->
                 {
-                    Toast.makeText(this, "正在升级", Toast.LENGTH_SHORT).show(); // 提示
+                    Toast.makeText(this, "开始下载", Toast.LENGTH_SHORT).show(); // 提示
+                    download();// 开启子线程，进行下载
                 }).
                 setNegativeButton("一会儿再说", ((dialog1, which) -> {
                     dialog1.dismiss();
-
-//                    Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show(); // 土司提示
                 })).show();
     }
 
@@ -108,7 +126,8 @@ public class SplashActivity extends AppCompatActivity {
      */
     public void checkUpdate() {
         if (serverVersionCode > getVersionCode()) { //有新版本
-
+//            download();
+            showUpdateDialog(); // 提示一个窗口，询问用户是否升级
         }
     }
 
@@ -207,5 +226,80 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         return versionCode;
+    }
+
+    /**
+     * 下载新的app 安装包
+     */
+    /**
+     * 下载apk
+     */
+    public void download() {
+        Log.i(TAG, "download: 开始下载");
+
+        new Thread() {
+            @Override
+            public void run() {
+//                super.run();
+                HttpConnectionHelper helper = new HttpConnectionHelper.Builder().
+                        setRequestMethod(HttpConnectionHelper.POST_METHOD).
+                        setConnectionTimeOut(5000).
+                        setReadTimeOut(5000).
+                        setPath(downloadUrl).
+                        build();
+
+                Log.i(TAG, "run: url = " + downloadUrl);
+                InputStream inputStream = null;
+                OutputStream output = null;
+                try {
+                    if (helper.isResponseOk()) {
+                        Log.i(TAG, "run: -->" + "连接正常");
+                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) { //sd 卡挂在
+                            File updateApk = new File(getFilesDir(), "SPoT-" + serverVersionName + ".apk"); //创建一个文件
+
+                            // 输入转输出
+                            inputStream = helper.getConnection().getInputStream();
+//                            output = new FileOutputStream(updateApk);
+//                            int len;
+//                            byte[] buffer = new byte[1024 * 2];
+//                            while ((len = inputStream.read(buffer)) != -1)
+//                                output.write(buffer, 0, len);
+                            Converter<InputStream, OutputStream> converter = new InStream2OutStream(updateApk);
+                            output = converter.convert(inputStream); // 获取转换数据
+
+                            Log.i(TAG, "run: -->" + "下载完毕");
+
+                            output.flush();// 刷新
+                            helper.getConnection().disconnect();
+
+                            // 跳转到系统下载页面
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                            intent.setDataAndType(Uri.fromFile(updateApk), "application/vnd.android.package-archive");
+                            // startActivity(intent);
+                            startActivityForResult(intent, 0);// 如果用户取消安装的话,会返回结果,回调方法onActivityResult
+
+                        } else {
+                            Toast.makeText(SplashActivity.this, "未发现sd卡", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "run: 未发现sd卡, environment state= " + Environment.getExternalStorageState());
+                        }
+                    } else {
+                        Log.i(TAG, "run: 响应码：" + helper.responseCode());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "run: io 错误");
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (inputStream != null)
+                            inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 }
