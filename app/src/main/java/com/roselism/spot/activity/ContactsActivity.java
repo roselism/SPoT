@@ -15,20 +15,21 @@ import android.widget.TextView;
 
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.R;
+import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.library.app.UserListener;
-import com.roselism.spot.model.dao.operator.RelationLinkOperater;
-import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.model.dao.operator.UserOperater;
-import com.roselism.spot.model.domain.User;
-
 import com.roselism.spot.library.widget.MenuActionButton;
 import com.roselism.spot.library.widget.RecyclerViewScrollListener;
-import com.roselism.spot.util.ThreadUtils;
+import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
+import com.roselism.spot.model.dao.operator.RelationLinkOperater;
+import com.roselism.spot.model.db.dao.operator.UserOperater;
+import com.roselism.spot.model.domain.bmob.User;
+import com.roselism.spot.model.engine.Operater;
+import com.roselism.spot.model.engine.bmob.query.QueryFriendsByUser;
+import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,6 @@ public class ContactsActivity extends AppCompatActivity
     @Bind(R.id.fab_sheet) CardView fabSheet;
 
     private MaterialSheetFab materialSheetFab; // fab 到 sheet的转换器
-    //    private Thread dataThread; // 数据线程
     private List<User> mData;
 
     @Override
@@ -78,7 +78,7 @@ public class ContactsActivity extends AppCompatActivity
         initListener();
         initMaterialSheetFab();
 
-        ThreadUtils.runInThread(new DataLoader(getUser(), this));
+        ThreadUtil.runInThread(new DataLoader(getUser(), this));
 
         mRecylerview.setAdapter(new ContactsAdapter(null, this));
         mRecylerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
@@ -96,6 +96,19 @@ public class ContactsActivity extends AppCompatActivity
                 //                materialSheetFab.
             }
         });
+    }
+
+
+    void initView() {
+
+    }
+
+    void initData() {
+
+    }
+
+    void initEvent() {
+
     }
 
     void initListener() {
@@ -137,7 +150,10 @@ public class ContactsActivity extends AppCompatActivity
         UserOperater.query.getUserByEmail(friendsEdmail, (data) -> {
             if (data != null || data.size() >= 1) {
                 RelationLinkOperater operater = new RelationLinkOperater(this);
-                operater.addFriend(getUser(), data.get(0));
+//                RelationLinkOperater
+//                operater.addFriend(getUser(), data.get(0));
+                RelationLinkOperater.adder.addFriend(getUser(), data.get(0));
+//          UserOperater
             }
         });
     }
@@ -164,12 +180,34 @@ public class ContactsActivity extends AppCompatActivity
      * 数据加载器
      */
     public class DataLoader extends com.roselism.spot.library.content.DataLoader {
+        Operater<List<User>> bmobOperater = (strategyContext, listener) -> {
+            strategyContext.Do(listener);
+        };
         private User user; // 需要被展示其好友列表的用户
+
+        {
+            for (User user : users)
+                mData.add(user);
+
+            ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+        }
+
+
+//
+//                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+////                onLoadFinished();
+//            });
 
         public DataLoader(User who, Context outerClass) {
             super(outerClass);
             this.user = who;
         }
+
+        bmobOperater.operate(new
+
+        StrategyContext(new QueryFriendsByUser(getUser()
+
+        )),(users)->
 
         @Override
         public void run() {
@@ -183,14 +221,19 @@ public class ContactsActivity extends AppCompatActivity
                 for (User user : (List<User>) friends)
                     mData.add(user);
 
-                ThreadUtils.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
 //                onLoadFinished();
             });
         }
-//
-//        public void onLoadFinished() {
-//
-//        }
 
+        );
+//            RelationLinkOperater.query.friendsListOf(getUser(), (friends) -> {
+//                for (User user : (List<User>) friends)
+//                    mData.add(user);
+//
+//                ThreadUtil.runInUIThread(() -> buildAdapter()); // 加载完毕，调用buildAdapter
+////                onLoadFinished();
+//            });
     }
+}
 }

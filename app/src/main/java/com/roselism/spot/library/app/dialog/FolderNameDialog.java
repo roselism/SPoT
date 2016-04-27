@@ -21,10 +21,6 @@ public class FolderNameDialog extends DialogFragment {
 
     @Bind(R.id.et_folder_name) EditText folderNameEditView;
 
-    public interface FolderNameInputListener {
-        void onInputFinished(String name);
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -49,6 +45,10 @@ public class FolderNameDialog extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    public interface FolderNameInputListener {
+        void onInputFinished(String name);
     }
 
 }

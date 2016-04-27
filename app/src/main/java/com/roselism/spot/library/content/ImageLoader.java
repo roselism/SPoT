@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 public class ImageLoader {
+    private static ImageLoader mInstance;
     private LruCache<String, Bitmap> mLruCache; // 图片缓存的核心类
     private ExecutorService mThreadPool; // 线程池
     private int mThreadCount = 1; // 线程池的线程数量，默认为1
@@ -25,24 +26,13 @@ public class ImageLoader {
     private LinkedList<Runnable> mTasks; // 任务队列
     private Thread mPoolThread; // 轮询的线程
     private Handler mPoolThreadHander;
-
     private Handler mHandler; // 运行在UI线程的handler，用于给ImageView设置图片
-
     private volatile Semaphore mSemaphore = new Semaphore(0); // 引入一个值为1的信号量，防止mPoolThreadHander未初始化完成
-
     private volatile Semaphore mPoolSemaphore; // 引入一个值为1的信号量，由于线程池内部也有一个阻塞线程，防止加入任务的速度过快，使LIFO效果不明显
 
-    private static ImageLoader mInstance;
-
-    /**
-     * 队列的调度方式
-     *
-     * @author zhy
-     */
-    public enum Type {
-        FIFO, LIFO
+    private ImageLoader(int threadCount, Type type) {
+        init(threadCount, type);
     }
-
 
     /**
      * 单例获得该实例对象
@@ -61,8 +51,44 @@ public class ImageLoader {
         return mInstance;
     }
 
-    private ImageLoader(int threadCount, Type type) {
-        init(threadCount, type);
+    /**
+     * 单例获得该实例对象
+     *
+     * @return
+     */
+    public static ImageLoader getInstance(int threadCount, Type type) {
+
+        if (mInstance == null) {
+            synchronized (ImageLoader.class) {
+                if (mInstance == null) {
+                    mInstance = new ImageLoader(threadCount, type);
+                }
+            }
+        }
+        return mInstance;
+    }
+
+    /**
+     * 反射获得ImageView设置的最大宽度和高度
+     *
+     * @param object
+     * @param fieldName
+     * @return
+     */
+    private static int getImageViewFieldValue(Object object, String fieldName) {
+        int value = 0;
+        try {
+            Field field = ImageView.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            int fieldValue = (Integer) field.get(object);
+            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
+                value = fieldValue;
+
+                Log.e("TAG", value + "");
+            }
+        } catch (Exception e) {
+        }
+        return value;
     }
 
     private void init(int threadCount, Type type) {
@@ -97,8 +123,6 @@ public class ImageLoader {
             protected int sizeOf(String key, Bitmap value) {
                 return value.getRowBytes() * value.getHeight();
             }
-
-            ;
         };
 
         mThreadPool = Executors.newFixedThreadPool(threadCount);
@@ -200,24 +224,6 @@ public class ImageLoader {
         }
         return null;
     }
-
-    /**
-     * 单例获得该实例对象
-     *
-     * @return
-     */
-    public static ImageLoader getInstance(int threadCount, Type type) {
-
-        if (mInstance == null) {
-            synchronized (ImageLoader.class) {
-                if (mInstance == null) {
-                    mInstance = new ImageLoader(threadCount, type);
-                }
-            }
-        }
-        return mInstance;
-    }
-
 
     /**
      * 根据ImageView获得适当的压缩的宽和高
@@ -324,6 +330,15 @@ public class ImageLoader {
         return bitmap;
     }
 
+    /**
+     * 队列的调度方式
+     *
+     * @author zhy
+     */
+    public enum Type {
+        FIFO, LIFO
+    }
+
     private class ImgBeanHolder {
         Bitmap bitmap;
         ImageView imageView;
@@ -333,28 +348,5 @@ public class ImageLoader {
     private class ImageSize {
         int width;
         int height;
-    }
-
-    /**
-     * 反射获得ImageView设置的最大宽度和高度
-     *
-     * @param object
-     * @param fieldName
-     * @return
-     */
-    private static int getImageViewFieldValue(Object object, String fieldName) {
-        int value = 0;
-        try {
-            Field field = ImageView.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            int fieldValue = (Integer) field.get(object);
-            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
-                value = fieldValue;
-
-                Log.e("TAG", value + "");
-            }
-        } catch (Exception e) {
-        }
-        return value;
     }
 }

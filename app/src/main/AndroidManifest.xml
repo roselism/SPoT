@@ -33,6 +33,7 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -40,12 +41,15 @@
         </activity>
         <activity
             android:name=".activity.ContactsActivity"
-
             android:theme="@style/AppTheme">
         </activity>
 
         <service android:name=".service.UploadService"/>
 
+        <activity android:name=".activity.NewUserActivity">
+        </activity>
+        <activity android:name=".activity.SplashActivity">
+        </activity>
     </application>
 
 </manifest>

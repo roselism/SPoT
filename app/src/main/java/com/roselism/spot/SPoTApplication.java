@@ -2,9 +2,11 @@ package com.roselism.spot;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.*;
+import android.os.Handler;
 
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.conf.BmobIniter;
+import com.roselism.spot.model.domain.bmob.User;
+import com.roselism.spot.util.LogUtil;
 
 /**
  * @创建者 lai
@@ -17,7 +19,16 @@ public class SPoTApplication extends Application {
     private static Handler sMainHandler = new Handler();
 
     private static Context sContext;// Application的上下文
+    private static User sUser; // 当前登录的用户
     private static int sMainThreadId;// 主线程Handler
+
+    public static User getUser() {
+        return sUser;
+    }
+
+    public static void setUser(User user) {
+        sUser = user;
+    }
 
     /**
      * 获取context
@@ -37,19 +48,24 @@ public class SPoTApplication extends Application {
         return sMainThreadId;
     }
 
+    public static Handler getMainHandler() {
+        return sMainHandler;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        LogUtils.i("SPoTApplication", "onCreate");
+        LogUtil.i("SPoTApplication", "onCreate");
 
         sContext = getApplicationContext();
         sMainThreadId = android.os.Process.myTid();
 
-        LogUtils.setIsDebug(true); // 开启debug模式
-    }
 
-    public static Handler getMainHandler() {
-        return sMainHandler;
+        LogUtil.setIsDebug(true); // 开启debug模式
+
+        BmobIniter bmobIniter = new BmobIniter(sContext); // 初始化bmob全局变量
+        bmobIniter.initBmob();
+
     }
 }

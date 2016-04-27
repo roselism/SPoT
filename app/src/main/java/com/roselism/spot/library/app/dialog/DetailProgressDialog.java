@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 /**
  * 两个进度条的对话框
- * <p/>
+ * <p>
  * Created by hero2 on 2016/2/1.
  */
 public class DetailProgressDialog extends DialogFragment implements View.OnClickListener {

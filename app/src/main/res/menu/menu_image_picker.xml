@@ -11,6 +11,5 @@
         app:showAsAction="always"></item>
 
     <item
-        android:id="@+id/action_settings"
         android:title="setting"></item>
 </menu>

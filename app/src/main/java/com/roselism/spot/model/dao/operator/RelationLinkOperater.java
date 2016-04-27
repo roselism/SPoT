@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.roselism.spot.model.dao.listener.OnLoadListener;
-import com.roselism.spot.model.domain.RelationLink;
-import com.roselism.spot.model.domain.User;
-import com.roselism.spot.util.LogUtils;
+import com.roselism.spot.model.db.dao.operator.Operater;
+import com.roselism.spot.model.domain.bmob.RelationLink;
+import com.roselism.spot.model.domain.bmob.User;
+import com.roselism.spot.util.LogUtil;
 
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class RelationLinkOperater extends Operater {
     public void addFriends(final User user, final List<String> friendsId) {
 
         allRelationLinkOf(user, (data -> {
-            LogUtils.i(TAG, "onSuccess: 查找Link成功");
+            LogUtil.i(TAG, "onSuccess: 查找Link成功");
 
             if (data != null) {
                 RelationLink link;
@@ -69,12 +70,12 @@ public class RelationLinkOperater extends Operater {
                     link.save(mContext, new SaveListener() {
                         @Override
                         public void onSuccess() {
-                            LogUtils.i(TAG, "onSuccess: 添加成功");
+                            LogUtil.i(TAG, "onSuccess: 添加成功");
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                            LogUtils.i(TAG, "onError: 添加失败:" + i + " 错误信息: " + s);
+                            LogUtil.i(TAG, "onError: 添加失败:" + i + " 错误信息: " + s);
                         }
                     }); // 储存
                 } else if (data.size() == 1) { // 有 修改
@@ -85,12 +86,12 @@ public class RelationLinkOperater extends Operater {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(mContext, "添加好友成功", Toast.LENGTH_SHORT).show();
-                            LogUtils.i(TAG, "onSuccess: 添加好友成功");
+                            LogUtil.i(TAG, "onSuccess: 添加好友成功");
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                            LogUtils.i(TAG, "onError: 错误码:" + i + " 错误信息: " + s);
+                            LogUtil.i(TAG, "onError: 错误码:" + i + " 错误信息: " + s);
                         }
                     }); // 添加
                 }
@@ -112,13 +113,13 @@ public class RelationLinkOperater extends Operater {
             @Override
             public void onSuccess(List<RelationLink> list) {
                 listener.onLoadFinished(list);
-                LogUtils.i(TAG, "onSuccess: --> allRelationLinkOf");
+                LogUtil.i(TAG, "onSuccess: --> allRelationLinkOf");
             }
 
             @Override
             public void onError(int i, String s) {
-                LogUtils.i(TAG, "onError: --> allRelationLinkOf");
-//                LogUtils.i(TAG, "onError: " + "i = " + i + " s = " + s);
+                LogUtil.i(TAG, "onError: --> allRelationLinkOf");
+//                LogUtil.i(TAG, "onError: " + "i = " + i + " s = " + s);
                 listener.onLoadFinished(null);
             }
         });
@@ -146,12 +147,12 @@ public class RelationLinkOperater extends Operater {
                             friends.add(user);
                             if (link.getFriendsId().size() == friends.size())
                                 listener.onLoadFinished(friends);
-                            LogUtils.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
+                            LogUtil.i(TAG, "onSuccess: 查询用户成功 用户邮箱为:" + user.getEmail());
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                            LogUtils.i(TAG, "查询用户失败: " + " 错误码:" + i + " 错误信息:" + s);
+                            LogUtil.i(TAG, "查询用户失败: " + " 错误码:" + i + " 错误信息:" + s);
                             listener.onLoadFinished(null);
                         }
                     });

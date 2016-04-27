@@ -10,3 +10,6 @@
 
 /captures
 *.apk
+
+app/config/bmob.txt
+app/config/AppConfig.xml

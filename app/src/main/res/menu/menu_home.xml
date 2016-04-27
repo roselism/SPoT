@@ -21,7 +21,6 @@
 
     <!--排序-->
     <item
-        android:id="@+id/item_order"
         android:icon="@mipmap/ic_spider_net"
         android:title="@string/menu_item_order"></item>
 
@@ -32,7 +31,6 @@
 
     <!--展示文件的类型-->
     <item
-        android:id="@+id/item_show"
         android:icon="@mipmap/ic_filter"
         android:title="@string/menu_item_show"></item>
 

@@ -2,7 +2,8 @@ package com.roselism.spot;
 
 import android.test.AndroidTestCase;
 
-import com.roselism.spot.util.DesityUtils;
+import com.roselism.spot.util.ConfUtil;
+import com.roselism.spot.util.DesityUtil;
 
 
 /**
@@ -10,7 +11,11 @@ import com.roselism.spot.util.DesityUtils;
  */
 public class UnitTextDemo extends AndroidTestCase {
     public void test() {
-        DesityUtils.dp2px(getContext(), 56);
+        DesityUtil.dp2px(getContext(), 56);
     }
 
+    //a736bff2e503810b1e7e68b248ff5a7d
+    public void testGetBmobAppId() {
+        assertEquals("a736bff2e503810b1e7e68b248ff5a7d", ConfUtil.getBmobAppId());
+    }
 }
