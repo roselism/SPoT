@@ -46,15 +46,6 @@ public class SplashActivity extends AppCompatActivity {
     private String desc;
     private String downloadUrl;
 
-    {
-        // 跳转到系统下载页面
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setDataAndType(Uri.fromFile(new File("sdaf")),
-                "application/vnd.android.package-archive");
-        // startActivity(intent);
-        startActivityForResult(intent, 0);// 如果用户取消安装的话,会返回结果,回调方法onActivityResult
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +53,32 @@ public class SplashActivity extends AppCompatActivity {
         initView();
         initEvent();
         initData();
+    }
+
+
+    /**
+     * 初始化所有的控件
+     */
+    public void initView() {
+        setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
+
+        versionNameTextview.setText(getVersionName());
+        readVersionInfo();
+    }
+
+    /**
+     * 初始化数据
+     */
+    public void initData() {
+
+    }
+
+    /**
+     * 初始化事件
+     */
+    public void initEvent() {
+
     }
 
     @Override
@@ -96,30 +113,6 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * 初始化所有的控件
-     */
-    public void initView() {
-        setContentView(R.layout.activity_splash);
-        ButterKnife.bind(this);
-
-        versionNameTextview.setText(getVersionName());
-        readVersionInfo();
-    }
-
-    /**
-     * 初始化数据
-     */
-    public void initData() {
-
-    }
-
-    /**
-     * 初始化事件
-     */
-    public void initEvent() {
-
-    }
 
     /**
      * 服务器的版本信息与本地信息进行对比，查看是否能够升级
@@ -186,6 +179,13 @@ public class SplashActivity extends AppCompatActivity {
         }.start();
     }
 
+    /**
+     * 跳转到主界面
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         enterHome();
@@ -259,11 +259,6 @@ public class SplashActivity extends AppCompatActivity {
 
                             // 输入转输出
                             inputStream = helper.getConnection().getInputStream();
-//                            output = new FileOutputStream(updateApk);
-//                            int len;
-//                            byte[] buffer = new byte[1024 * 2];
-//                            while ((len = inputStream.read(buffer)) != -1)
-//                                output.write(buffer, 0, len);
                             Converter<InputStream, OutputStream> converter = new InStream2OutStream(updateApk);
                             output = converter.convert(inputStream); // 获取转换数据
 
@@ -276,8 +271,8 @@ public class SplashActivity extends AppCompatActivity {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.addCategory(Intent.CATEGORY_DEFAULT);
                             intent.setDataAndType(Uri.fromFile(updateApk), "application/vnd.android.package-archive");
-                            // startActivity(intent);
                             startActivityForResult(intent, 0);// 如果用户取消安装的话,会返回结果,回调方法onActivityResult
+                            // startActivity(intent);
 
                         } else {
                             Toast.makeText(SplashActivity.this, "未发现sd卡", Toast.LENGTH_SHORT).show();
@@ -302,4 +297,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         }.start();
     }
+
+
 }
