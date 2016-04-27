@@ -18,18 +18,17 @@ import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.ContactsAdapter;
 import com.roselism.spot.library.app.UserListener;
+import com.roselism.spot.library.app.dialog.InviteFriendDialog;
+import com.roselism.spot.library.app.dialog.SimpleInputDialog;
+import com.roselism.spot.library.widget.MenuActionButton;
+import com.roselism.spot.library.widget.RecyclerViewScrollListener;
+import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
+import com.roselism.spot.model.db.dao.operator.RelationLinkOperater;
+import com.roselism.spot.model.db.dao.operator.UserOperater;
+import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.model.engine.Operater;
 import com.roselism.spot.model.engine.StrategyContext;
 import com.roselism.spot.model.engine.bmob.query.QueryFriendsByUser;
-import com.roselism.spot.model.db.dao.operator.RelationLinkOperater;
-import com.roselism.spot.library.widget.decorator.DividerItemDecoration;
-import com.roselism.spot.library.app.dialog.InviteFriendDialog;
-import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.model.db.dao.operator.UserOperater;
-import com.roselism.spot.model.domain.bmob.User;
-
-import com.roselism.spot.library.widget.MenuActionButton;
-import com.roselism.spot.library.widget.RecyclerViewScrollListener;
 import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
@@ -97,6 +96,19 @@ public class ContactsActivity extends AppCompatActivity
                 //                materialSheetFab.
             }
         });
+    }
+
+
+    void initView(){
+
+    }
+
+    void initData(){
+
+    }
+
+    void initEvent(){
+
     }
 
     void initListener() {

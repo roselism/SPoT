@@ -29,8 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roselism.spot.R;
-import com.roselism.spot.model.domain.bmob.User;
 import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.model.domain.bmob.User;
 
 import java.util.List;
 import java.util.regex.Matcher;

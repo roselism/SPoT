@@ -20,26 +20,24 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.roselism.spot.R;
 import com.roselism.spot.SPoTApplication;
 import com.roselism.spot.adapter.ListSwipeAdapter;
-import com.roselism.spot.model.engine.OnOperateListener;
-import com.roselism.spot.model.engine.StrategyContext;
-import com.roselism.spot.model.engine.bmob.query.QueryFolderByCreater;
-import com.roselism.spot.model.engine.bmob.query.QueryFolderByAssociateUser;
-import com.roselism.spot.model.db.dao.operator.FolderOperater;
-import com.roselism.spot.model.engine.Operater;
-import com.roselism.spot.model.db.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.DetailProgressDialog;
 import com.roselism.spot.library.app.dialog.FolderNameDialog;
-import com.roselism.spot.model.domain.local.File;
+import com.roselism.spot.model.db.dao.operator.FolderOperater;
+import com.roselism.spot.model.db.dao.operator.PhotoOperater;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;
 import com.roselism.spot.model.domain.bmob.User;
-
+import com.roselism.spot.model.domain.local.File;
+import com.roselism.spot.model.engine.OnOperateListener;
+import com.roselism.spot.model.engine.Operater;
+import com.roselism.spot.model.engine.StrategyContext;
+import com.roselism.spot.model.engine.bmob.query.QueryFolderByAssociateUser;
+import com.roselism.spot.model.engine.bmob.query.QueryFolderByCreater;
 import com.roselism.spot.util.LogUtil;
 import com.roselism.spot.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.List;
 
 import butterknife.Bind;
@@ -71,9 +69,27 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initView();
+        initEvent();
+        initData();
+    }
+
+
+    void initView() {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+
+        // 初始化ImageLoader
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(configuration);
+
+        detailProgressDialog = new DetailProgressDialog();
+
+        initDrawer();
+    }
+
+    void initData() {
         Bmob.initialize(this, "a736bff2e503810b1e7e68b248ff5a7d");
 
         mCurUser = BmobUser.getCurrentUser(this, User.class); // 当前用户
@@ -84,18 +100,13 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
         SPoTApplication.setUser(mCurUser);
-
-        LogUtil.i(TAG, "onCreate->>>");
-
         refreshData();
 
-        // 初始化ImageLoader
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(configuration);
 
-        detailProgressDialog = new DetailProgressDialog();
+    }
 
-        initDrawer();
+    void initEvent() {
+
     }
 
     /**
@@ -314,7 +325,7 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void onOperated(List<File> files) {
             if (flag1 && flag2 && flag3) { // 如果三个都加载完毕，则执行加载数据
-                ThreadUtil.runInUIThread(() -> {
+                ThreadUtil.runInUIThread(() -> { // 这样写就不用再通知handler了（内部还是handler机制）
                     LogUtil.i("mdata size = " + mData.size());
                     Collections.sort(mData, (s1, s2) -> {// 给加载到的数据进行排序->文件夹在上，图片在下
                         if (s1.getType() != s2.getType())

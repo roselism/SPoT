@@ -18,16 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.GridView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureSelectAdapter;
+import com.roselism.spot.library.app.ListImageDirPopupWindow;
 import com.roselism.spot.model.domain.local.ImageFolder;
 import com.roselism.spot.service.UploadService;
-import com.roselism.spot.library.app.ListImageDirPopupWindow;
 import com.roselism.spot.util.ThreadUtil;
 
 import java.io.File;

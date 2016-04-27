@@ -22,14 +22,14 @@ import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.PictureGridAdapter;
-import com.roselism.spot.model.db.dao.operator.PhotoOperater;
 import com.roselism.spot.library.app.dialog.InviteFriendDialog;
 import com.roselism.spot.library.app.dialog.SimpleInputDialog;
-import com.roselism.spot.model.domain.local.File;
+import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.model.db.dao.operator.FolderOperater;
+import com.roselism.spot.model.db.dao.operator.PhotoOperater;
 import com.roselism.spot.model.domain.bmob.Folder;
 import com.roselism.spot.model.domain.bmob.Photo;
-import com.roselism.spot.model.db.dao.operator.FolderOperater;
-import com.roselism.spot.library.content.DataLoader;
+import com.roselism.spot.model.domain.local.File;
 import com.roselism.spot.util.LogUtil;
 import com.roselism.spot.util.ThreadUtil;
 
@@ -96,6 +96,19 @@ public class FolderActivity extends AppCompatActivity
         materialSheetFab = new MaterialSheetFab(mFloatingButton, fabSheet, overlay, sheetColor, fabColor);
         materialSheetFab.showFab();
         mFloatingButton.attachToListView(mGridView);
+
+    }
+
+
+    void initView(){
+
+    }
+
+    void initData(){
+
+    }
+
+    void initEvent(){
 
     }
 

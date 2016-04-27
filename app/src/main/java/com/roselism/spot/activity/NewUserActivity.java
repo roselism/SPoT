@@ -24,4 +24,16 @@ public class NewUserActivity extends AppCompatActivity {
 
 //        toolbar.setOnClickListener();
     }
+
+    void initView(){
+
+    }
+
+    void initData(){
+
+    }
+
+    void initEvent(){
+
+    }
 }
