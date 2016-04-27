@@ -27,10 +27,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
-//    private static final int LOAD_FINISHED = 0;
-//    private static final int JSON_ERROR = 1;
-//    private static final int URL_ERROR = 2;
-//    private static final int IO_ERROR = 3;
 
     @Bind(R.id.versionName_textview) TextView versionNameTextview;
     @Bind(R.id.progressbar) ProgressBar progressbar;
@@ -151,7 +147,7 @@ public class SplashActivity extends AppCompatActivity {
                     e.printStackTrace();
 //                    message.what = URL_ERROR;
 //                    ThreadUtil.runInUIThread(() -> Toast.makeText(SplashActivity.this, "saf", Toast.LENGTH_SHORT).show());
-                    ; // 在ui线程中执行
+                    // 在ui线程中执行
                     runnable = () -> Toast.makeText(SplashActivity.this, "URL地址不正确", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
 //                    message.what = IO_ERROR;

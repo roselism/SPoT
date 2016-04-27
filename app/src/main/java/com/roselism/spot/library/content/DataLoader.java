@@ -8,8 +8,8 @@ import android.content.Context;
  */
 public abstract class DataLoader implements Runnable {
 
-    protected Context outerClass;
     public static final int LOAD_FINISHED = 0x16;
+    protected Context outerClass;
 
     /**
      * 创建一个数据加载器

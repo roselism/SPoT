@@ -8,13 +8,14 @@ import android.widget.ListView;
 import com.roselism.spot.R;
 import com.roselism.spot.adapter.CommonAdapter;
 import com.roselism.spot.adapter.viewholder.CommonViewHolder;
-import com.roselism.spot.model.domain.local.ImageFolder;
 import com.roselism.spot.library.widget.BasePopupWindowForListView;
+import com.roselism.spot.model.domain.local.ImageFolder;
 
 import java.util.List;
 
 public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFolder> {
     private ListView mListDir;
+    private OnImageDirSelected mImageDirSelected;
 
     public ListImageDirPopupWindow(int width, int height, List<ImageFolder> datas, View convertView) {
         super(convertView, width, height, true, datas);
@@ -32,12 +33,6 @@ public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFol
             }
         });
     }
-
-    public interface OnImageDirSelected {
-        void selected(ImageFolder floder);
-    }
-
-    private OnImageDirSelected mImageDirSelected;
 
     public void setOnImageDirSelected(OnImageDirSelected mImageDirSelected) {
         this.mImageDirSelected = mImageDirSelected;
@@ -65,6 +60,10 @@ public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFol
     @Override
     protected void beforeInitWeNeedSomeParams(Object... params) {
         // TODO Auto-generated method stub
+    }
+
+    public interface OnImageDirSelected {
+        void selected(ImageFolder floder);
     }
 
 }

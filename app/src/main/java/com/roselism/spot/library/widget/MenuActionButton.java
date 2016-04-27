@@ -1,6 +1,5 @@
 package com.roselism.spot.library.widget;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 

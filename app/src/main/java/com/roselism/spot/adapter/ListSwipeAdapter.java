@@ -41,9 +41,8 @@ import cn.bmob.v3.listener.DeleteListener;
  */
 public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchListener, View.OnClickListener {
 
-    private static final String TAG = "ListSwipeAdapter";
     public final static List<File> mSelectedItem = new LinkedList<>(); // 选中的item
-
+    private static final String TAG = "ListSwipeAdapter";
     private List<File> mData; // 数据
     private LayoutInflater mInflater; // 图形打气筒
     private Context mContext; // 上下文内容
@@ -188,7 +187,6 @@ public class ListSwipeAdapter extends BaseSwipeAdapter implements View.OnTouchLi
     public long getItemId(int position) {
         return position;
     }
-
 
     private DisplayImageOptions buildOptions() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
