@@ -14,6 +14,5 @@ public interface OnBuildListener<T> extends OnOperateListener {
      *
      * @param t 成功则返回build的对象，失败则返回null
      */
-    public void onBuildFinished(T t);
-
+    void onBuildFinished(T t);
 }
