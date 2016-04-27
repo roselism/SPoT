@@ -18,7 +18,7 @@ import com.roselism.spot.util.HttpConnectionHelper;
 import com.roselism.spot.util.StreamUtils;
 import com.roselism.spot.util.ThreadUtil;
 import com.roselism.spot.util.convert.Converter;
-import com.roselism.spot.util.convert.InStream2OutStream;
+import com.roselism.spot.util.convert.InputStreamOutputStreamConverter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -264,7 +264,7 @@ public class SplashActivity extends AppCompatActivity {
 //                            byte[] buffer = new byte[1024 * 2];
 //                            while ((len = inputStream.read(buffer)) != -1)
 //                                output.write(buffer, 0, len);
-                            Converter<InputStream, OutputStream> converter = new InStream2OutStream(updateApk);
+                            Converter<InputStream, OutputStream> converter = new InputStreamOutputStreamConverter(updateApk);
                             output = converter.convert(inputStream); // 获取转换数据
 
                             Log.i(TAG, "run: -->" + "下载完毕");
